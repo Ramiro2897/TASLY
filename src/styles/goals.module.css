@@ -1,0 +1,944 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body{
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+/* contenedor en de todo el contenido de metas */
+.goals-container{
+  width: 100%;
+  height: 100vh; 
+}
+
+/* estilos para el header */
+.goals-container .goals_header{
+  width: 100%;
+  height: auto;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.goals-container .goals_header .title{
+  margin: 10px 0;
+  padding: 0 5px;
+  color: #ccc;
+  margin: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.goals-container .goals_header .title h2 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600; 
+  letter-spacing: 1px;
+  font-size: 2rem;
+  border-bottom: 2px solid #034159;
+  background: linear-gradient(to bottom, #8AA6A3, #034159);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: bold;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.goals-container .goals_header .options {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px; 
+  padding: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.goals-container .goals_header .options .options_list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 20px;
+  min-width: 250px;
+  flex: 1; 
+  max-width: 300px; 
+  white-space: nowrap; 
+  color: #F2F2F2;
+  cursor: pointer;
+  font-size: .7rem;
+  font-weight: 600;
+  border-radius: 5px; 
+  transition: all 0.3s ease-in-out; 
+  background: #034159;
+}
+
+.goals-container .goals_header .options .options_list:hover {
+  background: #025951;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.goals-container .goals_header .options_list:active {
+  transform: translateY(2px);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+.goals-container .goals_header .options .options_list svg {
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  font-size: 1rem;
+  color: #F2F2F2; 
+  margin-right: 10px; 
+  padding: 6px;
+  border-radius: 50%;
+}
+
+/* Animación de parpadeo */
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
+/* errores */
+.errorGoals {
+  font-size: 0.9rem;
+  color: #F2F2F2;
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  font-style: italic; 
+  margin-top: 10px;
+  font-weight: bold;
+  animation: blink 1s infinite alternate ease-in-out;
+}
+
+/* estilos para la barra de buesqueda */
+.search_goals{
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  padding: 5px;
+}
+
+.search_goals .content-search{
+  width: 60%;
+  display: flex;
+  padding: 5px;
+  border-radius: 35px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.search_goals .content-search input{
+  width: 90%;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  font-size: .7rem;
+  padding: 0 10px;
+  border-radius: 5px 0px 0px 5px;
+  font-weight: bold;
+}
+
+.ssearch_goals .content-search input::placeholder{
+  color: #f2f2f2;
+}
+
+.search_goals .content-search button{
+  width: 10%;
+  background-color: #034159;
+  border-radius: 35px 35px 35px 35px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.search_goals .content-search button:hover{
+  background-color: #025951;
+}
+
+.noGoals{
+  width: 100%;
+  font-size: 1.5rem;
+  color: #ccc;
+  margin: 20px 0;
+  text-align: center;
+  font-weight: bolder;
+}
+
+/* estilos para no se encontraron tareas */
+.error-container{
+  width: 100%;
+  height: 30px;
+  padding: 0 10px;
+  color: #bbb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+.atomic_habits {
+  width: 100%;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+}
+
+.atomic_habits p {
+  width: auto;
+  max-width: 250px;
+  padding: 10px 0;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 15px 20px;
+  border-radius: 5px;
+  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1);
+  color: #f9f9f963;
+  border: 2px solid #034159;
+  font-family: 'Arial', sans-serif;
+  transition: all 0.3s ease-in-out;
+}
+
+.atomic_habits p:hover {
+  transform: scale(1.01);
+  background: linear-gradient(135deg, #e0f2f111, #b2dfdb04);
+}
+
+.fadeIn {
+  opacity: 0;
+  animation: fadeInAnimation 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeInAnimation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeOut {
+  animation: fadeOutAnimation 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeOutAnimation {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* estilos para el boton de ir atrás */
+.back{
+  padding: 5px 10px;
+  height: 40px;
+  visibility: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.back.visible {
+  visibility: visible;
+}
+
+.back svg {
+  color: #ccc; 
+  font-size: 1rem; 
+  padding: 10px 15px;
+  background-color: #034159;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.back svg:hover{
+  background-color: #025951;
+}
+
+.error-container .error-search{
+  font-size: .8rem;
+  font-style: italic;
+  font-weight: 600;
+  padding: 2px 20px;
+  border-radius: 5px;
+}
+
+/* estilos para las metas */
+.goals-container .dashboard_goal {
+  column-count: auto;
+  column-width: 220px; 
+  column-gap: 10px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
+.goals-container .dashboard_goal .goal-item {
+  display: inline-block; 
+  width: 100%;
+  padding: 10px;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border-radius: 5px;
+  background: #998d8d28;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  word-break: break-word;
+  white-space: normal;
+  margin: 5px 0;
+  transition: all 0.3s ease-in-out;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.goal-completed {
+  box-shadow: inset 0 0 10px #945E00;
+  animation: pulse-shadow 1.5s infinite alternate ease-in-out;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Generar múltiples caritas */
+.goal-completed::before {
+  content: '🔥';
+  right: 10px;
+  position: absolute;
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+/* Sombra interna pulsante */
+@keyframes pulse-shadow {
+  0% {
+    box-shadow: inset 0 0 10px #945e009a;
+  }
+  100% {
+    box-shadow: inset 0 0 20px #945e0056;
+  }
+}
+
+@keyframes pulse-shadow-two{
+  0% {
+    box-shadow: inset 0 0 10px #025951;
+  }
+  100% {
+    box-shadow: inset 0 0 20px #025950a4;
+  }
+}
+
+.goal-completed_modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse-shadow-two 1.5s infinite alternate ease-in-out;
+}
+
+.goal-completed_modal::before {
+  content: '¡Meta completada! 🎉';
+  right: 10px;
+  bottom: 10px;
+  position: absolute;
+  font-size: 1.1rem;
+  opacity: 0.9;
+  animation: emoji-fall 4s linear infinite;
+  background-color: #034159d0;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+/* tarea expirada */
+.goal-expired {
+  opacity: 0.5; 
+  pointer-events: none; 
+  filter: grayscale(80%); 
+  position: relative;
+  cursor: not-allowed; 
+}
+
+.goal-expired::before {
+  content: "Incumplida";
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: red;
+  color: #f2f2f2;
+  font-size: 0.8rem;
+  padding: 4px 8px;
+  border-radius: 0 0 0 8px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+
+.goals-container .dashboard_goal .goal-item:hover{
+  background: #bbabab28;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+.goals-container .dashboard_goal .goal-item:active{
+  transform: translateY(2px);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+.goal-item .content-infoGoal{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dashboard_goal .goal-name{
+  width: auto;
+  height: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 5px;
+  font-weight: 100;
+}
+
+.dashboard_goal .goal-name p{
+  display: inline-block;
+  width: auto;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 1rem;
+  color: #F2F2F2;
+  font-weight: 600;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+  white-space: normal;
+  padding: 5px 10px;
+  border-radius: 2px;
+  border-bottom: 1px solid #f9f9f911;
+  background-color: #034159ee;
+}
+
+.description {
+  display: flex;
+  text-align: center;
+  min-width: 80px;
+  justify-content: space-between;
+  align-items: center;
+  text-align: justify;
+}
+
+.description  p{
+  padding: 5px 5px;
+  border-radius: 5px;
+  display: inline-block;
+  font-size: 0.77rem;
+  font-weight: 100;
+  color: #bbb;
+}
+
+/* Contenedor de la barra de progreso */
+.goal-item .goal_progress {
+  width: 100%;
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Barra de fondo con diseño moderno */
+.goal-item .progress-bar {
+  width: 100%;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Barra de progreso con animación lenta */
+.goal-item .progress {
+  height: 100%;
+  transition: width 6s ease-in-out; 
+  border-radius: 2px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 12px;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  white-space: nowrap; 
+  overflow: hidden;
+}
+
+/* Número dentro de la barra, bien alineado y legible */
+.goal-item .progress::after {
+  content: attr(data-value) "%";
+  font-size: .6rem;
+  font-weight: bold;
+  color: #ffffff;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+  white-space: nowrap; 
+  overflow: hidden; 
+}
+
+/* Botón 3D con color vibrante */
+.btn-3d {
+  background: linear-gradient(145deg, #f29f05f3, #f29f05d8); /* Naranja cálido */
+  color: #FFFFFF;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 4px 10px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 6px 0 #C77800, 
+              0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn-3d:hover{
+  background-color: #f29f05b4;
+}
+
+/* Efecto al presionar */
+.btn-3d:active {
+  box-shadow: 0 2px 0 #945E00, 
+              0 6px 10px rgba(0, 0, 0, 0.3);
+  transform: translateY(4px);
+}
+
+/* Efecto de brillo para resaltar más */
+.btn-3d::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.goal-date .content-date{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.content-date p{
+  padding: 4px 0px;
+  font-size: 0.68rem;
+  font-weight: 100;
+  color: #bbb;
+  padding: 5px 5px;
+  border-radius: 5px;
+  background-color: #034159;
+}
+
+/* modal para eliminar, editar una tarea */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-start; 
+  justify-content: center;
+  z-index: 10000;
+  pointer-events: auto;
+  background: rgba(0, 0, 0, 0.5); 
+  backdrop-filter: blur(0.2px);
+}
+
+.modalContent {
+  width: 400px;
+  max-width: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: #0341596e;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+  margin-top: 15px;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.modalContent .goalName{
+  width: 100%;
+  margin: 10px 0px;
+  border-radius: 5px;
+  text-align: justify;
+  word-wrap: break-word; 
+  overflow-wrap: break-word; 
+  word-break: break-word; 
+  white-space: normal;
+  background: #03415973;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+  padding: 8px 12px;
+}
+
+.modalContent .goalTitle{
+  width: 100%;
+  margin: 10px 0px;
+  border-radius: 5px;
+  word-wrap: break-word; 
+  overflow-wrap: break-word; 
+  word-break: break-word; 
+  white-space: normal;
+  background: #03415973;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+  padding: 8px 12px;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modalContent span{
+  font-size: .9rem;
+  font-weight: bold;
+  color: #f2f2f2;
+  padding: 5px;
+  word-wrap: break-word; 
+  overflow-wrap: break-word; 
+  word-break: break-word; 
+  white-space: normal;
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #8aa6a32d;
+}
+
+.modalContent p{
+  width: 100%;
+  font-size: .9rem;
+  color: #ccc;
+  padding: 5px;
+  font-weight: 500;
+  word-wrap: break-word; 
+  overflow-wrap: break-word; 
+  word-break: break-word; 
+  white-space: normal;
+}
+
+/* estilo para el modal de actualizar */
+.modalContent textarea{
+  width: 100%;
+  padding: 12px;
+  margin: 2px 0;
+  border-radius: 5px; 
+  border: none;
+  background: rgba(50, 50, 50, 0.3);
+  color: #ccc; 
+  font-size: .8rem; 
+  transition: border-color 0.3s;
+  outline: none;
+  resize: none;
+  min-height: 70px;
+  overflow-y: auto; 
+}
+
+.modalOverlay .modalContent  .btn-options{
+  display: flex;
+  margin-top: 5px;
+}
+
+.modalContent button {
+  display: flex; 
+  align-items: center;
+  gap: 5px;
+  margin: 10px 8px;
+  padding: 8px 8px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: .8rem;
+  color: #F2F2F2;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* estilo para el modal de actualizar */
+.error-Update{
+  width: 100%;
+  height: 20px;
+  font-size: .8rem !important;
+  color: #F2F2F2;
+  font-style: italic;
+  font-weight: 100 !important;
+  border-radius: 5px;
+  text-align: center;
+}
+
+/* ----------------modal para agregar avance de una meta----------- */
+.modalOverlayPreview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-start; 
+  justify-content: center;
+  z-index: 10000;
+  pointer-events: auto;
+  background: rgba(0, 0, 0, 0.5); 
+  backdrop-filter: blur(0.2px);
+}
+.modalContentPreview {
+  width: 400px;
+  max-width: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: #0341596e;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(5px);
+  margin-top: 15px;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  animation: fadeIn 0.3s ease-in-out;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.modalContentPreview .goalName{
+  width: 100%;
+  margin: 10px 0px;
+  border-radius: 5px;
+  text-align: justify;
+  word-wrap: break-word; 
+  overflow-wrap: break-word; 
+  word-break: break-word; 
+  white-space: normal;
+  background: #03415973;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+  padding: 8px 12px;
+}
+
+/* Estilo para el input */
+.modalOverlayPreview .modalContentPreview .inputAdvance {
+  padding: 10px 5px;
+  border-radius: 7px;
+  background: #034159d3;
+  color: #F2F2F2;
+  text-align: center;
+  font-size: 1.2rem;
+  border: none;
+  outline: none;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+/* Efecto cuando el input está en foco */
+.modalOverlayPreview .modalContentPreview .inputAdvance:focus {
+  background: #036079; 
+}
+
+.modalOverlayPreview .modalContentPreview .inputAdvance::-webkit-outer-spin-button,
+.modalOverlayPreview .modalContentPreview .inputAdvance::-webkit-inner-spin-button {
+  height: 35px; 
+  width: 35px;   
+  border: none;
+  cursor: pointer;
+  margin: 10px;  
+  padding: 0 5px;
+}
+
+/* Para Firefox, se eliminan los botones de incremento/decremento */
+.modalOverlayPreview .modalContentPreview .inputAdvance[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield; 
+  -webkit-appearance: none;
+}
+
+.modalOverlayPreview .modalContentPreview .btn-options{
+  display: flex;
+  margin-top: 5px;
+}
+
+.modalContentPreview button {
+  display: flex; 
+  align-items: center;
+  gap: 5px;
+  margin: 10px 8px;
+  padding: 8px 8px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: .8rem;
+  color: #F2F2F2;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Contenedor de la barra de progreso */
+.modalOverlayPreview .modalContentPreview .goal_progress {
+  width: 100%;
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+/* Barra de fondo con diseño moderno */
+.modalOverlayPreview .modalContentPreview .progress-bar {
+  width: 100%;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.185);
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Barra de progreso con animación lenta */
+.modalOverlayPreview .modalContentPreview .progress {
+  height: 100%;
+  transition: width 6s ease-in-out; /* Ajuste para animación más lenta y fluida */
+  border-radius: 2px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 12px;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Número dentro de la barra, bien alineado y legible */
+.modalOverlayPreview .modalContentPreview .progress::after {
+  content: attr(data-value) "%";
+  font-size: .6rem;
+  font-weight: bold;
+  color: #ffffff;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+
+/* media queries pantallas inferiores a 768px */
+@media (max-width: 768px) {
+  .goals-container .goals_header .options .options_list{
+    min-width: 230px;
+  }
+
+  .goals-container .goals_header .title{
+    display: none;
+  }
+
+  .goals-container .goals_header{
+    margin-top: 15px;
+  }
+
+  .search_goals .content-search{
+    width: 95%;
+    padding: 10px;
+  }
+
+  .goals-container .dashboard_goal .goal-item{
+    min-width: 100%;
+  }
+
+  .search_goals .content-search button{
+    width: 20%;
+  }
+
+  .goals-container .dashboard_goal {
+    grid-template-columns: repeat(2, 1fr); /* 2 tarjetas por fila */
+    max-width: 600px;
+  }
+
+  .error-search{
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(3, 3, 3, 0.1);
+  }
+}
+
+@media (max-width: 480px) {
+  .goals-container .goals_header .options .options_list{
+    min-width: 90px;
+  }
+
+  .goals-container .dashboard_goal {
+    grid-template-columns: repeat(1, 1fr); /* 1 tarjeta por fila */
+    max-width: 100%;
+  }
+
+}
+
+/* modal */
+@media (max-width: 320px) {
+  .modalContent {
+    width: 380px;
+    max-width: 280px;
+  }
+}

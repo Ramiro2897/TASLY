@@ -1,0 +1,98 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+.home-container {
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+  transition: all 0.3s ease-in-out; 
+}
+
+.home-container h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: linear-gradient(to bottom, #bdbfbfa4, #1b252623);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.version {
+  font-size: 0.9rem;
+  color: #F0F0F2;        
+}
+
+.info-section {
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.info-section h3 {
+  font-size: .7rem;
+  color: #326A8C;
+  margin-bottom: 8px;
+}
+
+.info-section p {
+  font-size: .8rem;
+  line-height: 1.6;
+  color: #F0F0F2;
+  text-align: justify;
+}
+
+.info-section .info-question{
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.details, .contact {
+  margin-top: 20px;
+  padding: 15px;
+  background: transparent;
+  border-radius: 8px;
+  border: 1px solid #bdbfbf3f;
+}
+
+.contact h3, .details h3 {
+  font-size: 1rem;
+  background: linear-gradient(to bottom, #F0F0F2, #326A8C);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.contact p, .details p {
+  font-size: 0.8rem;
+  color: #F0F0F2;
+  margin-top: 5px;
+}
+
+em {
+  display: block;
+  font-size: .8rem;
+  color: #f0f0f2ad;
+  text-align: center;
+  margin-top: 15px;
+}
+
+em strong {
+  color: #f0f0f2ad; 
+  font-weight: bold;
+}
+
+em a {
+  color: #326A8C; /* Color llamativo para el enlace */
+  text-decoration: none;
+  font-weight: bold;
+}
+
+em a:hover {
+  text-decoration: underline;
+}
+
