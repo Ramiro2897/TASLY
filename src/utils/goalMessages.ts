@@ -50,7 +50,7 @@ export function generateGoalMessages(
     const goalName = progressedToday[0].goal;
 
     messages.push({
-      text: `¡Genial! Hoy has avanzado en ${goalName}. Sigue así 🚀`,
+      text: `¡Genial! Has avanzado en ${goalName}. Sigue así 🚀`,
       highlight: goalName
     });
   }
