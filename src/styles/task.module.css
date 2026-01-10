@@ -28,7 +28,7 @@ body{
 .task-container .task_header .title{
   margin: 10px 0;
   padding: 0 5px;
-  color: #ccc;
+  color: #F0F0F2;
   margin: 20px;
   display: flex;
   justify-content: center;
@@ -206,6 +206,7 @@ body{
 
 .search_task .content-search button{
   width: 10%;
+  padding: 10px 10px;
   background-color: #326A8C;
   border-radius: 35px 35px 35px 35px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
@@ -436,7 +437,7 @@ body{
   color: #F0F0F2;
   padding: 5px 5px;
   border-radius: 5px;
-  background-color: #034159;
+  background-color: #326A8C;
 }
 
 /* estilos para la barra de scroll */

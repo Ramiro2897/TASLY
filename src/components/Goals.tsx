@@ -33,6 +33,9 @@ const Goals = () => {
   const [currentPhrase, setCurrentPhrase] = useState(phrases[0]);
   const [editedDescription, setEditedDescription] = useState(selectedGoal?.description || "");
   const [newValue, setNewValue] = useState(0);
+  const [showGoalMessage, setShowGoalMessage] = useState(false);
+  const [goalMessage, setGoalMessage] = useState<string | null>(null);
+  const [shownMilestones, setShownMilestones] = useState<number[]>([]);
 
   // datos globales del usuario para realizar cualquier accion
   const API_URL = import.meta.env.VITE_API_URL;
@@ -231,6 +234,16 @@ const Goals = () => {
     }
   };
 
+  // Define los hitos
+  const getMilestone = (value: number): number | null => {
+  if (value >= 100) return 100;
+  if (value >= 75) return 75;
+  if (value >= 50) return 50;
+  if (value >= 25) return 25;
+  if (value >= 10) return 10;
+  return null;
+  };
+
   // funcion para avanzar en una meta
   const handleGoalAdvance = async () => {
     if (!selectedGoalPreview) return;
@@ -263,12 +276,30 @@ const Goals = () => {
       setGoals(updatedGoals);
       setSelectedGoalPreview(prev => prev ? { ...prev, current_value: newValue } : prev);
 
+      // Solo mostrar mensajes cuando se alcanza un hito
+      const prevValue = selectedGoalPreview?.current_value || 0;
+      const milestone = getMilestone(newValue);
+
+      if (milestone && prevValue < milestone && !shownMilestones.includes(milestone)) {
+        const { message } = getProgressInfo(newValue);
+        if (message) {
+          setGoalMessage(message);
+          setShowGoalMessage(true);
+          setShownMilestones(prev => [...prev, milestone]);
+        }
+      }
+
+      // Cierre instantáneo con animación potente
       setTimeout(() => {
-        handleClosePreviewModal();
-      }, 16000);   
+       // Solo cerramos el modal sin animación
+       setShowAddPreviewModal(false);
+       setErrors({});
+       document.body.style.overflow = "auto"; // desbloquea scroll
+       document.body.style.pointerEvents = "auto"; // desbloquea clicks
+      }, 0);
   
     } catch (error: any) {
-      setErrors(error.response?.data?.errors || { general: 'Error al actualizar la tarea.' });
+      setErrors(error.response?.data?.errors || { general: 'Error al avanzar en la meta.' });
       setTimeout(() => {
         setErrors(prevErrors => ({ ...prevErrors, general: '' }));
       }, 5000);
@@ -329,12 +360,23 @@ const Goals = () => {
     document.body.style.pointerEvents = "auto"; 
   };
 
-   // funcion para modal de avanzar 
-   const handleClosePreviewModal = () => {
+   // funcion para modal de avanzar cerrar
+  const handleClosePreviewModal = () => {
+  const modal = document.querySelector(`.${styles.modalContentPreview}`);
+  if (modal) {
+    modal.classList.add(styles.modalContentPreviewClosing);
+    modal.addEventListener('animationend', () => {
+      setShowAddPreviewModal(false);
+      setErrors({});
+      document.body.style.overflow = "auto";
+      document.body.style.pointerEvents = "auto";
+    }, { once: true });
+  } else {
     setShowAddPreviewModal(false);
-    setErrors({}); 
-    document.body.style.overflow = "auto";  
-    document.body.style.pointerEvents = "auto"; 
+    setErrors({});
+    document.body.style.overflow = "auto";
+    document.body.style.pointerEvents = "auto";
+  }
   };
 
   const handleMouseUp = () => {
@@ -345,11 +387,28 @@ const Goals = () => {
   };
   
   // progreso para la meta
-  const getProgressColor = (value: number): string => {
-    if (value < 40) return "#FF4F4F"; // Rojo más vivo
-    if (value >= 40 && value < 70) return "#FFA500"; // Naranja más equilibrado
-    if (value >= 70 && value < 95) return "#00B06E"; // Verde vibrante
-    return "#0096FF"; // Azul más moderno
+  type ProgressInfo = {
+  color: string;
+  message: string | null;
+  };
+ 
+  const getProgressInfo = (value: number): ProgressInfo => {
+    let color = "#bf1f1170"; // Rojo por defecto
+    let message: string | null = null;
+    
+    // Colores según progreso
+    if (value < 40) color = "#bf1f1170";      
+    else if (value >= 40 && value < 70) color = "#d99e6a6c"; 
+    else if (value >= 70 && value < 95) color = "#32698c6e"; 
+    else color = "#32698ca9";                 
+    
+    // Mensajes según hitos (GENÉRICOS)
+    if (value >= 100) message = "¡Felicidades! ¡Meta alcanzada! 🏆";
+    else if (value >= 75) message = "¡Casi allí, no te detengas! 🌟";
+    else if (value >= 50) message = "¡Mitad del camino completado! 💪";
+    else if (value >= 25) message = "¡Ya casi alcanzas un cuarto del camino! 👏";
+    else if (value >= 10) message = "¡Vas arrancando, sigue así! 🚀";
+    return { color, message };
   };
 
   // ejecutar audio una vez se completa la meta
@@ -358,7 +417,7 @@ const Goals = () => {
       setNewValue(selectedGoalPreview.current_value);
     }
   }, [selectedGoalPreview]);
-  
+
   useEffect(() => {
     if (selectedGoalPreview?.current_value === 100) {
       if (!sessionStorage.getItem(`goal_${selectedGoalPreview.id}_notified`)) {
@@ -379,9 +438,29 @@ const Goals = () => {
     const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
     return `${parseInt(day)} ${meses[parseInt(month) - 1]} ${year}`;
   }; 
-  
+
+  // para el modal al pasar colores y valores
+  const modalProgressInfo = selectedGoalPreview
+  ? getProgressInfo(Number(selectedGoalPreview.current_value))
+  : null;
+
   return (
     <div className={styles['goals-container']}>
+     {/* 🔹 Modal que muestra mensajes cada que se avanza en la meta */}
+      {showGoalMessage && (
+        <div className={styles['goal-message-overlay']}>
+          <div className={styles['goal-message-modal']}>
+            <p className={styles['goal-message-text']}>{goalMessage}</p>
+            <button
+              className={styles['goal-message-button']}
+              onClick={() => setShowGoalMessage(false)}
+            >
+              x
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 🔹 Modal para eliminar o actualizar una meta*/}
       {showModal && selectedGoal && (
         <div className={styles['modalOverlay']}>
@@ -452,7 +531,7 @@ const Goals = () => {
                     className={styles['progress']}
                     style={{
                       width: `${selectedGoalPreview.current_value}%`,
-                      background: getProgressColor(selectedGoalPreview.current_value),
+                      background: modalProgressInfo?.color,
                     }}
                     data-value={selectedGoalPreview.current_value}
                   ></div>
@@ -477,13 +556,13 @@ const Goals = () => {
         </div>
         
         <div className={styles['options']}>
-          <div className={styles['options_list']} onClick={() => handleNavigation("/Home")}>
+          <div className={styles['button']} onClick={() => handleNavigation("/Home")}>
             <FontAwesomeIcon icon={faArrowLeft} /> Ir Home
           </div>
-          <div className={styles['options_list']} onClick={() => handleNavigation("/tasks")}>
+          <div className={styles['button']} onClick={() => handleNavigation("/tasks")}>
             <FontAwesomeIcon icon={faListCheck}  /> Tareas
           </div>
-          <div className={styles['options_list']} onClick={() => handleNavigation("/phrases")}>
+          <div className={styles['button']} onClick={() => handleNavigation("/phrases")}>
             <FontAwesomeIcon icon={faQuoteLeft} /> Frases
           </div>
         </div>
@@ -522,7 +601,7 @@ const Goals = () => {
         <FontAwesomeIcon icon={faArrowLeft} title="Ir atrás" />
       </div>
 
-      {/* Lista de tareas */}
+      {/* Lista de metas */}
       <div className={styles['dashboard_goal']}>
         {searchResults.length > 0
           ? searchResults.map((goal) => (
@@ -556,7 +635,7 @@ const Goals = () => {
                           className={styles['progress']}
                           style={{
                             width: `${goal.current_value}%`,
-                            background: getProgressColor(goal.current_value),
+                            background: getProgressInfo(goal.current_value).color,
                           }}
                           data-value={goal.current_value}
                         ></div>
@@ -610,7 +689,7 @@ const Goals = () => {
                           className={styles['progress']}
                           style={{
                             width: `${goal.current_value}%`,
-                            background: getProgressColor(goal.current_value),
+                            background: getProgressInfo(goal.current_value).color,
                           }}
                           data-value={goal.current_value}
                         ></div>

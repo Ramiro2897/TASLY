@@ -28,7 +28,7 @@ body{
 .goals-container .goals_header .title{
   margin: 10px 0;
   padding: 0 5px;
-  color: #ccc;
+  color: #F0F0F2;
   margin: 20px;
   display: flex;
   justify-content: center;
@@ -41,8 +41,7 @@ body{
   font-weight: 600; 
   letter-spacing: 1px;
   font-size: 2rem;
-  border-bottom: 2px solid #034159;
-  background: linear-gradient(to bottom, #8AA6A3, #034159);
+  background: linear-gradient(to bottom, #bdbfbfa4, #1b252623);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -66,44 +65,98 @@ body{
   -ms-user-select: none;
 }
 
-.goals-container .goals_header .options .options_list {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 20px;
-  min-width: 250px;
-  flex: 1; 
-  max-width: 300px; 
-  white-space: nowrap; 
-  color: #F2F2F2;
+/* From Uiverse.io by Smit-Prajapati */ 
+.button {
+  --main-color: #f0f0f2;
+  --main-bg-color: #456E73;
+  --pattern-color: #32698c21;
+  /* change this rotation value */
+  filter: hue-rotate(0deg);
   cursor: pointer;
-  font-size: .7rem;
-  font-weight: 600;
-  border-radius: 5px; 
-  transition: all 0.3s ease-in-out; 
-  background: #034159;
+  letter-spacing: 0.2rem;
+  background: radial-gradient(
+      circle,
+      var(--main-bg-color) 0%,
+      rgba(0, 0, 0, 0) 95%
+    ),
+    linear-gradient(var(--pattern-color) 1px, transparent 1px),
+    linear-gradient(to right, var(--pattern-color) 1px, transparent 1px);
+  background-size:
+    cover,
+    12px 12px,
+    12px 12px;
+  background-position:
+    center center,
+    center center,
+    center center;
+  border-image: radial-gradient(
+      circle,
+      var(--main-color) 0%,
+      rgba(0, 0, 0, 0) 100%
+    )
+    1;
+  border-width: 1px 0 1px 0;
+  color: var(--main-color);
+  padding: .27rem 2rem;
+  font-weight: 100;
+  font-size: .8rem;
+  border-radius: 5px;
+  transition: background-size 0.2s ease-in-out;
 }
 
-.goals-container .goals_header .options .options_list:hover {
-  background: #025951;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
-  transform: translateY(-2px);
+.button:hover {
+  background-size:
+    cover,
+    10px 10px,
+    10px 10px;
+}
+.button:active {
+  filter: hue-rotate(250deg);
 }
 
-.goals-container .goals_header .options_list:active {
-  transform: translateY(2px);
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+/* ICONOS DEL BOTÓN (siempre animados) */
+.button svg {
+  font-size: 18px;
+  margin-right: 6px;
+  color: #f0f0f28a;
+  animation: arrowIdle 10s ease-in-out infinite;
 }
 
-.goals-container .goals_header .options .options_list svg {
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  font-size: 1rem;
-  color: #F2F2F2; 
-  margin-right: 10px; 
-  padding: 6px;
-  border-radius: 50%;
+/* CLICK */
+.button:active svg {
+  transform: scale(0.9);
+}
+
+/* ANIMACIÓN SUTIL Y ELEGANTE */
+@keyframes arrowIdle {
+  0% {
+    transform: translateX(0);
+  }
+  10% {
+    transform: translateX(-4px);
+  }
+  20% {
+    transform: translateX(2px);
+  }
+  30% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* errores */
+.errorGoals {
+  font-size: 0.9rem;
+  color: #F0F0F2;
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  font-style: italic; 
+  margin-top: 10px;
+  font-weight: bold;
+  animation: blink 1s infinite alternate ease-in-out;
 }
 
 /* Animación de parpadeo */
@@ -114,19 +167,6 @@ body{
   100% {
     opacity: 0.3;
   }
-}
-
-/* errores */
-.errorGoals {
-  font-size: 0.9rem;
-  color: #F2F2F2;
-  text-align: center;
-  padding: 5px;
-  border-radius: 5px;
-  font-style: italic; 
-  margin-top: 10px;
-  font-weight: bold;
-  animation: blink 1s infinite alternate ease-in-out;
 }
 
 /* estilos para la barra de buesqueda */
@@ -145,7 +185,7 @@ body{
   display: flex;
   padding: 5px;
   border-radius: 35px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #bdbfbf3f;
 }
 
 .search_goals .content-search input{
@@ -159,26 +199,28 @@ body{
   font-weight: bold;
 }
 
-.ssearch_goals .content-search input::placeholder{
-  color: #f2f2f2;
+.search_goals .content-search input::placeholder{
+  color: #F0F0F2;
+
 }
 
 .search_goals .content-search button{
   width: 10%;
-  background-color: #034159;
+  padding: 10px 10px;
+  background-color: #326A8C;
   border-radius: 35px 35px 35px 35px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .search_goals .content-search button:hover{
-  background-color: #025951;
+  background-color: #32698cab;
 }
 
 .noGoals{
   width: 100%;
   font-size: 1.5rem;
-  color: #ccc;
-  margin: 20px 0;
+  color: #F0F0F2;
+  margin-top: 50px;
   text-align: center;
   font-weight: bolder;
 }
@@ -188,7 +230,7 @@ body{
   width: 100%;
   height: 30px;
   padding: 0 10px;
-  color: #bbb;
+  color: #f0f0f2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -215,15 +257,15 @@ body{
   padding: 15px 20px;
   border-radius: 5px;
   box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1);
-  color: #f9f9f963;
-  border: 2px solid #034159;
+  color: #f0f0f28c;
+  border: 2px solid #326A8C;
   font-family: 'Arial', sans-serif;
   transition: all 0.3s ease-in-out;
 }
 
 .atomic_habits p:hover {
   transform: scale(1.01);
-  background: linear-gradient(135deg, #e0f2f111, #b2dfdb04);
+  background: linear-gradient(135deg, #32698c10, #32698c11);
 }
 
 .fadeIn {
@@ -267,16 +309,16 @@ body{
 }
 
 .back svg {
-  color: #ccc; 
+  color: #F0F0F2; 
   font-size: 1rem; 
   padding: 10px 15px;
-  background-color: #034159;
+  background-color: #326A8C;
   cursor: pointer;
   border-radius: 5px;
 }
 
 .back svg:hover{
-  background-color: #025951;
+  background-color: #32698cab;
 }
 
 .error-container .error-search{
@@ -301,14 +343,14 @@ body{
   display: inline-block; 
   width: 100%;
   padding: 10px;
-  color: #ccc;
+  color: #F0F0F2;
   cursor: pointer;
   font-size: 0.8rem;
   font-weight: bold;
   border-radius: 5px;
-  background: #998d8d28;
+  background: #0d0d0d3a;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
+  /* backdrop-filter: blur(10px); */
   word-break: break-word;
   white-space: normal;
   margin: 5px 0;
@@ -320,7 +362,7 @@ body{
 }
 
 .goal-completed {
-  box-shadow: inset 0 0 10px #945E00;
+  box-shadow: inset 0 0 10px #D99E6A;
   animation: pulse-shadow 1.5s infinite alternate ease-in-out;
   position: relative;
   overflow: hidden;
@@ -338,19 +380,19 @@ body{
 /* Sombra interna pulsante */
 @keyframes pulse-shadow {
   0% {
-    box-shadow: inset 0 0 10px #945e009a;
+    box-shadow: inset 0 0 10px #d99e6a73;
   }
   100% {
-    box-shadow: inset 0 0 20px #945e0056;
+    box-shadow: inset 0 0 20px #d99e6a73;
   }
 }
 
 @keyframes pulse-shadow-two{
   0% {
-    box-shadow: inset 0 0 10px #025951;
+    box-shadow: inset 0 0 10px #326A8C;
   }
   100% {
-    box-shadow: inset 0 0 20px #025950a4;
+    box-shadow: inset 0 0 20px #32698c9c;
   }
 }
 
@@ -361,7 +403,7 @@ body{
   width: 100vw;
   height: 100vh;
   z-index: 9999;
-  background: black;
+  background: #0d0d0d9d;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -369,14 +411,14 @@ body{
 }
 
 .goal-completed_modal::before {
-  content: '¡Meta completada! 🎉';
+  content: '¡Meta completada! 🏆';
   right: 10px;
   bottom: 10px;
   position: absolute;
   font-size: 1.1rem;
   opacity: 0.9;
   animation: emoji-fall 4s linear infinite;
-  background-color: #034159d0;
+  background-color: #32698cab;
   padding: 5px 10px;
   border-radius: 5px;
 }
@@ -395,8 +437,8 @@ body{
   position: absolute;
   top: 0;
   right: 0;
-  background: red;
-  color: #f2f2f2;
+  background: #BF2011;
+  color: #F0F0F2;
   font-size: 0.8rem;
   padding: 4px 8px;
   border-radius: 0 0 0 8px;
@@ -406,7 +448,7 @@ body{
 
 
 .goals-container .dashboard_goal .goal-item:hover{
-  background: #bbabab28;
+  background: #0d0d0d5e;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
   transform: translateY(-2px);
 }
@@ -438,16 +480,15 @@ body{
   width: auto;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 1rem;
-  color: #F2F2F2;
+  color: #F0F0F2;
   font-weight: 600;
   word-wrap: break-word;
   overflow-wrap: break-word;
   min-width: 0;
   white-space: normal;
   padding: 5px 10px;
-  border-radius: 2px;
-  border-bottom: 1px solid #f9f9f911;
-  background-color: #034159ee;
+  border-radius: 5px;
+  border: 2px solid #f9f9f911;
 }
 
 .description {
@@ -465,66 +506,97 @@ body{
   display: inline-block;
   font-size: 0.77rem;
   font-weight: 100;
-  color: #bbb;
+  color: #f0f0f29c;
 }
 
 /* Contenedor de la barra de progreso */
 .goal-item .goal_progress {
   width: 100%;
   margin-top: 15px;
-  display: flex;
-  align-items: center;
   position: relative;
 }
 
-/* Barra de fondo con diseño moderno */
+/* PROGRESO (NO ES BARRA, SOLO POSICIÓN) */
+/* CAMINO DE TIERRA */
 .goal-item .progress-bar {
   width: 100%;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.1);
+  height: 18px;
+  position: relative;
+  /* border-radius: 999px; */
+  background:
+    linear-gradient(
+      to bottom,
+      #0d0d0d3a 0%,
+      #0d0d0d5e 0%,
+       50%,
+      #32698c10 100%
+    );
+  box-shadow:
+    inset 0 2px 3px rgba(0, 0, 0, 0.35),
+    inset 0 -2px 3px rgba(255, 255, 255, 0.15);
+  overflow: visible;
   border-radius: 5px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Barra de progreso con animación lenta */
+/* TEXTURA DE TIERRA (GRANO) */
+.goal-item .progress-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image:
+    radial-gradient(rgba(0, 0, 0, 0.15) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 6px 6px, 8px 8px;
+  background-position: 0 0, 3px 3px;
+  pointer-events: none;
+}
+
+/* PROGRESO (SOLO POSICIÓN) */
 .goal-item .progress {
-  height: 100%;
-  transition: width 6s ease-in-out; 
-  border-radius: 2px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 12px;
-  color: white;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  white-space: nowrap; 
-  overflow: hidden;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 18px;              /* ← importante */
+  width: 0;                 /* se anima con JS o inline */
+  transform: translateY(-50%);
+  transition: width 1.2s ease-out;
+  border-radius: 5px;
+  transition: width 8s ease-out;
 }
 
-/* Número dentro de la barra, bien alineado y legible */
+/* MARCADOR (PIEDRA / SEÑAL / PERSONA PROVISIONAL) */
+.goal-item .progress::before {
+  content: "🏆";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  transform: translate(40%, -80%);
+  font-size: 1.2rem;
+}
+
 .goal-item .progress::after {
   content: attr(data-value) "%";
-  font-size: .6rem;
-  font-weight: bold;
-  color: #ffffff;
   position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+  left: 98%;
+  top: -23px;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 600;
+  color: #F0F0F2;
+  background-color: #0d0d0dd2;
+  padding: 2px 2px;
+  border-radius: 5px;
   white-space: nowrap; 
-  overflow: hidden; 
 }
 
 /* Botón 3D con color vibrante */
 .btn-3d {
-  background: linear-gradient(145deg, #f29f05f3, #f29f05d8); /* Naranja cálido */
-  color: #FFFFFF;
+  background: linear-gradient(145deg, #d99e6aef, #D99E6A); /* Naranja cálido */
+  color: #F0F0F2;
   font-size: 1rem;
   font-weight: bold;
   padding: 4px 10px;
@@ -533,17 +605,18 @@ body{
   cursor: pointer;
   position: relative;
   transition: all 0.2s ease-in-out;
-  box-shadow: 0 6px 0 #C77800, 
+  box-shadow: 0 6px 0 #D99E6A, 
               0 10px 20px rgba(0, 0, 0, 0.3);
+  margin: 10px 0;
 }
 
 .btn-3d:hover{
-  background-color: #f29f05b4;
+  background-color: #d99e6a52;
 }
 
 /* Efecto al presionar */
 .btn-3d:active {
-  box-shadow: 0 2px 0 #945E00, 
+  box-shadow: 0 2px 0 #d99e6a, 
               0 6px 10px rgba(0, 0, 0, 0.3);
   transform: translateY(4px);
 }
@@ -556,9 +629,10 @@ body{
   left: 2px;
   right: 2px;
   bottom: 2px;
-  background: rgba(255, 255, 255, 0.15);
+  background-color: #1b25261f; 
   border-radius: 8px;
   pointer-events: none;
+  color: #F0F0F2;
 }
 
 .goal-date .content-date{
@@ -571,10 +645,133 @@ body{
   padding: 4px 0px;
   font-size: 0.68rem;
   font-weight: 100;
-  color: #bbb;
+  color: #F0F0F2;
   padding: 5px 5px;
   border-radius: 5px;
-  background-color: #034159;
+  background-color: #326A8C;
+}
+
+/* modal para cuando una mate avanza y muestra un mensaje */
+/* Overlay que bloquea toda la pantalla */
+.goal-message-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Contenedor del modal */
+.goal-message-modal {
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transform: scale(0);           /* empieza pequeño */
+  animation: modalPop 1s ease-out forwards;
+}
+
+@keyframes modalPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.1);  /* un poco más grande para efecto “pop” */
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);    /* tamaño final */
+    opacity: 1;
+  }
+}
+
+/* Mensaje motivador */
+.goal-message-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  border: 1px solid red;
+    --main-color: #f0f0f2;
+  --main-bg-color: #456E73;
+  --pattern-color: #32698c21;
+  /* change this rotation value */
+  filter: hue-rotate(0deg);
+  cursor: pointer;
+  letter-spacing: 0.2rem;
+  background: radial-gradient(
+      circle,
+      var(--main-bg-color) 0%,
+      rgba(0, 0, 0, 0) 95%
+    ),
+    linear-gradient(var(--pattern-color) 1px, transparent 1px),
+    linear-gradient(to right, var(--pattern-color) 1px, transparent 1px);
+  background-size:
+    cover,
+    12px 12px,
+    12px 12px;
+  background-position:
+    center center,
+    center center,
+    center center;
+  border-image: radial-gradient(
+      circle,
+      var(--main-color) 0%,
+      rgba(0, 0, 0, 0) 100%
+    )
+    1;
+  border-width: 1px 0 1px 0;
+  color: var(--main-color);
+  padding: .27rem 2rem;
+  font-weight: 100;
+  font-size: .8rem;
+  border-radius: 5px;
+  transition: background-size 0.2s ease-in-out;
+}
+
+/* Botón de cerrar */
+.goal-message-button {
+  width: 20px;
+  height: 20px;
+  padding: 1.2rem; /* puedes dejar 1.2rem para ambos ejes */
+  border-radius: 8px;
+  border: 2px solid #bdbfbf3f;
+  background-color: transparent;
+  color: #F0F0F2;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  display: flex;           
+  align-items: center;     
+  justify-content: center;
+}
+
+.goal-message-button:hover {
+  border: 2px solid #bdbfbf94;
+  background: #0d0d0d3a;
+}
+
+/* Animación de entrada */
+@keyframes scaleIn {
+  0% {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 /* modal para eliminar, editar una tarea */
@@ -589,7 +786,8 @@ body{
   justify-content: center;
   z-index: 10000;
   pointer-events: auto;
-  background: rgba(0, 0, 0, 0.5); 
+  background: #0d0d0d3a;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(0.2px);
 }
 
@@ -600,7 +798,7 @@ body{
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background: #0341596e;
+  background: #0d0d0dc0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(5px);
   margin-top: 15px;
@@ -624,7 +822,7 @@ body{
   overflow-wrap: break-word; 
   word-break: break-word; 
   white-space: normal;
-  background: #03415973;
+  background: #03415944;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   font-weight: 600;
   padding: 8px 12px;
@@ -638,7 +836,7 @@ body{
   overflow-wrap: break-word; 
   word-break: break-word; 
   white-space: normal;
-  background: #03415973;
+  background: #03415944;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   font-weight: 600;
   padding: 8px 12px;
@@ -658,7 +856,7 @@ body{
 .modalContent span{
   font-size: .9rem;
   font-weight: bold;
-  color: #f2f2f2;
+  color: #F0F0F2;
   padding: 5px;
   word-wrap: break-word; 
   overflow-wrap: break-word; 
@@ -666,13 +864,13 @@ body{
   white-space: normal;
   width: 100%;
   border-radius: 5px;
-  border: 1px solid #8aa6a32d;
+  border: 1px solid #bdbfbf3f;
 }
 
 .modalContent p{
   width: 100%;
   font-size: .9rem;
-  color: #ccc;
+  color: #F0F0F2;
   padding: 5px;
   font-weight: 500;
   word-wrap: break-word; 
@@ -689,7 +887,7 @@ body{
   border-radius: 5px; 
   border: none;
   background: rgba(50, 50, 50, 0.3);
-  color: #ccc; 
+  color: #F0F0F2; 
   font-size: .8rem; 
   transition: border-color 0.3s;
   outline: none;
@@ -712,8 +910,8 @@ body{
   cursor: pointer;
   border-radius: 5px;
   font-size: .8rem;
-  color: #F2F2F2;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  color: #F0F0F2;
+  border: 2px solid #bdbfbf3f;
 }
 
 /* estilo para el modal de actualizar */
@@ -721,7 +919,7 @@ body{
   width: 100%;
   height: 20px;
   font-size: .8rem !important;
-  color: #F2F2F2;
+  color: #F0F0F2;
   font-style: italic;
   font-weight: 100 !important;
   border-radius: 5px;
@@ -740,7 +938,7 @@ body{
   justify-content: center;
   z-index: 10000;
   pointer-events: auto;
-  background: rgba(0, 0, 0, 0.5); 
+  background: #0d0d0d3a;
   backdrop-filter: blur(0.2px);
 }
 .modalContentPreview {
@@ -750,7 +948,7 @@ body{
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background: #0341596e;
+  background: #0d0d0dc0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(5px);
   margin-top: 15px;
@@ -765,6 +963,30 @@ body{
   -ms-user-select: none;
 }
 
+@keyframes fadeOutPower {
+  0% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+  30% {
+    transform: scale(1.05) rotate(5deg); /* pequeño rebote */
+  }
+  60% {
+    opacity: 0.7;
+    transform: scale(0.95) rotate(-5deg); /* rebote hacia otro lado */
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(20deg); /* desaparece y se encoje con giro */
+  }
+}
+
+/* Clase que aplicaremos al modal al cerrar */
+.modalContentPreviewClosing {
+  animation: fadeOutPower 0.5s ease-in-out forwards;
+}
+
+
 .modalContentPreview .goalName{
   width: 100%;
   margin: 10px 0px;
@@ -774,7 +996,7 @@ body{
   overflow-wrap: break-word; 
   word-break: break-word; 
   white-space: normal;
-  background: #03415973;
+  background: #03415944;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   font-weight: 600;
   padding: 8px 12px;
@@ -784,8 +1006,8 @@ body{
 .modalOverlayPreview .modalContentPreview .inputAdvance {
   padding: 10px 5px;
   border-radius: 7px;
-  background: #034159d3;
-  color: #F2F2F2;
+  background: #03415944;
+  color: #F0F0F2;
   text-align: center;
   font-size: 1.2rem;
   border: none;
@@ -793,11 +1015,12 @@ body{
   box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
   font-weight: bold;
   transition: background 0.3s ease;
+  margin: 10px 0;
 }
 
 /* Efecto cuando el input está en foco */
 .modalOverlayPreview .modalContentPreview .inputAdvance:focus {
-  background: #036079; 
+  background: #326A8C; 
 }
 
 .modalOverlayPreview .modalContentPreview .inputAdvance::-webkit-outer-spin-button,
@@ -831,58 +1054,121 @@ body{
   cursor: pointer;
   border-radius: 5px;
   font-size: .8rem;
-  color: #F2F2F2;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  color: #F0F0F2;
+  border: 2px solid #bdbfbf3f;
 }
 
 /* Contenedor de la barra de progreso */
 .modalOverlayPreview .modalContentPreview .goal_progress {
   width: 100%;
   margin-top: 15px;
-  display: flex;
-  align-items: center;
   position: relative;
 }
 
 /* Barra de fondo con diseño moderno */
 .modalOverlayPreview .modalContentPreview .progress-bar {
   width: 100%;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.185);
-  border-radius: 5px;
-  overflow: hidden;
+  height: 18px;
   position: relative;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  /* border-radius: 999px; */
+  background:
+    linear-gradient(
+      to bottom,
+      #0d0d0d3a 0%,
+      #0d0d0d5e 0%,
+       50%,
+      #32698c10 100%
+    );
+  box-shadow:
+    inset 0 2px 3px rgba(0, 0, 0, 0.35),
+    inset 0 -2px 3px rgba(255, 255, 255, 0.15);
+  overflow: visible;
+  border-radius: 5px;
+}
+
+.modalOverlayPreview .modalContentPreview .progress-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image:
+    radial-gradient(rgba(0, 0, 0, 0.15) 1px, transparent 1px),
+    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 6px 6px, 8px 8px;
+  background-position: 0 0, 3px 3px;
+  pointer-events: none;
 }
 
 /* Barra de progreso con animación lenta */
 .modalOverlayPreview .modalContentPreview .progress {
-  height: 100%;
-  transition: width 6s ease-in-out; /* Ajuste para animación más lenta y fluida */
-  border-radius: 2px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 12px;
-  color: white;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 18px;              /* ← importante */
+  width: 0;                 /* se anima con JS o inline */
+  transform: translateY(-50%);
+  transition: width 1.2s ease-out;
+  border-radius: 5px;
+}
+
+.modalOverlayPreview .modalContentPreview .progress::before{
+  content: "🏆";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  transform: translate(40%, -80%);
+  font-size: 1.2rem;
 }
 
 /* Número dentro de la barra, bien alineado y legible */
 .modalOverlayPreview .modalContentPreview .progress::after {
-  content: attr(data-value) "%";
-  font-size: .6rem;
-  font-weight: bold;
-  color: #ffffff;
+ content: attr(data-value) "%";
   position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+  left: 100%;
+  top: -23px;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 600;
+  color: #F0F0F2;
+  background-color: #0d0d0dd2;
+  padding: 2px 4px;
+  border-radius: 5px;
+  white-space: nowrap; /* CLAVE */
 }
+
+/* Contenedor del GIF debajo del mensaje */
+.goal-message-gif-wrapper {
+  margin-top: 10px;      /* espacio entre mensaje y GIF */
+  text-align: center;    /* centra el GIF horizontalmente */
+}
+
+/* El GIF en sí */
+.goal-message-gif {
+  width: 120px;          /* tamaño ancho del GIF */
+  height: 120px;         /* tamaño alto */
+  object-fit: contain;   /* mantiene proporción sin deformar */
+  display: inline-block; /* se centra con text-align */
+  pointer-events: none;  /* evita que el GIF bloquee clicks */
+  animation: pop 0.5s ease-out; /* animación ligera de entrada */
+}
+
+/* Animación tipo “pop” al aparecer */
+@keyframes pop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 
 
 /* media queries pantallas inferiores a 768px */
@@ -915,11 +1201,6 @@ body{
   .goals-container .dashboard_goal {
     grid-template-columns: repeat(2, 1fr); /* 2 tarjetas por fila */
     max-width: 600px;
-  }
-
-  .error-search{
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(3, 3, 3, 0.1);
   }
 }
 
