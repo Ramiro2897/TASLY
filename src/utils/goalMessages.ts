@@ -16,7 +16,7 @@ export type Goal = {
 
 export type GoalMessage = {
   text: string;
-   highlight?: string;  // 👈 TODO lo concatenado
+  highlight?: string;
 };
 
 const DAY = 1000 * 60 * 60 * 24;
@@ -38,12 +38,26 @@ export function generateGoalMessages(
   const messages: GoalMessage[] = [];
 
   /* ===============================
-     1️⃣ PROGRESO HOY
+     🔹 METAS ACTIVAS
+  =============================== */
+
+  const activeGoals = goals.filter(g => {
+    const end = new Date(g.end_date);
+    const notExpired = end.getTime() >= now.getTime();
+    const notCompleted = g.current_value < 100;
+    return notExpired && notCompleted;
+  });
+
+  /* ===============================
+     1️⃣ PROGRESO HOY (NO COMPLETADAS)
   =============================== */
 
   const progressedToday = goals.filter(g => {
     const updated = new Date(g.updated_at);
-    return Math.floor((now.getTime() - updated.getTime()) / DAY) === 0;
+    const progressed =
+      Math.floor((now.getTime() - updated.getTime()) / DAY) === 0;
+
+    return progressed && g.current_value < 100;
   });
 
   if (progressedToday.length > 0) {
@@ -56,10 +70,28 @@ export function generateGoalMessages(
   }
 
   /* ===============================
+     🔥 RACHA DE AVANCES
+  =============================== */
+
+  const streakGoals = goals.filter(g => {
+    const updated = new Date(g.updated_at);
+    const daysDiff = (now.getTime() - updated.getTime()) / DAY;
+
+    return daysDiff <= 3 && g.current_value < 100;
+  });
+
+  if (streakGoals.length >= 2) {
+    messages.push({
+      text: `🔥 Llevas una racha de avances en tus metas. ¡Sigue así!`,
+      highlight: `${streakGoals.length}`
+    });
+  }
+
+  /* ===============================
      2️⃣ SIN AVANCE
   =============================== */
 
-  const stalledGoals = goals.filter(g => {
+  const stalledGoals = activeGoals.filter(g => {
     const updated = new Date(g.updated_at);
     return (now.getTime() - updated.getTime()) / DAY >= 3;
   });
@@ -79,7 +111,7 @@ export function generateGoalMessages(
      3️⃣ PRÓXIMAS A VENCER
   =============================== */
 
-  const expiringSoon = goals.filter(g => {
+  const expiringSoon = activeGoals.filter(g => {
     const end = new Date(g.end_date);
     const diffDays = (end.getTime() - now.getTime()) / DAY;
     return diffDays > 0 && diffDays <= 7;
@@ -95,7 +127,7 @@ export function generateGoalMessages(
   }
 
   /* ===============================
-     4️⃣ COMPLETADAS (1 SEMANA)
+     4️⃣ COMPLETADAS (ÚLTIMA SEMANA)
   =============================== */
 
   const completedRecently = goals.filter(g => {
@@ -117,16 +149,16 @@ export function generateGoalMessages(
   }
 
   /* ===============================
-     5️⃣ RESUMEN GENERAL
+     5️⃣ RESUMEN GENERAL (ACTIVAS)
   =============================== */
 
   messages.push({
-    text: `Tienes ${goals.length} metas activas. Vas con todo 💥`,
-    highlight: `${goals.length}`
+    text: `Tienes ${activeGoals.length} metas activas. Vas con todo 💥`,
+    highlight: `${activeGoals.length}`
   });
 
   /* ===============================
-     6️⃣ MENSAJES POR TIPO (MAPA)
+     6️⃣ MENSAJES POR TIPO
   =============================== */
 
   const typeMessages: Record<
@@ -245,7 +277,7 @@ export function generateGoalMessages(
   };
 
   Object.entries(typeMessages).forEach(([unit, config]) => {
-    const hasThatType = goals.some(
+    const hasThatType = activeGoals.some(
       g => g.unit === unit && g.current_value >= config.min
     );
 
