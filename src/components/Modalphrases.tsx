@@ -76,8 +76,7 @@ const ModalPhrases: React.FC<ModalPhrasesProps> = ({ isOpen, onClose, onSubmit, 
   
         <form onSubmit={handleSubmit}>
           {errors.phrase && <div className={styles['errorContainer']}><span className={styles['errorTask']}>{errors.phrase}</span></div>}
-          <input
-            type="text"
+          <textarea
             placeholder="Escribe una frase"
             value={phrase}
             onChange={(e) => setPhrase(e.target.value)}

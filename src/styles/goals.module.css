@@ -1168,7 +1168,14 @@ body{
     transform: scale(1);
   }
 }
-
+ /* resaltar mensajes que se muestran en metas */
+.highlight {
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 2px 5px;
+  background-color:#456e738f;
+  color: #f0f0f2;
+}
 
 
 /* media queries pantallas inferiores a 768px */

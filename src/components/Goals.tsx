@@ -1,9 +1,12 @@
 import styles from '../styles/goals.module.css';
 import axios from "axios";
+import { generateGoalMessages } from "../utils/goalMessages";
+import type { Goal } from "../utils/goalMessages";
+import type { GoalMessage } from "../utils/goalMessages";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faListCheck, faQuoteLeft, faSearch, faClock, faPen, faTrash, faTimes, faSave, faSpaceShuttle } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const phrases = [
   "Las metas marcan el destino, pero los sistemas determinan el camino. Enfócate en cómo avanzas cada día, construye hábitos que te acerquen a tu objetivo y disfruta el proceso.",
@@ -23,24 +26,24 @@ const Goals = () => {
   const [errors, setErrors] = useState<{ userId?: string; general?: string; message?: string; errorUpdate?: string }>({});
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [goals, setGoals] = useState<{ id: number; goal: string; description: string; current_value: number; unit: string; shared: boolean; user_id: number; start_date: string; end_date: string; }[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
   const [searchResults, setSearchResults] = useState<{ id: number; goal: string; description: string; current_value: number; unit: string; shared: boolean; user_id: number; start_date: string; end_date: string; }[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddPreviewModal, setShowAddPreviewModal] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState<{ id: number; name: string; date: string; description: string; } | null>(null);
   const [selectedGoalPreview, setSelectedGoalPreview] = useState<{ id: number; name: string; current_value: number; } | null>(null);
-  const [currentPhrase, setCurrentPhrase] = useState(phrases[0]);
+  const [currentPhrase, setCurrentPhrase] = useState<GoalMessage | null>(null);
   const [editedDescription, setEditedDescription] = useState(selectedGoal?.description || "");
   const [newValue, setNewValue] = useState(0);
   const [showGoalMessage, setShowGoalMessage] = useState(false);
   const [goalMessage, setGoalMessage] = useState<string | null>(null);
   const [shownMilestones, setShownMilestones] = useState<number[]>([]);
+  const lastMessageRef = useRef<GoalMessage | null>(null);
 
   // datos globales del usuario para realizar cualquier accion
   const API_URL = import.meta.env.VITE_API_URL;
   const token = localStorage.getItem("token");
-
   // permite asignarle el valor a selectedGoal o range cuando se abre el modal de editar
   useEffect(() => {
     if (selectedGoal) {
@@ -59,37 +62,62 @@ const Goals = () => {
     navigate(path);
   };
   
+  // pasar frases + mensajes dinámicos
   useEffect(() => {
-    let index = Number(localStorage.getItem("currentPhraseIndex")) || 0;
-    setCurrentPhrase(phrases[index]);
-  
-    const interval = setInterval(() => {
-      const phraseElement = document.querySelector(`.${styles["fadeIn"]}`);
-      if (phraseElement) {
-        phraseElement.classList.add(styles["fadeOut"]);
+  // convertir frases estáticas a GoalMessage
+  const staticMessages: GoalMessage[] = phrases.map(text => ({ text }));
+
+  // mensajes dinámicos desde metas
+  const dynamicMessages: GoalMessage[] = generateGoalMessages(goals, new Date());
+
+  // unir todo
+  const allMessages: GoalMessage[] = [
+    ...staticMessages,
+    ...dynamicMessages
+  ];
+
+  if (allMessages.length === 0) return;
+
+  const pickRandomMessage = (): GoalMessage => {
+    let next: GoalMessage;
+
+    do {
+      next = allMessages[Math.floor(Math.random() * allMessages.length)];
+    } while (
+      lastMessageRef.current?.text === next.text &&
+      allMessages.length > 1
+    );
+
+    lastMessageRef.current = next;
+    return next;
+  };
+
+  // primer mensaje
+  setCurrentPhrase(pickRandomMessage());
+
+  const interval = setInterval(() => {
+    const phraseElement = document.querySelector(`.${styles.fadeIn}`);
+    if (phraseElement) {
+      phraseElement.classList.add(styles.fadeOut);
+    }
+
+    setTimeout(() => {
+      setCurrentPhrase(pickRandomMessage());
+
+      const newElement = document.querySelector(`.${styles.fadeIn}`);
+      if (newElement) {
+        newElement.classList.remove(styles.fadeOut);
+        newElement.classList.add(styles.fadeIn);
       }
-  
-      setTimeout(() => {
-        index = (index + 1) % phrases.length;
-        setCurrentPhrase(phrases[index]);
-        localStorage.setItem("currentPhraseIndex", index.toString());
-  
-        const newElement = document.querySelector(`.${styles["fadeIn"]}`);
-        if (newElement) {
-          newElement.classList.remove(styles["fadeOut"]);
-          newElement.classList.add(styles["fadeIn"]);
-        }
-      }, 500);
-    }, 30000); 
-  
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-  
+    }, 500);
+  }, 10000); // ⏱️ tiempo entre mensajes (8s)
+
+  return () => clearInterval(interval);
+}, [goals, phrases]);
+
   // obtener las metas del usuario
   useEffect(() => {    
-   const loadTasks = async () => {
+   const loadGoals = async () => {
      try {
        const response = await axios.get(`${API_URL}/api/auth/loadGoals`, {
          headers: {
@@ -110,7 +138,7 @@ const Goals = () => {
        }
      }
    };
-    loadTasks ();
+    loadGoals ();
   }, []);
 
   // funcion para hacer la busqueda de frases
@@ -395,7 +423,7 @@ const Goals = () => {
   const getProgressInfo = (value: number): ProgressInfo => {
     let color = "#bf1f1170"; // Rojo por defecto
     let message: string | null = null;
-    
+
     // Colores según progreso
     if (value < 40) color = "#bf1f1170";      
     else if (value >= 40 && value < 70) color = "#d99e6a6c"; 
@@ -592,7 +620,21 @@ const Goals = () => {
       {/* contenido de frases */}
       {!isSearching && (
         <div className={styles['atomic_habits']}>
-          <p className={styles["fadeIn"]}>{currentPhrase}</p>
+          <p className={styles.fadeIn}>
+            {currentPhrase &&
+              (currentPhrase.highlight
+                ? currentPhrase.text.split(currentPhrase.highlight).map((part, i, arr) => (
+                    <span key={i}>
+                      {part}
+                      {i < arr.length - 1 && (
+                        <span className={styles.highlight}>
+                          {currentPhrase.highlight}
+                        </span>
+                      )}
+                    </span>
+                  ))
+                : currentPhrase.text)}
+          </p>
         </div>
       )}
 

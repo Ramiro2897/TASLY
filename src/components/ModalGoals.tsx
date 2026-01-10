@@ -94,8 +94,7 @@ const ModalGoals: React.FC<ModalGoalsProps> = ({ isOpen, onClose, onSubmit, onGo
           />
   
           {errors.description && <div className={styles['errorContainer']}><span className={styles['errorTask']}>{errors.description}</span></div>}
-          <input
-            type="text"
+          <textarea
             placeholder="Descripción (Plan de hábitos)"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -137,7 +136,7 @@ const ModalGoals: React.FC<ModalGoalsProps> = ({ isOpen, onClose, onSubmit, onGo
             <option value="ventas">Ventas</option>
             <option value="libros">Libros</option>
             <option value="capítulos">Capítulos</option>
-            <option value="artículos">Artículos</option>
+            <option value="salud">Salud</option>
             <option value="%">Porcentaje (%)</option>
             <option value="puntos">Puntos</option>
             <option value="objetos">Objetos</option>

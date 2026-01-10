@@ -83,6 +83,22 @@
   transition: border-color 0.3s;
 }
 
+.modal-content textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 5px; 
+  border: none;
+  background: rgba(50, 50, 50, 0.3);
+  color: #F0F0F2;
+  font-size: .9rem; 
+  transition: border-color 0.3s;
+  outline: none;
+  resize: none;
+  min-height: 70px;
+  overflow-y: auto; 
+}
+
 .modal-content input::placeholder,
 .modal-content select {
   color: #F0F0F2;
