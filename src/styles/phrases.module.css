@@ -28,7 +28,7 @@ body{
 .phrases-container .phrases_header .title{
   margin: 10px 0;
   padding: 0 5px;
-  color: #ccc;
+  color: #F0F0F2;
   margin: 20px;
   display: flex;
   justify-content: center;
@@ -41,8 +41,8 @@ body{
   font-weight: 600; 
   letter-spacing: 1px;
   font-size: 2rem;
-  border-bottom: 2px solid #034159;
-  background: linear-gradient(to bottom, #8AA6A3, #034159);
+  /* border-bottom: 2px solid #034159; */
+  background: linear-gradient(to bottom, #bdbfbfa4, #1b252623);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -66,66 +66,84 @@ body{
   -ms-user-select: none;
 }
 
-.phrases-container .phrases_header .options .options_list {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 20px;
-  min-width: 250px;
-  flex: 1; 
-  max-width: 300px; 
-  white-space: nowrap; 
-  color: #F2F2F2;
+/* From Uiverse.io by Smit-Prajapati */ 
+.button {
+  --main-color: #f0f0f2;
+  --main-bg-color: #456E73;
+  --pattern-color: #32698c21;
+  /* change this rotation value */
+  filter: hue-rotate(0deg);
   cursor: pointer;
-  font-size: .7rem;
-  font-weight: 600;
-  border-radius: 5px; 
-  transition: all 0.3s ease-in-out; 
-  background: #034159;
-}
-
-.phrases-container .phrases_header .options .options_list:hover {
-  background: #025951;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
-  transform: translateY(-2px);
-}
-
-.phrases-container .phrases_header .options_list:active {
-  transform: translateY(2px);
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
-}
-
-.phrases-container .phrases_header .options .options_list svg {
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  font-size: 1rem;
-  color: #F2F2F2; 
-  margin-right: 10px; 
-  padding: 6px;
-  border-radius: 50%;
-}
-
-/* errores */
-.errorPhrases {
-  font-size: 0.9rem;
-  color: #F2F2F2;
-  text-align: center;
-  padding: 5px;
+  letter-spacing: 0.2rem;
+  background: radial-gradient(
+      circle,
+      var(--main-bg-color) 0%,
+      rgba(0, 0, 0, 0) 95%
+    ),
+    linear-gradient(var(--pattern-color) 1px, transparent 1px),
+    linear-gradient(to right, var(--pattern-color) 1px, transparent 1px);
+  background-size:
+    cover,
+    12px 12px,
+    12px 12px;
+  background-position:
+    center center,
+    center center,
+    center center;
+  border-image: radial-gradient(
+      circle,
+      var(--main-color) 0%,
+      rgba(0, 0, 0, 0) 100%
+    )
+    1;
+  border-width: 1px 0 1px 0;
+  color: var(--main-color);
+  padding: .27rem 2rem;
+  font-weight: 100;
+  font-size: .8rem;
   border-radius: 5px;
-  font-style: italic; 
-  margin-top: 10px;
-  font-weight: bold;
-  animation: blink 1s infinite alternate ease-in-out;
+  transition: background-size 0.2s ease-in-out;
 }
 
-/* Animación de parpadeo */
-@keyframes blink {
+.button:hover {
+  background-size:
+    cover,
+    10px 10px,
+    10px 10px;
+}
+.button:active {
+  filter: hue-rotate(250deg);
+}
+
+/* ICONOS DEL BOTÓN (siempre animados) */
+.button svg {
+  font-size: 18px;
+  margin-right: 6px;
+  color: #f0f0f28a;
+  animation: arrowIdle 10s ease-in-out infinite;
+}
+
+/* CLICK */
+.button:active svg {
+  transform: scale(0.9);
+}
+
+/* ANIMACIÓN SUTIL Y ELEGANTE */
+@keyframes arrowIdle {
   0% {
-    opacity: 1;
+    transform: translateX(0);
+  }
+  10% {
+    transform: translateX(-4px);
+  }
+  20% {
+    transform: translateX(2px);
+  }
+  30% {
+    transform: translateX(0);
   }
   100% {
-    opacity: 0.3;
+    transform: translateX(0);
   }
 }
 
@@ -145,7 +163,7 @@ body{
   display: flex;
   padding: 5px;
   border-radius: 35px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #bdbfbf3f;
 }
 
 .search_phrases .content-search input{
@@ -160,24 +178,25 @@ body{
 }
 
 .search_phrases .content-search input::placeholder{
-  color: #ccc;
+  color: #F0F0F2;
 }
 
 .search_phrases .content-search button{
   width: 10%;
-  background-color: #034159;
+  padding: 10px 10px;
+  background-color: #326A8C;
   border-radius: 35px 35px 35px 35px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .search_phrases .content-search button:hover{
-  background-color: #025951;
+  background-color: #32698cab;
 }
 
 .noPhrases{
   width: 100%;
   font-size: 1.5rem;
-  color: #ccc;
+  color: #F0F0F2;
   margin-top: 50px;
   text-align: center;
   font-weight: bolder;
@@ -188,7 +207,7 @@ body{
   width: 100%;
   height: 30px;
   padding: 0 10px;
-  color: #bbb;
+  color: #f0f0f2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -207,16 +226,16 @@ body{
 }
 
 .back svg {
-  color: #ccc; 
+  color: #F0F0F2; 
   font-size: 1rem; 
   padding: 10px 15px;
-  background-color: #034159;
+  background-color: #326A8C;
   cursor: pointer;
   border-radius: 5px;
 }
 
 .back svg:hover{
-  background-color: #025951;
+  background-color: #32698cab;
 }
 
 .error-container .error-search{
@@ -242,14 +261,13 @@ body{
   display: inline-block; /* Permite que los elementos fluyan en columnas */
   width: 100%;
   padding: 10px;
-  color: #ccc;
+  color: #F0F0F2;
   cursor: pointer;
   font-size: 0.8rem;
   font-weight: bold;
   border-radius: 5px;
-  background: #998d8d28;
+  background: #0d0d0d3a;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
   word-break: break-word;
   white-space: normal;
   margin: 5px 0;
@@ -258,7 +276,7 @@ body{
 
 
 .phrases-container .dashboard_phrase .phrase-item:hover{
-  background: #bbabab28;
+  background: #0d0d0d5e;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
   transform: translateY(-2px);
 }
@@ -293,7 +311,7 @@ body{
   width: auto;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 0.8rem;
-  color: #F2F2F2;
+  color: #F0F0F2;
   flex: 1; 
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -315,9 +333,9 @@ body{
   padding: 0 10px;
   border-radius: 2px;
   display: inline-block;
-  color: #ccc;
+  color: #F0F0F2;
   font-size: .7rem;
-  background-color: #58929c;
+  border-color: #326A8C;
 }
 
 /* css para cuando se da click a favorite en frases */
@@ -329,11 +347,11 @@ body{
   font-size: 24px; 
   cursor: pointer;
   transition: color 0.3s ease, filter 0.3s ease, transform 0.3s ease;
-  color: #58929c;
+  color: #034159;
 }
 
 .heart-label.favorited {
-  color: #ff6b6b; 
+  color:#BF2011; 
   filter: drop-shadow(0px 0px 6px rgba(255, 107, 107, 0.6)); /* Efecto brillo */
   animation: soft-pop 0.3s ease-in-out;
 }
@@ -366,10 +384,10 @@ body{
   padding: 4px 0px;
   font-size: 0.68rem;
   font-weight: 100;
-  color: #bbb;
+  color: #F0F0F2;
   padding: 5px 5px;
   border-radius: 5px;
-  background-color: #034159;
+  background-color: #326A8C;
 }
 
 /* modal para eliminar, editar una frase */
@@ -384,7 +402,8 @@ body{
   justify-content: center;
   z-index: 10000;
   pointer-events: auto;
-  background: rgba(0, 0, 0, 0.5); 
+  background: #0d0d0d3a;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(0.2px);
 }
 
@@ -395,7 +414,7 @@ body{
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background: #0341596e;
+  background: #0d0d0d3f;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(5px);
   margin-top: 15px;
@@ -418,7 +437,7 @@ body{
   overflow-wrap: break-word; 
   word-break: break-word; 
   white-space: normal;
-  background: #03415973;
+  background: #03415944;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   font-weight: 600;
   padding: 8px 12px;
@@ -437,7 +456,7 @@ body{
 
 .modalContent p{
   font-size: .8rem;
-  color: #F2F2F2;
+  color: #F0F0F2;
   padding: 5px;
   word-wrap: break-word; 
   overflow-wrap: break-word; 
@@ -447,7 +466,7 @@ body{
 
 .modalContent span{
   font-size: .8rem;
-  color: #ccc;
+  color: #F0F0F2;
   padding: 12px;
   word-wrap: break-word; 
   overflow-wrap: break-word; 
@@ -465,7 +484,7 @@ body{
   border-radius: 5px; 
   border: none;
   background: rgba(50, 50, 50, 0.3);
-  color: #ccc; 
+  color: #F0F0F2; 
   font-size: .8rem; 
   transition: border-color 0.3s;
   outline: none;
@@ -478,7 +497,7 @@ body{
   width: 100%;
   text-align: justify;
   font-size: .8rem;
-  color: #ccc;
+  color: #F0F0F2;
   margin-top: 15px;
   padding: 0px 12px;
 }
@@ -490,7 +509,7 @@ body{
   border-radius: 5px; 
   border: none;
   background: rgba(50, 50, 50, 0.2);
-  color: #ccc; 
+  color: #f0f0f2; 
   font-size: .9rem; 
   transition: border-color 0.3s;
   outline: none;
@@ -500,7 +519,7 @@ body{
   font-size: .8rem;
   font-weight: bold;
   padding: 5px;
-  color: #ccc;
+  color: #f0f0f2; 
 }
 
 .modalOverlay .modalContent  .btn-options{
@@ -517,8 +536,8 @@ body{
   cursor: pointer;
   border-radius: 5px;
   font-size: .8rem;
-  color: #F2F2F2;
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  color: #f0f0f2; 
+  border: 2px solid #bdbfbf3f;
 }
 
 /* estilo para el modal de actualizar */
@@ -564,8 +583,7 @@ body{
   }
 
   .error-search{
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  background: rgba(3, 3, 3, 0.1);
+
   }
 }
 

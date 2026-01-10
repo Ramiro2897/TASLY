@@ -353,13 +353,13 @@ const Phrases = () =>{
         </div>
         
         <div className={styles['options']}>
-          <div className={styles['options_list']} onClick={() => handleNavigation("/Home")}>
+          <div className={styles['button']} onClick={() => handleNavigation("/Home")}>
             <FontAwesomeIcon icon={faArrowLeft} /> Ir Home
           </div>
-          <div className={styles['options_list']} onClick={() => handleNavigation("/tasks")}>
+          <div className={styles['button']} onClick={() => handleNavigation("/tasks")}>
             <FontAwesomeIcon icon={faListCheck} /> Tareas
           </div>
-          <div className={styles['options_list']} onClick={() => handleNavigation("/goals")}>
+          <div className={styles['button']} onClick={() => handleNavigation("/goals")}>
             <FontAwesomeIcon icon={faBullseye} /> Metas
           </div>
         </div>
