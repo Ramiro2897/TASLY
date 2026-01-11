@@ -16,6 +16,12 @@ body{
   height: 100vh; 
 }
 
+.logo {
+    height: 50px; /* Ajusta según tu header */
+    width: auto;
+}
+
+
 /* estilos para el header */
 .goals-container .goals_header{
   width: 100%;

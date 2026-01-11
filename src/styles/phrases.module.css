@@ -333,9 +333,10 @@ body{
   padding: 0 10px;
   border-radius: 2px;
   display: inline-block;
-  color: #F0F0F2;
+  color: #f0f0f296;
   font-size: .7rem;
-  border-color: #326A8C;
+  background: #0d0d0d85;
+  border-radius: 5px;
 }
 
 /* css para cuando se da click a favorite en frases */

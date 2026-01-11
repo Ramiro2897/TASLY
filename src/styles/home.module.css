@@ -382,8 +382,9 @@ body {
 .author{
   color: #F0F0F2;
   padding: 1px 10px;
-  border-radius: 10px;
+  border-radius: 5px;
   border: 1px solid #bdbfbf21;
+  background: #0d0d0d85;
 }
 
 .favorite-icon {

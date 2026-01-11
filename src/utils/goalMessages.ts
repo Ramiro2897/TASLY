@@ -92,18 +92,14 @@ export function generateGoalMessages(
   =============================== */
 
   const stalledGoals = activeGoals.filter(g => {
-    const updated = new Date(g.updated_at);
-    return (now.getTime() - updated.getTime()) / DAY >= 3;
+  const updated = new Date(g.updated_at);
+  return (now.getTime() - updated.getTime()) / DAY >= 3;
   });
 
   if (stalledGoals.length > 0) {
-    const days = Math.floor(
-      (now.getTime() - new Date(stalledGoals[0].updated_at).getTime()) / DAY
-    );
-
     messages.push({
-      text: `Hace ${days} días que no trabajas en una meta. Aún estás a tiempo 💪`,
-      highlight: days.toString()
+      text: `Hace días que no trabajas en ${stalledGoals.length} metas. ¡Todavía estás a tiempo 💪!`,
+      highlight: stalledGoals.length.toString()
     });
   }
 
