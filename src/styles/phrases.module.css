@@ -582,10 +582,6 @@ body{
     grid-template-columns: repeat(2, 1fr); /* 2 tarjetas por fila */
     max-width: 600px;
   }
-
-  .error-search{
-
-  }
 }
 
 @media (max-width: 480px) {

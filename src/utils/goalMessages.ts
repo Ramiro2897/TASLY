@@ -149,7 +149,7 @@ export function generateGoalMessages(
   =============================== */
 
   messages.push({
-    text: `Tienes ${activeGoals.length} metas activas. Vas con todo 💥`,
+    text: `Actualmente tienes ${activeGoals.length} metas en marcha💥`,
     highlight: `${activeGoals.length}`
   });
 

@@ -8,7 +8,7 @@ import { faSignOutAlt, faPlus, faHeartCircleBolt, faClock, faQuestion } from "@f
 import ModalTask from '../components/ModalTask';  
 import Modalphrases from '../components/Modalphrases'; 
 import ModalGoals from '../components/ModalGoals'; 
-
+import BootScreen from '../components/BootScreen';
 
 const Home = () => {
   const username = localStorage.getItem('username');
@@ -70,12 +70,22 @@ const Home = () => {
   });
 
   // console.log(taskSummary, 'todo lo que quiero esta aqui');
+  const [isBooting, setIsBooting] = useState(true);
+  const [showBoot, setShowBoot] = useState(false);
 
   useEffect(() => {
     const API_URL = import.meta.env.VITE_API_URL;
+    let bootTimeout: any;
   
     const fetchData = async () => {
       try {
+        
+        setIsBooting(true); // 👈 empieza carga
+        // ⏳ solo mostrar BootScreen si tarda
+        bootTimeout = setTimeout(() => {
+          setShowBoot(true);
+        }, 600); 
+
         const [tareasRes, tareasLengthRes, frasesRes, metasRes] = await Promise.all([
           axios.get(`${API_URL}/api/auth/tasklist`, { headers: { Authorization: `Bearer ${token}` } }),
           axios.get(`${API_URL}/api/auth/tasklistAll`, { headers: { Authorization: `Bearer ${token}` } }),
@@ -90,9 +100,7 @@ const Home = () => {
         });
         setFrases(frasesRes.data);
         setMetas(metasRes.data);
-        console.log('RESPONSE BACKEND →', tareasLengthRes.data);
-
-      
+   
         // Manejo de notificación
         const latestTask = tareasRes.data[0];
         const currentDate = new Date();
@@ -116,9 +124,12 @@ const Home = () => {
           setShowAlert(false); // Aseguramos que la alerta se oculte si no se cumple la condición
         }
       } catch (error: any) {
-        console.error("Error al obtener los datos:", error);
         setErrors(error.response?.data.errors || { general: "Error inesperado. Comunícalo al programador." });
-      }
+      } finally {
+        clearTimeout(bootTimeout);
+        setIsBooting(false); 
+        setShowBoot(false);
+    }
     };
   
     fetchData();
@@ -277,8 +288,6 @@ const Home = () => {
   
   const getContextMessage = () => {
   const { total, pending, completed } = taskSummary;
-  console.log('este es textSumary:', total, pending, completed )
-  console.log('objeto sumary completo', taskSummary)
   const moment = getDayMoment();
 
   // 🌅 MAÑANA
@@ -293,16 +302,19 @@ const Home = () => {
   // 🌇 TARDE
   if (moment === 'afternoon') {
     if (total === 0 && completed === 0) {
-        return 'Aún no has creado tareas hoy. ¿Quieres empezar ahora?';
+      return 'Aún no has creado tareas hoy. Si quieres, puedes empezar ahora.';
     }
 
-     if (pending > 0) {
+    if (pending > 0) {
       return (
         <>
-          Tienes <span className={styles.taskCount}>{pending}</span> tareas pendientes. Aún hay tiempo.
+          Tienes{' '}
+          <span className={styles.taskCount}>{pending}</span>{' '}
+          tareas pendientes. Elige una y empieza.
         </>
       );
     }
+
     return 'Buen trabajo hoy, ya completaste todas tus tareas 👏';
   }
 
@@ -312,8 +324,7 @@ const Home = () => {
   }
 
   if (pending > 0) {
-  return (
-    <>
+    return (
       <p>
         {completed > 0 ? (
           <>
@@ -325,17 +336,20 @@ const Home = () => {
           </>
         ) : (
           <>
-            Hoy no se dio, mañana continúas 🌘
+            Hoy no se dio, y está bien. Mañana continúas 🌘
           </>
         )}
       </p>
-    </>
-  );
+    );
   }
 
-  return 'Excelente trabajo hoy. ¿Qué fue lo mejor que hiciste hoy?🌚';
+  return 'Excelente trabajo hoy. Tómate un momento para reconocerlo 🌙';
   };
 
+  // dependiendo de isBooting habilita la carga
+  if (isBooting && showBoot) {
+  return <BootScreen />;
+  }
 
   return (
     <div className={styles['home-container']}>
