@@ -632,44 +632,61 @@ body {
 
 /* esperando carga del componente y datos mientras las apis responden... */
 .bootScreen {
-  height: 100vh;
-  width: 100%;
+  position: fixed;
+  inset: 0;
+  color: #F0F0F2;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-
-  background: var(--background, #0f0f0f);
-  color: var(--text-primary, #ffffff);
-
-  text-align: center;
-  gap: 8px;
-
-  animation: fadeIn 0.3s ease-out;
+  justify-content: center;
+  gap: 18px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.bootScreen p {
-  font-size: 1.1rem;
-  font-weight: 500;
+/* Loader container */
+.loader {
+  position: relative;
+  width: 72px;
+  height: 72px;
 }
 
-.bootScreen small {
-  font-size: 0.85rem;
-  opacity: 0.7;
+/* Rings */
+.loader span {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 4px solid transparent;
+  border-top-color: #F0F0F2;
+  animation: spin 1.2s linear infinite;
 }
 
-/* animación suave */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
+/* Second ring */
+.loader span:nth-child(2) {
+  border: 4px solid rgba(240, 240, 242, 0.25);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes spin {
   to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: rotate(360deg);
   }
 }
 
+@keyframes pulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0.9);
+    opacity: 0.4;
+  }
+}
 
 /* estilos responsivos */
 @media (max-width: 890px) {
