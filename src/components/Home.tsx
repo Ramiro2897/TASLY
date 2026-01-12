@@ -316,6 +316,18 @@ const Home = () => {
       return 'Aún no has creado tareas hoy. Si quieres, puedes empezar ahora.';
     }
 
+    // Primero revisamos si hay tareas pendientes (no iniciadas)
+   if (pending > 0) {
+      return pending === 1 ? (
+        <>Tienes <span className={styles.taskCount}>{pending}</span> tarea pendiente. ¡Vamos a empezarla! 💪</>
+      ) : (
+        <>
+          Tienes <span className={styles.taskCount}>{pending}</span> tareas pendientes. ¡Escoge una y arranca con fuerza! 🚀
+        </>
+      );
+    }
+
+    // Si no hay pendientes, vemos si hay tareas en progreso
     if (inProgress > 0) {
       return (
         <>
@@ -326,16 +338,7 @@ const Home = () => {
       );
     }
 
-    if (pending > 0) {
-      return (
-        <>
-          Tienes{' '}
-          <span className={styles.taskCount}>{pending}</span>{' '}
-          tareas pendientes. Elige una y empieza.
-        </>
-      );
-    }
-
+    // Si no hay pendientes ni en progreso, todas están completas
     return 'Buen trabajo hoy, ya completaste todas tus tareas 👏';
   }
 
@@ -370,7 +373,7 @@ const Home = () => {
   return (
     <div className={styles['home-container']}>
       {/* mostrar que tiene tareas pendientes */}
-      { showAlert && (
+      {!isLoading && showAlert && (
         <div
           className={`${styles['card-notification']} ${
             closing ? styles['slide-up'] : styles['slide-down']

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import axios from "axios";
 import styles from '../styles/modalTask.module.css';
 
@@ -22,6 +22,8 @@ const ModalTask: React.FC<ModalTaskProps> = ({ isOpen, onClose, onSubmit, onTask
 
   const [errors, setErrors] = useState<{ task_name?: string; date?: string; category?: string; priority?: string }>({});
 
+  const timeoutRef = useRef<number | null>(null);
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
 
@@ -58,9 +60,12 @@ const ModalTask: React.FC<ModalTaskProps> = ({ isOpen, onClose, onSubmit, onTask
         setSuccessMessage("La tarea se agregó!");
         // Limpiar los errores
         setErrors({});
-        setTimeout(() => {
-          setSuccessMessage(null);
-          onClose();
+
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+         timeoutRef.current = window.setTimeout(() => {
+         setSuccessMessage(null);
+         onClose();
+         timeoutRef.current = null; // limpiar la referencia
         }, 5000);
 
       } catch (error: any) {
@@ -80,6 +85,8 @@ const ModalTask: React.FC<ModalTaskProps> = ({ isOpen, onClose, onSubmit, onTask
 
   // Opción de cancelar y limpiar datos al cerrar el modal
   const handleClose = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = null;
     setTask("");
     setStartDate("");
     setEndDate("");
@@ -87,8 +94,7 @@ const ModalTask: React.FC<ModalTaskProps> = ({ isOpen, onClose, onSubmit, onTask
     setPriority("medium");
     setSuccessMessage(null);
     setErrorMessage(null);
-
-     // Limpiar los errores
+    // Limpiar los errores
     setErrors({});
     onClose();
   };
