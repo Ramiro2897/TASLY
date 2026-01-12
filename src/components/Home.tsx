@@ -8,7 +8,7 @@ import { faSignOutAlt, faPlus, faHeartCircleBolt, faClock, faQuestion } from "@f
 import ModalTask from '../components/ModalTask';  
 import Modalphrases from '../components/Modalphrases'; 
 import ModalGoals from '../components/ModalGoals'; 
-import BootScreen from '../components/BootScreen';
+import TaskSkeleton from '../components/TaskSkeleton';
 
 const Home = () => {
   const username = localStorage.getItem('username');
@@ -51,6 +51,9 @@ const Home = () => {
   const [tareas, setTareas] = useState<{ id: number, task_name: string, complete: boolean, created_at: string }[]>([]);
   const [metas, setMetas] = useState<{ id: number; goal: string; description: string; start_date: string; end_date: string; unit: string; }[]>([]);
   const [frases, setFrases] = useState<{ id: number; phrase: string; author: string; created_at: string; favorite: boolean; }[]>([]);
+  // estado para skeleton
+  const [isLoading, setIsLoading] = useState(true);
+  const [showSkeleton, setShowSkeleton] = useState(false);
 
   const token = localStorage.getItem('token');
 
@@ -70,22 +73,19 @@ const Home = () => {
   });
 
   // console.log(taskSummary, 'todo lo que quiero esta aqui');
-  const [isBooting, setIsBooting] = useState(true);
-  const [showBoot, setShowBoot] = useState(false);
 
   useEffect(() => {
     const API_URL = import.meta.env.VITE_API_URL;
-    let bootTimeout: any;
+    let skeletonTimer: ReturnType<typeof setTimeout>;
   
     const fetchData = async () => {
-      try {
-        
-        setIsBooting(true); // 👈 empieza carga
-        // ⏳ solo mostrar BootScreen si tarda
-        bootTimeout = setTimeout(() => {
-          setShowBoot(true);
-        }, 600); 
+      setIsLoading(true); // 👈 empezamos cargando
 
+       skeletonTimer = setTimeout(() => {
+          setShowSkeleton(true);
+        }, 250);
+
+      try {
         const [tareasRes, tareasLengthRes, frasesRes, metasRes] = await Promise.all([
           axios.get(`${API_URL}/api/auth/tasklist`, { headers: { Authorization: `Bearer ${token}` } }),
           axios.get(`${API_URL}/api/auth/tasklistAll`, { headers: { Authorization: `Bearer ${token}` } }),
@@ -126,9 +126,9 @@ const Home = () => {
       } catch (error: any) {
         setErrors(error.response?.data.errors || { general: "Error inesperado. Comunícalo al programador." });
       } finally {
-        clearTimeout(bootTimeout);
-        setIsBooting(false); 
-        setShowBoot(false);
+          clearTimeout(skeletonTimer);
+          setShowSkeleton(false);
+          setIsLoading(false);
     }
     };
   
@@ -222,21 +222,25 @@ const Home = () => {
 
   // funcion para llevar al componente task
   const handleNavigate = () => {
+    if (isLoading) return; 
     navigate('/tasks');  // Redirige a "/tasks"
   };
 
   // funcion que lleva a el modulo de información
   const handleGoInformation = () => {
+    if (isLoading) return; 
     navigate("/information"); // Navega a la página Home
   };
 
   // funcion para llevar a frases
   const handleGoPhrases = ()=>{
+    if (isLoading) return; 
     navigate("/phrases");
   }
 
    // funcion para llevar a las metas
    const handleGoGoals = ()=>{
+    if (isLoading) return; 
     navigate("/goals");
   }
 
@@ -346,11 +350,6 @@ const Home = () => {
   return 'Excelente trabajo hoy. Tómate un momento para reconocerlo 🌙';
   };
 
-  // dependiendo de isBooting habilita la carga
-  if (isBooting && showBoot) {
-  return <BootScreen />;
-  }
-
   return (
     <div className={styles['home-container']}>
       {/* mostrar que tiene tareas pendientes */}
@@ -395,7 +394,9 @@ const Home = () => {
             <div className={styles.card}>
               <h3>Tareas Diarias</h3>
               <div className={`${styles['list-container']} ${showAlert ? styles['alert-red'] : ''}`} onClick={handleNavigate}>
-                {tareas.length > 0 ? (
+                 {showSkeleton ? (
+                    <TaskSkeleton />
+                    ) : tareas.length > 0 ? (
                   <div className={styles['task-text']} title='Ver contenido'>
                     {/* Mostrar task_name */}
                     <div className={styles['title-name']}>
@@ -429,7 +430,7 @@ const Home = () => {
                 )}
               </div>
   
-              <button className={styles['add-button']} onClick={() => openModal()}>
+              <button className={styles['add-button']} onClick={() => openModal()} disabled={isLoading}>
                 <FontAwesomeIcon icon={faPlus} /> Agregar Tarea
               </button>
             </div>
@@ -438,7 +439,9 @@ const Home = () => {
             <div className={styles.card}>
               <h3>Frases o Notas</h3>
               <div className={styles['list-container']} onClick={handleGoPhrases}>
-                {frases.length > 0 ? (
+                {showSkeleton ? (
+                  <TaskSkeleton />
+                  ) : frases.length > 0 ? (
                   <div className={styles['task-text']}>
                     <div className={styles['title-name']}>
                       {frases[0].phrase && frases[0].phrase.length > 25
@@ -468,7 +471,7 @@ const Home = () => {
                 )}
               </div>
   
-              <button className={styles['add-button']} onClick={openPhraseModal}>
+              <button className={styles['add-button']} onClick={openPhraseModal} disabled={isLoading}>
                 <FontAwesomeIcon icon={faPlus} /> Agregar Frase
               </button>
             </div>
@@ -477,7 +480,9 @@ const Home = () => {
             <div className={styles.card}>
               <h3>Metas</h3>
               <div className={styles['list-container']} onClick={handleGoGoals}>
-                {metas.length > 0 ? (
+                {showSkeleton ? (
+                  <TaskSkeleton />
+                  ) : metas.length > 0 ? (
                   <div className={styles['task-text']}>
                     <div className={styles['title-name']}>
                       <p className={styles.goals}>
@@ -506,7 +511,7 @@ const Home = () => {
                 )}
               </div>
   
-              <button className={styles['add-button']} onClick={openGoalsModal}>
+              <button className={styles['add-button']} onClick={openGoalsModal} disabled={isLoading}>
                 <FontAwesomeIcon icon={faPlus} /> Agregar Meta
               </button>
             </div>
@@ -517,7 +522,7 @@ const Home = () => {
             <p>© TASLY - Created by Ramiro {currentYear} <span className={styles['span']} title='información' 
             onClick={handleGoInformation}><FontAwesomeIcon icon={faQuestion} /></span></p>
             <div className={styles['btn-buttons']}>
-              <button onClick={handleLogout} className={styles['logout-button']} title="Cerrar sesión">
+              <button onClick={handleLogout} disabled={isLoading} className={styles['logout-button']} title="Cerrar sesión">
                 <FontAwesomeIcon icon={faSignOutAlt} />
               </button>
             </div>

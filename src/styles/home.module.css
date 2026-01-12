@@ -443,6 +443,12 @@ body {
   font-size: 1rem;
 }
 
+.add-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .add-button:focus{
   outline: none;
 }
@@ -626,65 +632,72 @@ body {
   transition: 0.3s;
 }
 
+.btn-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .btn-buttons button:hover {
   background-color: #32698cab;
 }
 
 /* esperando carga del componente y datos mientras las apis responden... */
-.bootScreen {
-  position: fixed;
-  inset: 0;
-  color: #F0F0F2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+.taskTextSkeleton {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px 10px;
+  border-radius: 5px;
+  background: linear-gradient(
+    45deg,
+    rgba(59, 57, 57, 0.08),
+    rgba(44, 44, 44, 0.08),
+    rgba(59, 57, 57, 0.2)
+  );
 }
 
-/* Loader container */
-.loader {
-  position: relative;
-  width: 72px;
-  height: 72px;
+.skeletonTitle,
+.skeletonStatus,
+.skeletonDate {
+  height: 14px;
+  border-radius: 6px;
+  background: linear-gradient(
+    90deg,
+    rgba(240, 240, 242, 0.15) 25%,
+    rgba(240, 240, 242, 0.35) 37%,
+    rgba(240, 240, 242, 0.15) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
 }
 
-/* Rings */
-.loader span {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 4px solid transparent;
-  border-top-color: #F0F0F2;
-  animation: spin 1.2s linear infinite;
+.skeletonTitle {
+  width: 70%;
+  height: 16px;
+  margin-bottom: 8px;
+  padding: 10px 0px;
 }
 
-/* Second ring */
-.loader span:nth-child(2) {
-  border: 4px solid rgba(240, 240, 242, 0.25);
-  animation: pulse 1.4s ease-in-out infinite;
+.skeletonStatus {
+  width: 40%;
+  height: 14px;
+  margin-top: 8px;
+  padding: 8px 0px;
 }
 
-/* Animations */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+.skeletonDate {
+  width: 55%;
+  margin-top: 8px;
+  padding: 12px 0px;
+  height: 14px;
 }
 
-@keyframes pulse {
+@keyframes shimmer {
   0% {
-    transform: scale(0.9);
-    opacity: 0.4;
-  }
-  50% {
-    transform: scale(1);
-    opacity: 0.8;
+    background-position: 100% 0;
   }
   100% {
-    transform: scale(0.9);
-    opacity: 0.4;
+    background-position: -100% 0;
   }
 }
 
