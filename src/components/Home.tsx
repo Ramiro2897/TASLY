@@ -69,10 +69,11 @@ const Home = () => {
   const [taskSummary, setTaskSummary] = useState({
   total: 0,
   pending: 0,
+  inProgress: 0,
   completed: 0,
   });
 
-  // console.log(taskSummary, 'todo lo que quiero esta aqui');
+  console.log(taskSummary, 'todo lo que quiero esta aqui');
 
   useEffect(() => {
     const API_URL = import.meta.env.VITE_API_URL;
@@ -96,6 +97,7 @@ const Home = () => {
         setTaskSummary({
           total: tareasLengthRes.data?.total ?? 0,
           pending: tareasLengthRes.data?.pending ?? 0,
+          inProgress: tareasLengthRes.data?.inProgress ?? 0,
           completed: tareasLengthRes.data?.completed ?? 0,
         });
         setFrases(frasesRes.data);
@@ -167,12 +169,13 @@ const Home = () => {
   };
 
   // actualiza el numero de tareas pendientes de usuario
-  const handleTasksLengthUpdated = (newTask: { complete: boolean }) => {
+  const handleTasksLengthUpdated = (newTask: { status: string }) => {
   console.log('paso cuando quiere actualizar');
   setTaskSummary(prev => ({
     total: prev.total + 1,
-    pending: newTask.complete ? prev.pending : prev.pending + 1,
-    completed: prev.completed,
+    pending:  newTask.status === 'completed'? prev.pending : prev.pending + 1,
+    inProgress: newTask.status === 'in_progress' ? prev.inProgress + 1 : prev.inProgress,
+    completed: newTask.status === 'completed'? prev.completed + 1 : prev.completed,
   }));
   };
 
@@ -291,7 +294,7 @@ const Home = () => {
   }, []);
   
   const getContextMessage = () => {
-  const { total, pending, completed } = taskSummary;
+  const { total, pending, inProgress, completed } = taskSummary;
   const moment = getDayMoment();
 
   // 🌅 MAÑANA
@@ -300,13 +303,31 @@ const Home = () => {
       return 'Empieza el día creando una tarea o una meta.';
     }
 
+     if (inProgress > 0) {
+      return 'Continúa con la tarea que ya empezaste.';
+    }
+
+     if (completed === total) {
+      return 'Buen inicio de día, ya completaste todo 🙌';
+    }
+
     return 'Elige una tarea importante y empieza con calma.';
   }
 
   // 🌇 TARDE
   if (moment === 'afternoon') {
-    if (total === 0 && completed === 0) {
+    if (total === 0) {
       return 'Aún no has creado tareas hoy. Si quieres, puedes empezar ahora.';
+    }
+
+    if (inProgress > 0) {
+      return (
+        <>
+          Tienes{' '}
+          <span className={styles.taskCount}>{inProgress}</span>{' '}
+          tarea(s) en proceso. Sigue así 💪
+        </>
+      );
     }
 
     if (pending > 0) {
@@ -327,7 +348,7 @@ const Home = () => {
     return 'Hoy fue un día tranquilo. Mañana puedes empezar de nuevo.';
   }
 
-  if (pending > 0) {
+   if (pending > 0 || inProgress > 0) {
     return (
       <p>
         {completed > 0 ? (

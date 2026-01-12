@@ -333,14 +333,30 @@ body{
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
-.task-item .custom-checkbox:checked + .checkbox-label {
-  background-color: #d99e6a09;
-  border-color: #326A8C;
-  color: #F0F0F2; 
-  border: 2px solid #bdbfbf3f;
+.checkbox-label.pending {
+  color: transparent;
 }
 
-.custom-checkbox:checked + .checkbox-label::after {
+.checkbox-label.in_progress::after {
+  content: "";
+  width: 14px;
+  height: 14px;
+  border: 2px solid #ccc;
+  border-top: 2px solid #326A8C;
+  border-radius: 50%;
+  animation: spin 8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.checkbox-label.completed {
+  background-color: #d99e6a09;
+  border-color: #326A8C;
+  color: #F0F0F2;
+}
+
+.checkbox-label.completed::after {
   content: "✔";
 }
 

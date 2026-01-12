@@ -8,7 +8,7 @@ interface ModalTaskProps {
   onClose: () => void;
   onSubmit: (taskData: { task: string; startDate: string; endDate: string; category: string; priority: string }) => void;
   onTaskAdded: (taskData: any) => void;
-  onTasksLengthUpdated: (newTask: { complete: boolean }) => void;
+  onTasksLengthUpdated: (newTask: { status: string }) => void;
 }
 
 const ModalTask: React.FC<ModalTaskProps> = ({ isOpen, onClose, onSubmit, onTaskAdded, onTasksLengthUpdated }) => {

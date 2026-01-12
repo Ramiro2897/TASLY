@@ -7,16 +7,17 @@ import { useNavigate } from "react-router-dom";
 
 
 const Task = () => {
-  const [tasks, setTasks] = useState<{ id: number; task_name: string; start_date: string; end_date: string; category: string; priority: string; complete: boolean; created_at: string; updated_at: string; user_id: number; }[]>([]);
+  const [tasks, setTasks] = useState<{ id: number; task_name: string; start_date: string; end_date: string; category: string; priority: string; complete: boolean;  status: string; created_at: string; updated_at: string; user_id: number; }[]>([]);
   const [errors, setErrors] = useState<{ userId?: string; general?: string; message?: string; errorUpdate?: string }>({});
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<{ id: number; task_name: string; start_date: string; end_date: string; category: string; priority: string; complete: boolean; created_at: string; updated_at: string; user_id: number; }[]>([]);
+  const [searchResults, setSearchResults] = useState<{ id: number; task_name: string; start_date: string; end_date: string; category: string; priority: string; complete: boolean; status: string; created_at: string; updated_at: string; user_id: number; }[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState<{ id: number; name: string; date: string; priority: string; } | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [newDate, setNewDate] = useState("");
   const [priority, setPriority] = useState(selectedTask?.priority || "low");  // low por defecto si es null o undefined
+  console.log(tasks, 'todas las propiedades de tasks')
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -59,7 +60,7 @@ const Task = () => {
   }, [selectedTask]); // Se ejecuta cada vez que cambia `selectedTask`
   
 
-  // funcion para hacer la busqueda de usuarios
+  // funcion para hacer la busqueda de tareas
   const handleSearch = async () => {
     try {
       const API_URL = import.meta.env.VITE_API_URL;
@@ -96,9 +97,9 @@ const Task = () => {
 
   // objeto que recibe las prioridades para convertirlas al español
   const priorityMap: Record<string, { label: string; className: string }> = {
-    high: { label: "Difícil", className: styles.highPriority },
-    medium: { label: "Intermedio", className: styles.mediumPriority },
-    low: { label: "Fácil", className: styles.lowPriority }
+    high: { label: "Urgente", className: styles.highPriority },
+    medium: { label: "Importante", className: styles.mediumPriority },
+    low: { label: "Leve", className: styles.lowPriority }
   };
   
   // Función para obtener los valores de la prioridad
@@ -118,35 +119,41 @@ const Task = () => {
   const token = localStorage.getItem("token");
 
   // funcion para actualizar las tareas a completa o viceversa
-  const handleCheckboxChange = async (taskId: number, isChecked: boolean) => {
+  const handleCheckboxChange = async (taskId: number, currentStatus: string) => {
 
     // 🔊 notificación de audio INMEDIATA
-    const playSound = () => {
-      const audio = new Audio('/complete.mp3');
-      audio.volume = 0.3;
-      audio.play().catch(() => {});
+    if (currentStatus !== 'completed') {
+    const audio = new Audio('/complete.mp3');
+    audio.volume = 0.3;
+    audio.play().catch(() => {});
+    }
+
+     const getNextStatus = (status: string) => {
+      if (status === 'pending') return 'in_progress';
+      if (status === 'in_progress') return 'completed';
+      return 'completed';
     };
-    playSound();
+     const nextStatus = getNextStatus(currentStatus);
 
     try {
       const API_URL = import.meta.env.VITE_API_URL;
       await axios.put(`${API_URL}/api/auth/updateTask`, 
-        { complete: isChecked }, // Enviamos el nuevo estado de "complete"
+        { status: nextStatus }, // Enviamos el nuevo estado de "complete"
         {
           headers: {
             Authorization: `Bearer ${token}`,  
             "Task-Id": taskId, 
-            "Complete": isChecked.toString()   
+            "Status": nextStatus   
           }
         }
       );
   
       setTasks(prevTasks => prevTasks.map(task =>
-        task.id === taskId ? { ...task, complete: isChecked } : task
+        task.id === taskId ? { ...task, status: nextStatus } : task
       ));
 
       setSearchResults(prevResults => prevResults.map(task =>
-        task.id === taskId ? { ...task, complete: isChecked } : task
+        task.id === taskId ? { ...task, status: nextStatus } : task
       ));
   
     } catch (error: any) {
@@ -458,14 +465,11 @@ const Task = () => {
         {searchResults.length > 0
           ? searchResults.map((task) => (
             <div key={task.id} className={`${styles['task-item']} ${isTaskExpired(task.end_date, task.complete) ? styles['expired-task'] : ''}`}>
-                <input 
-                  type="checkbox" 
-                  className={styles['custom-checkbox']} 
-                  id={`task-${task.id}`} 
-                  defaultChecked={task.complete} 
-                  onChange={(e) => handleCheckboxChange(task.id, e.target.checked)} 
-                />
-                <label htmlFor={`task-${task.id}`} className={styles['checkbox-label']}></label>
+                <div
+                  className={`${styles['checkbox-label']} ${styles[task.status]}`}
+                  onClick={() => handleCheckboxChange(task.id, task.status)}
+                >
+                </div>
 
                 <div className={styles['content-infoTask']} onMouseDown={() => handleMouseDown(task.id, task.task_name, task.end_date, task.priority)} onMouseUp={handleMouseUp} 
                   onMouseLeave={handleMouseUp} onTouchStart={() => handleMouseDown(task.id, task.task_name, task.end_date, task.priority)} 
@@ -497,14 +501,11 @@ const Task = () => {
           : tasks.length > 0 &&
             tasks.map((task) => (
               <div key={task.id} className={`${styles['task-item']} ${isTaskExpired(task.end_date, task.complete) ? styles['expired-task'] : ''}`}>
-                <input 
-                  type="checkbox" 
-                  className={styles['custom-checkbox']} 
-                  id={`task-${task.id}`} 
-                  defaultChecked={task.complete} 
-                  onChange={(e) => handleCheckboxChange(task.id, e.target.checked)} 
-                />
-                <label htmlFor={`task-${task.id}`} className={styles['checkbox-label']}></label>
+                <div
+                  className={`${styles['checkbox-label']} ${styles[task.status]}`}
+                  onClick={() => handleCheckboxChange(task.id, task.status)}
+                >
+              </div>
 
                 <div className={styles['content-infoTask']} onMouseDown={() => handleMouseDown(task.id, task.task_name, task.end_date, task.priority)} onMouseUp={handleMouseUp} 
                   onMouseLeave={handleMouseUp} onTouchStart={() => handleMouseDown(task.id, task.task_name, task.end_date, task.priority)} 
