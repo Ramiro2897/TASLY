@@ -48,7 +48,7 @@ const Home = () => {
   // -------------.......-----------
 
    // Estados para almacenar datos
-  const [tareas, setTareas] = useState<{ id: number, task_name: string, complete: boolean, created_at: string }[]>([]);
+  const [tareas, setTareas] = useState<{ id: number, task_name: string, status: string, created_at: string }[]>([]);
   const [metas, setMetas] = useState<{ id: number; goal: string; description: string; start_date: string; end_date: string; unit: string; }[]>([]);
   const [frases, setFrases] = useState<{ id: number; phrase: string; author: string; created_at: string; favorite: boolean; }[]>([]);
   // estado para skeleton
@@ -56,6 +56,7 @@ const Home = () => {
   const [showSkeleton, setShowSkeleton] = useState(false);
 
   const token = localStorage.getItem('token');
+  console.log(tareas, 'tareeeasssssss');
 
   if (!token) {
     return;
@@ -73,7 +74,7 @@ const Home = () => {
   completed: 0,
   });
 
-  console.log(taskSummary, 'todo lo que quiero esta aqui');
+  // console.log(taskSummary, 'todo lo que quiero esta aqui');
 
   useEffect(() => {
     const API_URL = import.meta.env.VITE_API_URL;
@@ -103,14 +104,11 @@ const Home = () => {
         setFrases(frasesRes.data);
         setMetas(metasRes.data);
    
-        // Manejo de notificación
-        const latestTask = tareasRes.data[0];
-        const currentDate = new Date();
-        const taskDate = new Date(latestTask?.created_at);
-        const isTaskIncomplete = !latestTask?.complete;
+        // Manejo de notificación si tiene tareas pendientes
         const taskNotified = localStorage.getItem("taskNotified") === "true";
-      
-        if (isTaskIncomplete && taskDate < currentDate && taskNotified) {
+        console.log(taskSummary.pending, ' hahahahahaha')
+
+        if ((taskSummary.pending > 0 || taskSummary.inProgress > 0) && taskNotified) {
           setShowAlert(true);
           localStorage.setItem("taskNotified", "false");
         
@@ -150,7 +148,6 @@ const Home = () => {
     } else {
       currentPeriod = 'night';
     }
-
     const lastNotifiedPeriod = localStorage.getItem("lastNotifiedPeriod");
 
     if (lastNotifiedPeriod !== currentPeriod) {
@@ -160,7 +157,7 @@ const Home = () => {
   }, []);
 
    // Función para actualizar la tarea en tiempo real
-   const handleTaskAdded = (newTask: { message: string; task: { id: number; task_name: string; complete: boolean; created_at: string } }) => {
+   const handleTaskAdded = (newTask: { message: string; task: { id: number; task_name: string; status: string; created_at: string } }) => {
     // Extraemos la tarea correctamente
     const task = newTask.task;
     setTareas(() => {
@@ -170,7 +167,6 @@ const Home = () => {
 
   // actualiza el numero de tareas pendientes de usuario
   const handleTasksLengthUpdated = (newTask: { status: string }) => {
-  console.log('paso cuando quiere actualizar');
   setTaskSummary(prev => ({
     total: prev.total + 1,
     pending:  newTask.status === 'completed'? prev.pending : prev.pending + 1,
@@ -428,7 +424,7 @@ const Home = () => {
   
                     {/* Mostrar si la tarea está completa */}
                     <div className={styles['task-status']}>
-                      {tareas[0].complete ? (
+                      {tareas[0].status === 'completed' ? (
                         <span className={styles['complete-status']}>Completada</span>
                       ) : (
                         <span className={styles['incomplete-status']}>Pendiente</span>
