@@ -119,6 +119,15 @@ const Task = () => {
 
   // funcion para actualizar las tareas a completa o viceversa
   const handleCheckboxChange = async (taskId: number, isChecked: boolean) => {
+
+    // 🔊 notificación de audio INMEDIATA
+    const playSound = () => {
+      const audio = new Audio('/complete.mp3');
+      audio.volume = 0.3;
+      audio.play().catch(() => {});
+    };
+    playSound();
+
     try {
       const API_URL = import.meta.env.VITE_API_URL;
       await axios.put(`${API_URL}/api/auth/updateTask`, 
@@ -140,13 +149,6 @@ const Task = () => {
         task.id === taskId ? { ...task, complete: isChecked } : task
       ));
   
-      // noticacion de audio
-      const playSound = () => {
-        const audio = new Audio('/complete.mp3'); // Ruta del audio en tu proyecto
-        audio.volume = 0.3;
-        audio.play();
-      };
-      playSound();
     } catch (error: any) {
       setErrors(error.response?.data?.errors || { general: 'Error en la búsqueda.' }); 
       setTimeout(() => {
@@ -216,6 +218,14 @@ const Task = () => {
     if (!selectedTask) return;
     const updatedPriority = convertPriorityToEnglish(priority);
     const localDate = new Date(`${newDate}T00:00:00-05:00`).toISOString();
+
+    // 🔊 notificación de audio INMEDIATA
+    const playSound = () => {
+      const audio = new Audio('/OpenClose.mp3');
+      audio.volume = 0.3;
+      audio.play().catch(() => {});
+    };
+    playSound();
   
     try {
       const API_URL = import.meta.env.VITE_API_URL;
@@ -248,13 +258,6 @@ const Task = () => {
       setSearchResults(updatedSearchResults);
       setTasks(updatedTasks);
       handleCloseEditModal(); //cierra el modal
-      // noticacion de audio
-     const playSound = () => {
-      const audio = new Audio('/OpenClose.mp3'); 
-      audio.volume = 0.3;
-      audio.play();
-    };
-    playSound();
   
     } catch (error: any) {
       setErrors(error.response?.data?.errors || { general: 'Error al actualizar la tarea.' });
