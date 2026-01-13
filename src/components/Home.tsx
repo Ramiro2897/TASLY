@@ -56,7 +56,7 @@ const Home = () => {
   const [showSkeleton, setShowSkeleton] = useState(false);
 
   const token = localStorage.getItem('token');
-  console.log(tareas, 'tareeeasssssss');
+  // console.log(tareas, 'tareeeasssssss');
 
   if (!token) {
     return;
@@ -73,6 +73,28 @@ const Home = () => {
   inProgress: 0,
   completed: 0,
   });
+
+  // Manejamos la notificación en otro useEffect independiente
+  useEffect(() => {
+    const currentDate = new Date();
+    const hours = currentDate.getHours();
+    let currentPeriod = '';
+
+    if (hours >= 0 && hours < 8) {
+      currentPeriod = 'morning';
+    } else if (hours >= 8 && hours < 18) {
+      currentPeriod = 'afternoon';
+    } else {
+      currentPeriod = 'night';
+    }
+
+      const lastNotifiedPeriod = localStorage.getItem("lastNotifiedPeriod");
+
+    if (lastNotifiedPeriod !== currentPeriod) {
+      localStorage.setItem("taskNotified", "true");
+      localStorage.setItem("lastNotifiedPeriod", currentPeriod);
+    }
+  }, []);
 
   // console.log(taskSummary, 'todo lo que quiero esta aqui');
 
@@ -103,12 +125,12 @@ const Home = () => {
         });
         setFrases(frasesRes.data);
         setMetas(metasRes.data);
-   
+        
         // Manejo de notificación si tiene tareas pendientes
         const taskNotified = localStorage.getItem("taskNotified") === "true";
-        console.log(taskSummary.pending, ' hahahahahaha')
+        console.log(taskNotified, 'periodo a notificar true o false');
 
-        if ((taskSummary.pending > 0 || taskSummary.inProgress > 0) && taskNotified) {
+        if ((tareasLengthRes.data?.pending > 0 || tareasLengthRes.data?.inProgress > 0) && taskNotified) {
           setShowAlert(true);
           localStorage.setItem("taskNotified", "false");
         
@@ -134,27 +156,6 @@ const Home = () => {
   
     fetchData();
   }, [token]);
-
-// Manejamos la notificación en otro useEffect independiente
-  useEffect(() => {
-    const currentDate = new Date();
-    const hours = currentDate.getHours();
-    let currentPeriod = '';
-
-    if (hours >= 0 && hours < 8) {
-      currentPeriod = 'morning';
-    } else if (hours >= 8 && hours < 18) {
-      currentPeriod = 'afternoon';
-    } else {
-      currentPeriod = 'night';
-    }
-    const lastNotifiedPeriod = localStorage.getItem("lastNotifiedPeriod");
-
-    if (lastNotifiedPeriod !== currentPeriod) {
-      localStorage.setItem("taskNotified", "true");
-      localStorage.setItem("lastNotifiedPeriod", currentPeriod);
-    }
-  }, []);
 
    // Función para actualizar la tarea en tiempo real
    const handleTaskAdded = (newTask: { message: string; task: { id: number; task_name: string; status: string; created_at: string } }) => {
@@ -348,22 +349,13 @@ const Home = () => {
   }
 
    if (pending > 0 || inProgress > 0) {
-    return (
-      <p>
-        {completed > 0 ? (
-          <>
-            Completaste{' '}
-            <span className={styles.taskCount}>{completed}</span>{' '}
-            de{' '}
-            <span className={styles.taskCount}>{total}</span>{' '}
-            tareas 💪
-          </>
-        ) : (
-          <>
-            Hoy no se dio, y está bien. Mañana continúas 🌘
-          </>
-        )}
-      </p>
+    return completed > 0 ? (
+    <>
+      Completaste <span className={styles.taskCount}>{completed}</span> de{' '}
+      <span className={styles.taskCount}>{total}</span> tareas 💪
+    </>
+    ) : (
+      <>Hoy no se dio, y está bien. Mañana continúas 🌘</>
     );
   }
 
@@ -373,7 +365,7 @@ const Home = () => {
   return (
     <div className={styles['home-container']}>
       {/* mostrar que tiene tareas pendientes */}
-      {!isLoading && showAlert && (
+      {showAlert && (
         <div
           className={`${styles['card-notification']} ${
             closing ? styles['slide-up'] : styles['slide-down']
@@ -402,9 +394,11 @@ const Home = () => {
                 <span className={styles.wave}>{getGreetingIcon()}</span>
               </h1>
               <div className={`${styles.messageContainer}`}>
-                <p className={styles.contextMessage}>
-                  {getContextMessage()}
-                </p>
+                {!isLoading && (
+                  <p className={styles.contextMessage}>
+                    {getContextMessage()}
+                  </p>
+                )}
               </div>
             </div>         
           </div>
