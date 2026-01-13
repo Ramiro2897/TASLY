@@ -347,9 +347,22 @@ body {
 .in-progress-status {
   color: #F0F0F2;
   padding: 4px 10px;
-  background-color: #456e7380; /* color distinto para progreso */
+  background-color: #456E73; 
   border-radius: 2px;
   margin-top: 8px;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }
 
 .incomplete-status {
