@@ -1,42 +1,92 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import styles from '../styles/task.module.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faArrowLeft, faQuoteLeft, faBullseye, faClock, faPen, faTrash, faTimes, faSave} from '@fortawesome/free-solid-svg-icons';
+import styles from "../styles/task.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faSearch,
+  faArrowLeft,
+  faQuoteLeft,
+  faBullseye,
+  faClock,
+  faPen,
+  faTrash,
+  faTimes,
+  faSave,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-
+import React from "react";
 
 const Task = () => {
-  const [tasks, setTasks] = useState<{ id: number; task_name: string; start_date: string; end_date: string; category: string; priority: string; complete: boolean;  status: string; created_at: string; updated_at: string; user_id: number; }[]>([]);
-  const [errors, setErrors] = useState<{ userId?: string; general?: string; message?: string; errorUpdate?: string }>({});
+  const [tasks, setTasks] = useState<
+    {
+      id: number;
+      task_name: string;
+      start_date: string;
+      end_date: string;
+      category: string;
+      priority: string;
+      complete: boolean;
+      status: string;
+      created_at: string;
+      updated_at: string;
+      user_id: number;
+    }[]
+  >([]);
+  const [errors, setErrors] = useState<{
+    userId?: string;
+    general?: string;
+    message?: string;
+    errorUpdate?: string;
+  }>({});
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<{ id: number; task_name: string; start_date: string; end_date: string; category: string; priority: string; complete: boolean; status: string; created_at: string; updated_at: string; user_id: number; }[]>([]);
+  const [searchResults, setSearchResults] = useState<
+    {
+      id: number;
+      task_name: string;
+      start_date: string;
+      end_date: string;
+      category: string;
+      priority: string;
+      complete: boolean;
+      status: string;
+      created_at: string;
+      updated_at: string;
+      user_id: number;
+    }[]
+  >([]);
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedTask, setSelectedTask] = useState<{ id: number; name: string; date: string; priority: string; } | null>(null);
+  const [selectedTask, setSelectedTask] = useState<{
+    id: number;
+    name: string;
+    date: string;
+    priority: string;
+  } | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [newDate, setNewDate] = useState("");
-  const [priority, setPriority] = useState(selectedTask?.priority || "low");  // low por defecto si es null o undefined
-  console.log(tasks, 'todas las propiedades de tasks')
+  const [priority, setPriority] = useState(selectedTask?.priority || "low"); // low por defecto si es null o undefined
+  console.log(tasks, "todas las propiedades de tasks");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-  
+
     // 1️⃣ Asignar fecha y prioridad si selectedTask cambia
     if (selectedTask) {
       if (selectedTask.date) {
-        setNewDate(selectedTask.date.split('T')[0]); // Establece la fecha si está disponible
+        setNewDate(selectedTask.date.split("T")[0]); // Establece la fecha si está disponible
       }
-  
+
       if (selectedTask.priority) {
         const priorityInSpanish =
-          selectedTask.priority === "high" ? "alta" :
-          selectedTask.priority === "medium" ? "media" :
-          "baja";
+          selectedTask.priority === "high"
+            ? "alta"
+            : selectedTask.priority === "medium"
+            ? "media"
+            : "baja";
         setPriority(priorityInSpanish);
       }
     }
-  
+
     // 2️⃣ Obtener las tareas del usuario
     const loadTasks = async () => {
       try {
@@ -44,7 +94,7 @@ const Task = () => {
         const response = await axios.get(`${API_URL}/api/auth/loadTasks`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-  
+
         if (response.data.length === 0) {
           setErrors({ message: "Parece que tu lista está vacía" });
         } else {
@@ -52,13 +102,16 @@ const Task = () => {
         }
         setTasks(response.data);
       } catch (error: any) {
-        setErrors(error.response?.data.errors || { general: "Error inesperado. Comunícalo al programador." });
+        setErrors(
+          error.response?.data.errors || {
+            general: "Error inesperado. Comunícalo al programador.",
+          }
+        );
       }
     };
-  
+
     loadTasks();
   }, [selectedTask]); // Se ejecuta cada vez que cambia `selectedTask`
-  
 
   // funcion para hacer la busqueda de tareas
   const handleSearch = async () => {
@@ -75,14 +128,15 @@ const Task = () => {
           query: searchTerm,
         },
       });
-  
-      setSearchResults(response.data);// Actualiza las tareas con los resultados de la búsqueda
-      setIsSearching(response.data.length > 0); // si la busqueda es 0 o no hay no se muestra el boton
 
+      setSearchResults(response.data); // Actualiza las tareas con los resultados de la búsqueda
+      setIsSearching(response.data.length > 0); // si la busqueda es 0 o no hay no se muestra el boton
     } catch (error: any) {
       setSearchResults([]);
       setIsSearching(false); // no aparece el boton de ir atras cuando se hace una busqueda en caso de error...
-      setErrors(error.response?.data?.errors || { general: "Error en la búsqueda." });
+      setErrors(
+        error.response?.data?.errors || { general: "Error en la búsqueda." }
+      );
       setTimeout(() => {
         setErrors(() => {
           // Si aún no hay frases, volvemos a mostrar el mensaje predeterminado
@@ -91,7 +145,7 @@ const Task = () => {
           }
           return {}; // Si hay frases, no mostramos ningún mensaje
         });
-      }, 5000); 
+      }, 5000);
     }
   };
 
@@ -99,13 +153,16 @@ const Task = () => {
   const priorityMap: Record<string, { label: string; className: string }> = {
     high: { label: "Urgente", className: styles.highPriority },
     medium: { label: "Importante", className: styles.mediumPriority },
-    low: { label: "Leve", className: styles.lowPriority }
+    low: { label: "Leve", className: styles.lowPriority },
   };
-  
+
   // Función para obtener los valores de la prioridad
   const getPriorityData = (priority: string) => {
     // Verificamos que el valor de priority sea uno de los válidos
-    const validPriority = priority === 'high' || priority === 'medium' || priority === 'low' ? priority : 'low';
+    const validPriority =
+      priority === "high" || priority === "medium" || priority === "low"
+        ? priority
+        : "low";
     return priorityMap[validPriority];
   };
 
@@ -119,47 +176,55 @@ const Task = () => {
   const token = localStorage.getItem("token");
 
   // funcion para actualizar las tareas a completa o viceversa
-  const handleCheckboxChange = async (taskId: number, currentStatus: string) => {
-
+  const handleCheckboxChange = async (
+    taskId: number,
+    currentStatus: string
+  ) => {
     // 🔊 notificación de audio INMEDIATA
-    if (currentStatus !== 'completed') {
-    const audio = new Audio('/complete.mp3');
-    audio.volume = 0.3;
-    audio.play().catch(() => {});
+    if (currentStatus !== "completed") {
+      const audio = new Audio("/complete.mp3");
+      audio.volume = 0.3;
+      audio.play().catch(() => {});
     }
 
-     const getNextStatus = (status: string) => {
-      if (status === 'pending') return 'in_progress';
-      if (status === 'in_progress') return 'completed';
-      return 'completed';
+    const getNextStatus = (status: string) => {
+      if (status === "pending") return "in_progress";
+      if (status === "in_progress") return "completed";
+      return "completed";
     };
-     const nextStatus = getNextStatus(currentStatus);
+    const nextStatus = getNextStatus(currentStatus);
 
     try {
       const API_URL = import.meta.env.VITE_API_URL;
-      await axios.put(`${API_URL}/api/auth/updateTask`, 
+      await axios.put(
+        `${API_URL}/api/auth/updateTask`,
         { status: nextStatus }, // Enviamos el nuevo estado de "complete"
         {
           headers: {
-            Authorization: `Bearer ${token}`,  
-            "Task-Id": taskId, 
-            "Status": nextStatus   
-          }
+            Authorization: `Bearer ${token}`,
+            "Task-Id": taskId,
+            Status: nextStatus,
+          },
         }
       );
-  
-      setTasks(prevTasks => prevTasks.map(task =>
-        task.id === taskId ? { ...task, status: nextStatus } : task
-      ));
 
-      setSearchResults(prevResults => prevResults.map(task =>
-        task.id === taskId ? { ...task, status: nextStatus } : task
-      ));
-  
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === taskId ? { ...task, status: nextStatus } : task
+        )
+      );
+
+      setSearchResults((prevResults) =>
+        prevResults.map((task) =>
+          task.id === taskId ? { ...task, status: nextStatus } : task
+        )
+      );
     } catch (error: any) {
-      setErrors(error.response?.data?.errors || { general: 'Error en la búsqueda.' }); 
+      setErrors(
+        error.response?.data?.errors || { general: "Error en la búsqueda." }
+      );
       setTimeout(() => {
-        setErrors((prevErrors) => ({ ...prevErrors, general: '' })); 
+        setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
       }, 5000);
     }
   };
@@ -167,21 +232,23 @@ const Task = () => {
   // funciona para eliminar una tarea
   const handleDeleteTask = async () => {
     if (!selectedTask) return;
-  
+
     try {
       const API_URL = import.meta.env.VITE_API_URL;
-  
+
       await axios.delete(`${API_URL}/api/auth/deleteTask`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Task-Id": selectedTask.id.toString(),
-        }
+        },
       });
-      
+
       // 🔹 Filtrar tareas actualizadas
-      const updatedTasks = tasks.filter(task => task.id !== selectedTask.id);
-      const updatedSearchResults = searchResults.filter(task => task.id !== selectedTask.id);
-      
+      const updatedTasks = tasks.filter((task) => task.id !== selectedTask.id);
+      const updatedSearchResults = searchResults.filter(
+        (task) => task.id !== selectedTask.id
+      );
+
       // 🔹 Actualizar el estado con los nuevos valores
       if (updatedSearchResults.length === 0) {
         setIsSearching(false); // Oculta el botón
@@ -199,13 +266,17 @@ const Task = () => {
 
       handleCloseModal();
     } catch (error: any) {
-      setErrors(error.response?.data?.errors || { general: 'Error al eliminar la tarea.' });
+      setErrors(
+        error.response?.data?.errors || {
+          general: "Error al eliminar la tarea.",
+        }
+      );
       setTimeout(() => {
-        setErrors(prevErrors => ({ ...prevErrors, general: '' }));
+        setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
       }, 5000);
     }
   };
-  
+
   // convierte la prioridad a ingles como lo espera el servidor
   const convertPriorityToEnglish = (priority: string) => {
     switch (priority) {
@@ -228,36 +299,40 @@ const Task = () => {
 
     // 🔊 notificación de audio INMEDIATA
     const playSound = () => {
-      const audio = new Audio('/OpenClose.mp3');
+      const audio = new Audio("/OpenClose.mp3");
       audio.volume = 0.3;
       audio.play().catch(() => {});
     };
     playSound();
-  
+
     try {
       const API_URL = import.meta.env.VITE_API_URL;
-  
-       await axios.put(`${API_URL}/api/auth/taskUpdate`, {
-        taskId: selectedTask.id, 
-        updatedDate: localDate,
-        updatedPriority,
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
+
+      await axios.put(
+        `${API_URL}/api/auth/taskUpdate`,
+        {
+          taskId: selectedTask.id,
+          updatedDate: localDate,
+          updatedPriority,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
-      
+      );
+
       // Actualizar tareas en el estado principal
-      const updatedTasks = tasks.map(task => 
-        task.id === selectedTask.id 
-          ? { ...task,  end_date: localDate, priority: updatedPriority } 
+      const updatedTasks = tasks.map((task) =>
+        task.id === selectedTask.id
+          ? { ...task, end_date: localDate, priority: updatedPriority }
           : task
       );
 
       // Actualizar las tareas en los resultados de búsqueda
-      const updatedSearchResults = searchResults.map(task => 
-        task.id === selectedTask.id 
-          ? { ...task, end_date: localDate, priority: updatedPriority } 
+      const updatedSearchResults = searchResults.map((task) =>
+        task.id === selectedTask.id
+          ? { ...task, end_date: localDate, priority: updatedPriority }
           : task
       );
 
@@ -265,41 +340,54 @@ const Task = () => {
       setSearchResults(updatedSearchResults);
       setTasks(updatedTasks);
       handleCloseEditModal(); //cierra el modal
-  
     } catch (error: any) {
-      setErrors(error.response?.data?.errors || { general: 'Error al actualizar la tarea.' });
+      setErrors(
+        error.response?.data?.errors || {
+          general: "Error al actualizar la tarea.",
+        }
+      );
       setTimeout(() => {
-        setErrors(prevErrors => ({ ...prevErrors, general: '' }));
+        setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
       }, 5000);
     }
   };
-  
+
   // contenido para activar el modal al dejar presioanda la pantalla para eliminar
   let pressTimer: ReturnType<typeof setTimeout> | null = null;
 
-  const handleMouseDown = (taskId: number, taskName: string, endDate: string, priority: string) => {
+  const handleMouseDown = (
+    taskId: number,
+    taskName: string,
+    endDate: string,
+    priority: string
+  ) => {
     if (pressTimer) {
       clearTimeout(pressTimer);
       pressTimer = null;
     }
-  
+
     pressTimer = setTimeout(() => {
       if ("vibrate" in navigator) {
-        navigator.vibrate(100); 
+        navigator.vibrate(100);
       }
       setShowModal(true);
-      setSelectedTask({ id: taskId, name: taskName, date: endDate, priority: priority }); 
-      document.body.style.overflow = "hidden"; 
+      setSelectedTask({
+        id: taskId,
+        name: taskName,
+        date: endDate,
+        priority: priority,
+      });
+      document.body.style.overflow = "hidden";
       document.body.style.pointerEvents = "none";
-    }, 600); 
+    }, 600);
   };
 
   const handleCloseModal = () => {
-    document.body.style.overflow = "auto";  
-    document.body.style.pointerEvents = "auto";  
-    setShowModal(false); 
+    document.body.style.overflow = "auto";
+    document.body.style.pointerEvents = "auto";
+    setShowModal(false);
   };
-  
+
   const handleMouseUp = () => {
     if (pressTimer) {
       clearTimeout(pressTimer);
@@ -309,8 +397,8 @@ const Task = () => {
 
   // funcion para ocultar el botón "Ir atrás" cuando se va a lista de tareas por defecto del usuario
   const handleBack = () => {
-    setSearchResults([]); 
-    setIsSearching(false); 
+    setSearchResults([]);
+    setIsSearching(false);
   };
 
   // funcion abrir el modal de actualizar
@@ -321,48 +409,82 @@ const Task = () => {
   // funcion para cerrar el modal de actualizar
   const handleCloseEditModal = () => {
     setShowModal(false); //cerramos el modal de editar y eliminar
-    setShowEditModal(false); 
+    setShowEditModal(false);
     setErrors({}); // Limpiamos los errores
-    document.body.style.overflow = "auto";  
-    document.body.style.pointerEvents = "auto"; 
+    document.body.style.overflow = "auto";
+    document.body.style.pointerEvents = "auto";
   };
 
   const getColombiaDate = () => {
-    const formatter = new Intl.DateTimeFormat('sv-SE', {
-      timeZone: 'America/Bogota',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
+    const formatter = new Intl.DateTimeFormat("sv-SE", {
+      timeZone: "America/Bogota",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
     });
     return formatter.format(new Date()); // esto da "2025-04-04"
   };
-  
+
   // funcion para validar si la tarea esta vencida y sin completar
   const isTaskExpired = (endDate: string, status: string): boolean => {
-    if (status === 'completed') return false; 
+    if (status === "completed") return false;
     // Convertimos las fechas al timezone de Colombia y las truncamos a medianoche
     const today = getColombiaDate();
-    const taskEnd = endDate.split('T')[0];
-  
+    const taskEnd = endDate.split("T")[0];
+
     return taskEnd < today;
-  };  
+  };
 
   const formatDateWithoutTimezoneShift = (dateStr: string) => {
-    const [year, month, day] = dateStr.split('T')[0].split('-');
-    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    const [year, month, day] = dateStr.split("T")[0].split("-");
+    const meses = [
+      "ene",
+      "feb",
+      "mar",
+      "abr",
+      "may",
+      "jun",
+      "jul",
+      "ago",
+      "sep",
+      "oct",
+      "nov",
+      "dic",
+    ];
     return `${parseInt(day)} ${meses[parseInt(month) - 1]} ${year}`;
-  };  
+  };
+
+  const today = getColombiaDate();
+
+  const orderedTasks = [...tasks].sort((a, b) => {
+    const getOrder = (task: any) => {
+      const taskDate = task.start_date.split("T")[0];
+
+      if (taskDate > today) return 4; // 📅 Futuras
+      if (isTaskExpired(task.end_date, task.status)) return 3; // ❌ Vencidas
+      if (task.status === "in_progress") return 0; // 🟡 En progreso (hoy)
+      if (task.status === "pending") return 1; // ⏳ Pendientes (hoy)
+      if (task.status === "completed") return 5; // ✅ Completadas
+
+      return 6;
+    };
+
+    return getOrder(a) - getOrder(b);
+  });
+
+  let lastSection: string | null = null;
 
   return (
-
-    <div className={styles['task-container']}> {/* Usar estilos del módulo */}
-     {/* 🔹 Modal para eliminar o actualizar tarea*/}
-     {showModal && selectedTask && (
-        <div className={styles['modalOverlay']}>
-          <div className={styles['modalContent']}>
-            <p className={styles['taskTitle']}>{selectedTask.name}</p>
-            <p className={styles['question']}> ¿Qué quieres hacer?</p>
-            <div className={styles['btn-options']}>
+    <div className={styles["task-container"]}>
+      {" "}
+      {/* Usar estilos del módulo */}
+      {/* 🔹 Modal para eliminar o actualizar tarea*/}
+      {showModal && selectedTask && (
+        <div className={styles["modalOverlay"]}>
+          <div className={styles["modalContent"]}>
+            <p className={styles["taskTitle"]}>{selectedTask.name}</p>
+            <p className={styles["question"]}> ¿Qué quieres hacer?</p>
+            <div className={styles["btn-options"]}>
               <button onClick={handleOpenEditModal}>
                 <FontAwesomeIcon icon={faPen} /> Editar
               </button>
@@ -376,67 +498,75 @@ const Task = () => {
           </div>
         </div>
       )}
-
       {/* 🔹 Modal para editar tarea */}
-      {showEditModal && selectedTask &&(
-        <div className={styles['modalOverlay']}>
-          <div className={styles['modalContent']}>
-            <p className={styles['taskTitle']}>{selectedTask.name}</p>
-              <label>Fecha final:</label>
-              <input 
-                type="date" 
-                value={newDate} 
-                onChange={(e) => {
-                  setNewDate(e.target.value);
-                  }} 
-                />
-      
-              <select
-                onChange={(e) => setPriority(e.target.value)}  // Actualiza el estado al seleccionar
-                value={priority}  // Se establece el valor del select según el estado
-                required
-                >
-                <option value="baja">Baja</option>
-                <option value="media">Media</option>
-                <option value="alta">Alta</option>
-              </select>
-      
-              <div className={styles['btn-options']}>
-                <button onClick={handleUpdateTask}>Actualizar
-                  <FontAwesomeIcon icon={faSave} />
-                </button>
-                <button onClick={handleCloseEditModal}>
-                  <FontAwesomeIcon icon={faTimes} />Cerrar
-                </button>
-              </div>
-              {errors.errorUpdate && <p className={styles['error-search']}> {errors.errorUpdate}</p>}
+      {showEditModal && selectedTask && (
+        <div className={styles["modalOverlay"]}>
+          <div className={styles["modalContent"]}>
+            <p className={styles["taskTitle"]}>{selectedTask.name}</p>
+            <label>Fecha final:</label>
+            <input
+              type="date"
+              value={newDate}
+              onChange={(e) => {
+                setNewDate(e.target.value);
+              }}
+            />
+
+            <select
+              onChange={(e) => setPriority(e.target.value)} // Actualiza el estado al seleccionar
+              value={priority} // Se establece el valor del select según el estado
+              required
+            >
+              <option value="baja">Baja</option>
+              <option value="media">Media</option>
+              <option value="alta">Alta</option>
+            </select>
+
+            <div className={styles["btn-options"]}>
+              <button onClick={handleUpdateTask}>
+                Actualizar
+                <FontAwesomeIcon icon={faSave} />
+              </button>
+              <button onClick={handleCloseEditModal}>
+                <FontAwesomeIcon icon={faTimes} />
+                Cerrar
+              </button>
+            </div>
+            {errors.errorUpdate && (
+              <p className={styles["error-search"]}> {errors.errorUpdate}</p>
+            )}
           </div>
         </div>
       )}
-
-      <div className={styles['task_header']}>
-        <div className={styles['title']}>
+      <div className={styles["task_header"]}>
+        <div className={styles["title"]}>
           <h2>Tasly</h2>
         </div>
-        <div className={styles['options']}>
-          <div className={styles['button']} onClick={() => handleNavigation("/Home")}>
+        <div className={styles["options"]}>
+          <div
+            className={styles["button"]}
+            onClick={() => handleNavigation("/Home")}
+          >
             <FontAwesomeIcon icon={faArrowLeft} /> Ir Home
           </div>
-          <div className={styles['button']} onClick={() => handleNavigation("/phrases")}>
-            <FontAwesomeIcon icon={faQuoteLeft}  /> Frases
+          <div
+            className={styles["button"]}
+            onClick={() => handleNavigation("/phrases")}
+          >
+            <FontAwesomeIcon icon={faQuoteLeft} /> Frases
           </div>
-          <div className={styles['button']} onClick={() => handleNavigation("/goals")}>
+          <div
+            className={styles["button"]}
+            onClick={() => handleNavigation("/goals")}
+          >
             <FontAwesomeIcon icon={faBullseye} /> Metas
           </div>
         </div>
-
       </div>
-
-      {errors.userId && <p className={styles['errorTask']}>{errors.userId}</p>}    
-  
+      {errors.userId && <p className={styles["errorTask"]}>{errors.userId}</p>}
       {/* Barra de búsqueda */}
-      <div className={styles['search_task']}>
-        <div className={styles['content-search']}>
+      <div className={styles["search_task"]}>
+        <div className={styles["content-search"]}>
           <input
             type="text"
             placeholder="Buscar tarea..."
@@ -448,95 +578,199 @@ const Task = () => {
           </button>
         </div>
       </div>
-      <div className={styles['error-container']}>
-        {errors.general && <p className={styles['error-search']}> {errors.general}</p>}
-        {errors.message && <p className={styles['noTask']}> {errors.message}</p>}
+      <div className={styles["error-container"]}>
+        {errors.general && (
+          <p className={styles["error-search"]}> {errors.general}</p>
+        )}
+        {errors.message && (
+          <p className={styles["noTask"]}> {errors.message}</p>
+        )}
       </div>
-
       {/* ir atras cuando se genera una busqueda */}
-      <div className={`${styles['back']} ${isSearching ? styles['visible'] : ''}`} onClick={handleBack}>
+      <div
+        className={`${styles["back"]} ${isSearching ? styles["visible"] : ""}`}
+        onClick={handleBack}
+      >
         <FontAwesomeIcon icon={faArrowLeft} title="Ir atrás" />
       </div>
-
       {/* Lista de tareas */}
-      <div className={styles['dashboard_task']}>
+      <div className={styles["dashboard_task"]}>
         {searchResults.length > 0
           ? searchResults.map((task) => (
-            <div key={task.id} className={`${styles['task-item']} ${isTaskExpired(task.end_date, task.status) ? styles['expired-task'] : ''}`}>
+              <div
+                key={task.id}
+                className={`${styles["task-item"]} ${
+                  isTaskExpired(task.end_date, task.status)
+                    ? styles["expired-task"]
+                    : ""
+                }`}
+              >
                 <div
-                  className={`${styles['checkbox-label']} ${styles[task.status]}`}
+                  className={`${styles["checkbox-label"]} ${
+                    styles[task.status]
+                  }`}
                   onClick={() => handleCheckboxChange(task.id, task.status)}
-                >
-                </div>
+                ></div>
 
-                <div className={styles['content-infoTask']} onMouseDown={() => handleMouseDown(task.id, task.task_name, task.end_date, task.priority)} onMouseUp={handleMouseUp} 
-                  onMouseLeave={handleMouseUp} onTouchStart={() => handleMouseDown(task.id, task.task_name, task.end_date, task.priority)} 
-                  onTouchEnd={handleMouseUp} onTouchCancel={handleMouseUp}>
-                  <div className={styles['task-name']}>
-                    <p>{task.task_name}</p>
-                    <div className={`${styles['task-priority']} ${getPriorityData(task.priority)?.className || 'default-class'}`}>
-                      {getPriorityData(task.priority)?.label || 'No Priority'}
-                    </div>
-                  </div>
-                  <div className={styles['task-category']}>
-                    <p>{task.category}</p> 
-                  </div>
-                  <div className={styles['task-date']}>
-                    <div className={styles['content-date']}>
-                    <p title="fecha de inicio">
-                        <FontAwesomeIcon icon={faClock} style={{ marginRight: '5px' }} />
-                        {formatDateWithoutTimezoneShift(task.start_date)}
-                      </p>
-                      <p title="fecha final">
-                        <FontAwesomeIcon icon={faClock} style={{ marginRight: '5px' }} />
-                        {formatDateWithoutTimezoneShift(task.end_date)}
-                      </p>  
-                    </div>
-                  </div>
-                </div>   
-            </div>
-            ))
-          : tasks.length > 0 &&
-            tasks.map((task) => (
-              <div key={task.id} className={`${styles['task-item']} ${isTaskExpired(task.end_date, task.status) ? styles['expired-task'] : ''}`}>
                 <div
-                  className={`${styles['checkbox-label']} ${styles[task.status]}`}
-                  onClick={() => handleCheckboxChange(task.id, task.status)}
+                  className={styles["content-infoTask"]}
+                  onMouseDown={() =>
+                    handleMouseDown(
+                      task.id,
+                      task.task_name,
+                      task.end_date,
+                      task.priority
+                    )
+                  }
+                  onMouseUp={handleMouseUp}
+                  onMouseLeave={handleMouseUp}
+                  onTouchStart={() =>
+                    handleMouseDown(
+                      task.id,
+                      task.task_name,
+                      task.end_date,
+                      task.priority
+                    )
+                  }
+                  onTouchEnd={handleMouseUp}
+                  onTouchCancel={handleMouseUp}
                 >
-              </div>
-
-                <div className={styles['content-infoTask']} onMouseDown={() => handleMouseDown(task.id, task.task_name, task.end_date, task.priority)} onMouseUp={handleMouseUp} 
-                  onMouseLeave={handleMouseUp} onTouchStart={() => handleMouseDown(task.id, task.task_name, task.end_date, task.priority)} 
-                  onTouchEnd={handleMouseUp} onTouchCancel={handleMouseUp}>
-                  <div className={styles['task-name']}>
+                  <div className={styles["task-name"]}>
                     <p>{task.task_name}</p>
-                    <div className={`${styles['task-priority']} ${getPriorityData(task.priority)?.className || 'default-class'}`}>
-                      {getPriorityData(task.priority)?.label || 'No Priority'}
+                    <div
+                      className={`${styles["task-priority"]} ${
+                        getPriorityData(task.priority)?.className ||
+                        "default-class"
+                      }`}
+                    >
+                      {getPriorityData(task.priority)?.label || "No Priority"}
                     </div>
                   </div>
-                  <div className={styles['task-category']}>
-                    <p>{task.category}</p> 
+                  <div className={styles["task-category"]}>
+                    <p>{task.category}</p>
                   </div>
-                  <div className={styles['task-date']}>
-                    <div className={styles['content-date']}>
+                  <div className={styles["task-date"]}>
+                    <div className={styles["content-date"]}>
                       <p title="fecha de inicio">
-                        <FontAwesomeIcon icon={faClock} style={{ marginRight: '5px' }} />
+                        <FontAwesomeIcon
+                          icon={faClock}
+                          style={{ marginRight: "5px" }}
+                        />
                         {formatDateWithoutTimezoneShift(task.start_date)}
                       </p>
                       <p title="fecha final">
-                        <FontAwesomeIcon icon={faClock} style={{ marginRight: '5px' }} />
+                        <FontAwesomeIcon
+                          icon={faClock}
+                          style={{ marginRight: "5px" }}
+                        />
                         {formatDateWithoutTimezoneShift(task.end_date)}
-                      </p>                      
+                      </p>
                     </div>
                   </div>
-                </div>   
-            </div>
+                </div>
+              </div>
+            ))
+          : orderedTasks.map((task) => {
+              let section = "";
+              const taskDate = task.start_date.split("T")[0];
 
-            ))}
+              if (taskDate > today) {
+                section = "Tareas futuras";
+              } else if (isTaskExpired(task.end_date, task.status)) {
+                section = "Tareas vencidas";
+              } else if (task.status === "in_progress") {
+                section = "En progreso";
+              } else if (task.status === "pending") {
+                section = "Tareas de hoy";
+              } else if (task.status === "completed") {
+                section = "Completadas";
+              }
+
+              const showTitle = section !== lastSection;
+              lastSection = section;
+
+              return (
+                <React.Fragment key={task.id}>
+                  {showTitle && (
+                    <p className={styles.sectionTitle}>{section}</p>
+                  )}
+                  <div
+                    className={`${styles["task-item"]} ${
+                      isTaskExpired(task.end_date, task.status)
+                        ? styles["expired-task"]
+                        : ""
+                    }`}
+                  >
+                    <div
+                      className={`${styles["checkbox-label"]} ${
+                        styles[task.status]
+                      }`}
+                      onClick={() => handleCheckboxChange(task.id, task.status)}
+                    />
+                    <div
+                      className={styles["content-infoTask"]}
+                      onMouseDown={() =>
+                        handleMouseDown(
+                          task.id,
+                          task.task_name,
+                          task.end_date,
+                          task.priority
+                        )
+                      }
+                      onMouseUp={handleMouseUp}
+                      onMouseLeave={handleMouseUp}
+                      onTouchStart={() =>
+                        handleMouseDown(
+                          task.id,
+                          task.task_name,
+                          task.end_date,
+                          task.priority
+                        )
+                      }
+                      onTouchEnd={handleMouseUp}
+                      onTouchCancel={handleMouseUp}
+                    >
+                      <div className={styles["task-name"]}>
+                        <p>{task.task_name}</p>
+                        <div
+                          className={`${styles["task-priority"]} ${
+                            getPriorityData(task.priority)?.className ||
+                            "default-class"
+                          }`}
+                        >
+                          {getPriorityData(task.priority)?.label ||
+                            "No Priority"}
+                        </div>
+                      </div>
+                      <div className={styles["task-category"]}>
+                        <p>{task.category}</p>
+                      </div>
+                      <div className={styles["task-date"]}>
+                        <div className={styles["content-date"]}>
+                          <p title="fecha de inicio">
+                            <FontAwesomeIcon
+                              icon={faClock}
+                              style={{ marginRight: "5px" }}
+                            />
+                            {formatDateWithoutTimezoneShift(task.start_date)}
+                          </p>
+                          <p title="fecha final">
+                            <FontAwesomeIcon
+                              icon={faClock}
+                              style={{ marginRight: "5px" }}
+                            />
+                            {formatDateWithoutTimezoneShift(task.end_date)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </React.Fragment>
+              );
+            })}
       </div>
     </div>
   );
 };
 
 export default Task;
-

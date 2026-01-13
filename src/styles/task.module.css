@@ -279,6 +279,14 @@ body{
 }
 
 
+.sectionTitle {
+  grid-column: 1 / -1;
+  margin: 20px 0 8px;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+
 .task-container .dashboard_task .task-item{
   display: flex;
   align-items: center;
