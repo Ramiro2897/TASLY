@@ -125,6 +125,12 @@ const Home = () => {
         });
         setFrases(frasesRes.data);
         setMetas(metasRes.data);
+
+        console.log(taskSummary, 'el objeto completo')
+        console.log(tareasLengthRes.data?.total, 'el total')
+        console.log(tareasLengthRes.data?.pending, 'pendiente')
+        console.log(tareasLengthRes.data?.completed, 'completado')
+
         
         // Manejo de notificación si tiene tareas pendientes
         const taskNotified = localStorage.getItem("taskNotified") === "true";
