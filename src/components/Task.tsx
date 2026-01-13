@@ -338,13 +338,11 @@ const Task = () => {
   };
   
   // funcion para validar si la tarea esta vencida y sin completar
-  const isTaskExpired = (endDate: string, isComplete: boolean): boolean => {
-    if (isComplete) return false;
+  const isTaskExpired = (endDate: string, status: string): boolean => {
+    if (status === 'completed') return false; 
     // Convertimos las fechas al timezone de Colombia y las truncamos a medianoche
     const today = getColombiaDate();
     const taskEnd = endDate.split('T')[0];
-
-    console.log('fecha de hoy', today, 'y fecha tasend', taskEnd);
   
     return taskEnd < today;
   };  
@@ -464,7 +462,7 @@ const Task = () => {
       <div className={styles['dashboard_task']}>
         {searchResults.length > 0
           ? searchResults.map((task) => (
-            <div key={task.id} className={`${styles['task-item']} ${isTaskExpired(task.end_date, task.complete) ? styles['expired-task'] : ''}`}>
+            <div key={task.id} className={`${styles['task-item']} ${isTaskExpired(task.end_date, task.status) ? styles['expired-task'] : ''}`}>
                 <div
                   className={`${styles['checkbox-label']} ${styles[task.status]}`}
                   onClick={() => handleCheckboxChange(task.id, task.status)}
@@ -500,7 +498,7 @@ const Task = () => {
             ))
           : tasks.length > 0 &&
             tasks.map((task) => (
-              <div key={task.id} className={`${styles['task-item']} ${isTaskExpired(task.end_date, task.complete) ? styles['expired-task'] : ''}`}>
+              <div key={task.id} className={`${styles['task-item']} ${isTaskExpired(task.end_date, task.status) ? styles['expired-task'] : ''}`}>
                 <div
                   className={`${styles['checkbox-label']} ${styles[task.status]}`}
                   onClick={() => handleCheckboxChange(task.id, task.status)}

@@ -302,20 +302,51 @@ const Home = () => {
 
   // 🌅 MAÑANA
   if (moment === 'morning') {
-    if (total === 0) {
-      return 'Empieza el día creando una tarea o una meta.';
-    }
-
-     if (inProgress > 0) {
-      return 'Continúa con la tarea que ya empezaste.';
-    }
-
-     if (completed === total) {
-      return 'Buen inicio de día, ya completaste todo 🙌';
-    }
-
-    return 'Elige una tarea importante y empieza con calma.';
+  if (total === 0) {
+    return <>Empieza el día creando una tarea o una meta.</>;
   }
+
+  // Caso: hay pendientes y en progreso
+  if (pending > 0 && inProgress > 0) {
+    return (
+      <>
+        Tienes <span className={styles.taskCount}>{pending}</span> tarea(s) pendiente(s) y{' '}
+        <span className={styles.taskCount}>{inProgress}</span> en progreso. ¡Puedes empezar la pendiente o continuar la que ya comenzaste! 💪
+      </>
+    );
+  }
+
+    // Caso: solo pendientes
+  if (pending > 0) {
+      return pending === 1 ? (
+        <>Tienes <span className={styles.taskCount}>{pending}</span> tarea pendiente. ¡Vamos a empezarla! 💪</>
+      ) : (
+        <>
+          Tienes <span className={styles.taskCount}>{pending}</span> tareas pendientes. ¡Escoge una y arranca con fuerza! 🚀
+        </>
+    );
+  }
+
+  // Caso: solo en progreso
+  if (inProgress > 0) {
+    return inProgress === 1 ? (
+      <>Continúa con la tarea que ya empezaste. 💪</>
+    ) : (
+      <>
+        Continúa con las <span className={styles.taskCount}>{inProgress}</span> tareas que ya empezaste. 💪
+      </>
+    );
+  }
+
+  // Caso: todas completadas
+  if (completed === total) {
+    return <>Buen inicio de día, ya completaste todo 🙌</>;
+  }
+
+  // Caso por defecto
+  return <>Elige una tarea importante y empieza con calma.</>;
+}
+
 
   // 🌇 TARDE
   if (moment === 'afternoon') {
@@ -425,10 +456,12 @@ const Home = () => {
                         : tareas[0].task_name}
                     </div>
   
-                    {/* Mostrar si la tarea está completa */}
+                    {/* Mostrar si la tarea está completa o en progreso */}
                     <div className={styles['task-status']}>
                       {tareas[0].status === 'completed' ? (
                         <span className={styles['complete-status']}>Completada</span>
+                      ) : tareas[0].status === 'in_progress' ? (
+                        <span className={styles['in-progress-status']}>En progreso</span>
                       ) : (
                         <span className={styles['incomplete-status']}>Pendiente</span>
                       )}
