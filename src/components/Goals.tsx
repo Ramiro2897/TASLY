@@ -77,7 +77,9 @@ const Goals = () => {
   const [newValue, setNewValue] = useState(0);
   const [showGoalMessage, setShowGoalMessage] = useState(false);
   const [goalMessage, setGoalMessage] = useState<string | null>(null);
-  const [shownMilestones, setShownMilestones] = useState<number[]>([]);
+  const [shownMilestones, setShownMilestones] = useState<
+    Record<number, number[]>
+  >({});
   const lastMessageRef = useRef<GoalMessage | null>(null);
 
   // datos globales del usuario para realizar cualquier accion
@@ -367,17 +369,24 @@ const Goals = () => {
       // Solo mostrar mensajes cuando se alcanza un hito
       const prevValue = selectedGoalPreview?.current_value || 0;
       const milestone = getMilestone(newValue);
+      const goalId = selectedGoalPreview.id;
+
+      const shownForGoal = shownMilestones[goalId] || [];
 
       if (
         milestone &&
         prevValue < milestone &&
-        !shownMilestones.includes(milestone)
+        !shownForGoal.includes(milestone)
       ) {
         const { message } = getProgressInfo(newValue);
         if (message) {
           setGoalMessage(message);
           setShowGoalMessage(true);
-          setShownMilestones((prev) => [...prev, milestone]);
+          setShownMilestones(prev => ({
+            ...prev,
+            [goalId]: [...(prev[goalId] || []), milestone],
+          }));
+
         }
       }
 

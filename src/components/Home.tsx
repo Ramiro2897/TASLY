@@ -402,7 +402,7 @@ const Home = () => {
             Tienes <span className={styles.taskCount}>{pending}</span> tarea(s)
             pendiente(s) y{" "}
             <span className={styles.taskCount}>{inProgress}</span> en progreso.
-            ¡Puedes empezar la pendiente o continuar la que ya comenzaste! 💪
+            ¡Puedes empezar la pendiente o continuar lo que has iniciado! 💪
           </>
         );
       }
