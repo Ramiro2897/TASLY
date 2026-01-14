@@ -460,8 +460,8 @@ const Task = () => {
     const getOrder = (task: any) => {
       const taskDate = task.start_date.split("T")[0];
 
-      if (taskDate > today) return 4; // 📅 Futuras
-      if (isTaskExpired(task.end_date, task.status)) return 3; // ❌ Vencidas
+      if (taskDate > today) return 3; // 📅 Futuras
+      if (isTaskExpired(task.end_date, task.status)) return 4; // ❌ Vencidas
       if (task.status === "in_progress") return 0; // 🟡 En progreso (hoy)
       if (task.status === "pending") return 1; // ⏳ Pendientes (hoy)
       if (task.status === "completed") return 5; // ✅ Completadas

@@ -57,7 +57,13 @@ const Home = () => {
 
   // Estados para almacenar datos
   const [tareas, setTareas] = useState<
-    { id: number; task_name: string; status: string; created_at: string }[]
+    {
+      id: number;
+      task_name: string;
+      status: string;
+      created_at: string;
+      start_date: string;
+    }[]
   >([]);
   const [metas, setMetas] = useState<
     {
@@ -209,7 +215,13 @@ const Home = () => {
   // Función para actualizar la tarea en tiempo real
   const handleTaskAdded = (newTask: {
     message: string;
-    task: { id: number; task_name: string; status: string; created_at: string };
+    task: {
+      id: number;
+      task_name: string;
+      status: string;
+      created_at: string;
+      start_date: string;
+    };
   }) => {
     // Extraemos la tarea correctamente
     const task = newTask.task;
@@ -219,7 +231,17 @@ const Home = () => {
   };
 
   // actualiza el numero de tareas pendientes de usuario
-  const handleTasksLengthUpdated = (newTask: { status: string }) => {
+  const handleTasksLengthUpdated = (newTask: {
+    status: string;
+    start_date?: string;
+  }) => {
+    if (!newTask?.start_date) return;
+
+    const today = new Date().toISOString().split("T")[0];
+    const taskDate = new Date(newTask.start_date).toISOString().split("T")[0];
+
+    if (taskDate !== today) return;
+
     setTaskSummary((prev) => ({
       total: prev.total + 1,
       pending: newTask.status === "completed" ? prev.pending : prev.pending + 1,
@@ -566,7 +588,7 @@ const Home = () => {
                         month: "long",
                         day: "numeric",
                       })
-                        .format(new Date(tareas[0].created_at))
+                        .format(new Date(tareas[0].start_date))
                         .replace(/ de /g, " ")}
                     </div>
                   </div>
