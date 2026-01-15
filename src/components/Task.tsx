@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import React from "react";
+import { motion } from "framer-motion";
 
 const Task = () => {
   const [tasks, setTasks] = useState<
@@ -558,7 +559,13 @@ const Task = () => {
           </div>
         </div>
       )}
-      <div className={styles["task_header"]}>
+      <motion.div
+        className={styles["task_header"]}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.2 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className={styles["title"]}>
           <h2>Tasly</h2>
         </div>
@@ -582,10 +589,16 @@ const Task = () => {
             <FontAwesomeIcon icon={faBullseye} /> Metas
           </div>
         </div>
-      </div>
+      </motion.div>
       {errors.userId && <p className={styles["errorTask"]}>{errors.userId}</p>}
       {/* Barra de búsqueda */}
-      <div className={styles["search_task"]}>
+      <motion.div
+        className={styles["search_task"]}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false }}
+        transition={{ duration: 0.6 }}
+      >
         <div className={styles["content-search"]}>
           <input
             type="text"
@@ -597,7 +610,7 @@ const Task = () => {
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </div>
-      </div>
+      </motion.div>
       <div className={styles["error-container"]}>
         {errors.general && (
           <p className={styles["error-search"]}> {errors.general}</p>
@@ -614,7 +627,13 @@ const Task = () => {
         <FontAwesomeIcon icon={faArrowLeft} title="Ir atrás" />
       </div>
       {/* Lista de tareas */}
-      <div className={styles["dashboard_task"]}>
+      <motion.div
+        className={styles["dashboard_task"]}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false }}
+        transition={{ duration: 0.6 }}
+      >
         {searchResults.length > 0
           ? searchResults.map((task) => (
               <div
@@ -788,7 +807,7 @@ const Task = () => {
                 </React.Fragment>
               );
             })}
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -18,6 +18,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 
 const phrases = [
   "Las metas marcan el destino, pero los sistemas determinan el camino. Enfócate en cómo avanzas cada día, construye hábitos que te acerquen a tu objetivo y disfruta el proceso.",
@@ -742,7 +743,13 @@ const Goals = () => {
         </div>
       )}
 
-      <div className={styles["goals_header"]}>
+      <motion.div
+        className={styles["goals_header"]}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.2 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className={styles["title"]}>
           <h2>Tasly</h2>
         </div>
@@ -767,14 +774,20 @@ const Goals = () => {
             <FontAwesomeIcon icon={faQuoteLeft} /> Frases
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {errors.userId && (
         <p className={styles["errorPhrases"]}>{errors.userId}</p>
       )}
 
       {/* Barra de búsqueda */}
-      <div className={styles["search_goals"]}>
+      <motion.div
+        className={styles["search_goals"]}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false }}
+        transition={{ duration: 0.6 }}
+      >
         <div className={styles["content-search"]}>
           <input
             type="text"
@@ -786,7 +799,7 @@ const Goals = () => {
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </div>
-      </div>
+      </motion.div>
       <div className={styles["error-container"]}>
         {errors.general && (
           <p className={styles["error-search"]}> {errors.general}</p>
@@ -798,7 +811,13 @@ const Goals = () => {
 
       {/* contenido de frases */}
       {!isSearching && (
-        <div className={styles["atomic_habits"]}>
+        <motion.div
+          className={styles["atomic_habits"]}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ duration: 0.6 }}
+        >
           <p className={styles.fadeIn}>
             {currentPhrase &&
               (currentPhrase.highlight
@@ -816,7 +835,7 @@ const Goals = () => {
                     ))
                 : currentPhrase.text)}
           </p>
-        </div>
+        </motion.div>
       )}
 
       {/* ir atras cuando se genera una busqueda */}
@@ -828,7 +847,13 @@ const Goals = () => {
       </div>
 
       {/* Lista de metas */}
-      <div className={styles["dashboard_goal"]}>
+      <motion.div
+        className={styles["dashboard_goal"]}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.2 }}
+        transition={{ duration: 0.6 }}
+      >
         {searchResults.length > 0
           ? searchResults.map((goal) => (
               <div
@@ -1019,7 +1044,7 @@ const Goals = () => {
                 </div>
               </div>
             ))}
-      </div>
+      </motion.div>
     </div>
   );
 };

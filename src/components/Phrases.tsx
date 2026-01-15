@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const Phrases = () => {
   const [phrases, setPhrases] = useState<
@@ -472,7 +473,13 @@ const Phrases = () => {
         </div>
       )}
 
-      <div className={styles["phrases_header"]}>
+      <motion.div
+        className={styles["phrases_header"]}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.2 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className={styles["title"]}>
           <h2>Tasly</h2>
         </div>
@@ -497,14 +504,20 @@ const Phrases = () => {
             <FontAwesomeIcon icon={faBullseye} /> Metas
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {errors.userId && (
         <p className={styles["errorPhrases"]}>{errors.userId}</p>
       )}
 
       {/* Barra de búsqueda */}
-      <div className={styles["search_phrases"]}>
+      <motion.div
+        className={styles["search_phrases"]}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.2 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className={styles["content-search"]}>
           <input
             type="text"
@@ -516,7 +529,7 @@ const Phrases = () => {
             <FontAwesomeIcon icon={faSearch} />
           </button>
         </div>
-      </div>
+      </motion.div>
       <div className={styles["error-container"]}>
         {errors.general && (
           <p className={styles["error-search"]}> {errors.general}</p>
@@ -535,7 +548,13 @@ const Phrases = () => {
       </div>
 
       {/* Lista de tareas */}
-      <div className={styles["dashboard_phrase"]}>
+      <motion.div
+        className={styles["dashboard_phrase"]}
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false, amount: 0.2 }}
+        transition={{ duration: 0.6 }}
+      >
         {searchResults.length > 0
           ? searchResults.map((phrase) => (
               <div key={phrase.id} className={styles["phrase-item"]}>
@@ -666,7 +685,7 @@ const Phrases = () => {
                 </div>
               </div>
             ))}
-      </div>
+      </motion.div>
     </div>
   );
 };

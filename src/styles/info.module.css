@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -10,6 +12,11 @@
   max-width: 800px;
   padding: 20px;
   transition: all 0.3s ease-in-out; 
+  font-family: "Raleway", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 200;
+  font-style: normal;
+  letter-spacing: .5px;
 }
 
 .home-container h2 {

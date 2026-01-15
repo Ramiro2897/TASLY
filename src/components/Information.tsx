@@ -1,57 +1,140 @@
-import styles from '../styles/info.module.css';
+import { motion } from "framer-motion";
+import styles from "../styles/info.module.css";
 
 const Information = () => {
   return (
-    <div className={styles['home-container']}>
-      <h2>Tasly <span className={styles['version']}>v1.1.0</span></h2>
-      <div className={styles['info-section']}>
-        <h2>¿Qué es Tasly? </h2>
-        <p>
-        Tasly es una aplicación web diseñada para ayudar a las personas a llevar un control intuitivo de sus tareas diarias y semanales.<br /><br />
+    <div className={styles["home-container"]}>
+      {/* Animación del título principal */}
+      <motion.h2
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false }}
+        transition={{ duration: 0.6 }}
+      >
+        Tasly <span className={styles["version"]}>v1.1.0</span>
+      </motion.h2>
 
-        La idea surgió un día en el que me di cuenta de que no tenía un control adecuado de mis tareas. No quería depender de una aplicación de terceros, 
-        así que decidí crear la mía, ajustándola exactamente a mis necesidades y a cómo quería que funcionara. A medida que avanzaba en el desarrollo, 
-        se me ocurrían nuevas funcionalidades que podía integrar, y así fue evolucionando.<br /><br />
+      <div className={styles["info-section"]}>
+        {/* Animación del subtítulo */}
+        <motion.h2
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          ¿Qué es Tasly?
+        </motion.h2>
 
-        Pero Tasly no es solo una app de tareas. También pensé en agregar frases inspiradoras, esas que puedas compartir con otros usuarios, aunque esto es 
-        una idea para el futuro, ya que aún no tengo un plan definido para implementarlo. Además, incorporé un sistema de metas, donde el enfoque está en 
-        permitir trazar objetivos a largo plazo (mínimo tres meses) y registrar el progreso cada vez que sientas que has avanzado.<br /><br />
+        {/* Animación del párrafo largo */}
+        <motion.p
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          Tasly es una aplicación web diseñada para ayudar a las personas a
+          llevar un control intuitivo de sus tareas diarias y semanales.
+          <br />
+          <br />
+          La idea surgió un día en el que me di cuenta de que no tenía un
+          control adecuado de mis tareas. No quería depender de una aplicación
+          de terceros, así que decidí crear la mía, ajustándola exactamente a
+          mis necesidades y a cómo quería que funcionara. A medida que avanzaba
+          en el desarrollo, se me ocurrían nuevas funcionalidades que podía
+          integrar, y así fue evolucionando.
+          <br />
+          <br />
+          Pero Tasly no es solo una app de tareas. También pensé en agregar
+          frases inspiradoras, esas que puedas compartir con otros usuarios,
+          aunque esto es una idea para el futuro, ya que aún no tengo un plan
+          definido para implementarlo. Además, incorporé un sistema de metas,
+          donde el enfoque está en permitir trazar objetivos a largo plazo
+          (mínimo tres meses) y registrar el progreso cada vez que sientas que
+          has avanzado.
+          <br />
+          <br />
+          <strong>
+            <span
+              style={{ fontSize: "1.3em", marginTop: "10px", display: "block" }}
+            >
+              ¿Cómo funciona?
+            </span>
+          </strong>{" "}
+          <br />
+          El acceso a la aplicación es sencillo y seguro. No necesitas ingresar
+          correos ni datos personales adicionales. Aquí tu privacidad es
+          prioridad. Solo crea un usuario, genera una contraseña sencilla pero
+          segura, y empieza a gestionar tus tareas, metas y frases favoritas, ya
+          sean de tu autor preferido o pensamientos que hayas escrito en algún
+          momento de tu vida.
+          <br />
+          <br />
+          Las validaciones son gestionadas directamente por el servidor para
+          evitar vulnerabilidades en los campos de ingreso. Siéntete libre de
+          crear y organizar tus tareas y metas como mejor te funcione.
+          <br />
+          <br />
+          Cada mes, el servidor archivará automáticamente las tareas que superen
+          los 30 días de antigüedad. Pero no te preocupes, nada se pierde. La
+          barra de búsqueda te permitirá encontrar cualquier tarea sin importar
+          si es de hace un mes, un día o incluso un año.
+          <br />
+          <br />
+          Como esta es la primera versión del proyecto, se irán registrando
+          ajustes conforme se detecten errores o mejoras en la lógica. Para el
+          desarrollo, he utilizado tecnologías como:
+          <br />
+          <strong>Cliente:</strong> TypeScript, React, CSS
+          <br />
+          <strong>Servidor:</strong> Node.js, Express, PostgreSQL
+          <br />
+          <br />
+          Tus sugerencias son bienvenidas. Si encuentras algo que no encaje
+          contigo o crees que se puede mejorar, házmelo saber. Este proyecto
+          está en constante evolución y tú también puedes ser parte de su
+          crecimiento...💡
+          <br />
+          <br />
+          <em>
+            Nota: Algunas frases e ideas presentes en la aplicación están
+            inspiradas en el libro
+            <strong> Hábitos Atómicos </strong> de <strong> James Clear</strong>
+            . Es una lectura altamente recomendada para quienes buscan{" "}
+            <strong> mejorar sus hábitos </strong> y
+            <strong> optimizar su vida diaria</strong>. Puedes obtener más
+            información o adquirir el libro aquí:{" "}
+            <a href="https://jamesclear.com/atomic-habits" target="_blank">
+              [Enlace al libro]
+            </a>
+            <strong> “No subestimes el poder de los pequeños cambios. </strong>
+            Un <strong> 1% de mejora cada día </strong> puede llevarte a{" "}
+            <strong> resultados extraordinarios.”</strong> – James Clear.
+          </em>
+        </motion.p>
 
-        <strong><span style={{ fontSize: "1.3em", marginTop: "10px", display: "block"  }}>¿Cómo funciona?</span></strong> <br />
-        El acceso a la aplicación es sencillo y seguro. No necesitas ingresar correos ni datos personales adicionales. Aquí tu privacidad es prioridad. Solo 
-        crea un usuario, genera una contraseña sencilla pero segura, y empieza a gestionar tus tareas, metas y frases favoritas, ya sean de tu autor preferido 
-        o pensamientos que hayas escrito en algún momento de tu vida.<br /><br />
+        {/* Animación de la cita */}
+        <motion.em
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          “El primer principio es que no debes engañarte a ti mismo, y eres la
+          persona más fácil de engañar.” – Richard Feynman
+        </motion.em>
 
-        Las validaciones son gestionadas directamente por el servidor para evitar vulnerabilidades en los campos de ingreso. Siéntete libre de crear y organizar 
-        tus tareas y metas como mejor te funcione.<br /><br />
-
-        Cada mes, el servidor archivará automáticamente las tareas que superen los 30 días de antigüedad. Pero no te preocupes, nada se pierde. La barra de búsqueda 
-        te permitirá encontrar cualquier tarea sin importar si es de hace un mes, un día o incluso un año.<br /><br />
-
-        Como esta es la primera versión del proyecto, se irán registrando ajustes conforme se detecten errores o mejoras en la lógica. Para el desarrollo, he utilizado tecnologías como:<br />
-        <strong>Cliente:</strong> TypeScript, React, CSS<br />
-        <strong>Servidor:</strong> Node.js, Express, PostgreSQL<br /><br />
-
-        Tus sugerencias son bienvenidas. Si encuentras algo que no encaje contigo o crees que se puede mejorar, házmelo saber. Este proyecto está en constante evolución y tú también 
-        puedes ser parte de su crecimiento...💡<br /><br />
-
-        <em>Nota: Algunas frases e ideas presentes en la aplicación están inspiradas en el libro  
-        <strong> Hábitos Atómicos </strong> de <strong> James Clear</strong>.  
-        Es una lectura altamente recomendada para quienes buscan <strong> mejorar sus hábitos </strong> y  
-        <strong> optimizar su vida diaria</strong>.  
-        Puedes obtener más información o adquirir el libro aquí: <a href="https://jamesclear.com/atomic-habits" target="_blank">[Enlace al libro]</a>  
-        <strong> “No subestimes el poder de los pequeños cambios. </strong>  
-        Un <strong> 1% de mejora cada día </strong> puede llevarte a <strong> resultados extraordinarios.”</strong> – James Clear.  
-        </em>
-        </p>
-
-        <em>“El primer principio es que no debes engañarte a ti mismo, y eres la persona más fácil de engañar.” – Richard Feynman</em>
-
-        <div className={styles['contact']}>
+        {/* Animación de la sección de contacto */}
+        <motion.div
+          className={styles["contact"]}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
           <h3>Contacto</h3>
           <p>Email: ramirodjaltor2016@gmail.com</p>
           <p>Teléfono: +57 300 235 3297</p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
