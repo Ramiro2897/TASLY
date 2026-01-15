@@ -382,22 +382,33 @@ const Goals = () => {
         if (message) {
           setGoalMessage(message);
           setShowGoalMessage(true);
-          setShownMilestones(prev => ({
+          setShownMilestones((prev) => ({
             ...prev,
             [goalId]: [...(prev[goalId] || []), milestone],
           }));
-
         }
       }
 
       // Cierre instantáneo con animación potente
-      setTimeout(() => {
-        // Solo cerramos el modal sin animación
+      const modal = document.querySelector(`.${styles.modalContentPreview}`);
+      if (modal) {
+        modal.classList.add(styles.modalContentPreviewClosing);
+        modal.addEventListener(
+          "animationend",
+          () => {
+            setShowAddPreviewModal(false);
+            setErrors({});
+            document.body.style.overflow = "auto";
+            document.body.style.pointerEvents = "auto";
+          },
+          { once: true }
+        );
+      } else {
         setShowAddPreviewModal(false);
         setErrors({});
-        document.body.style.overflow = "auto"; // desbloquea scroll
-        document.body.style.pointerEvents = "auto"; // desbloquea clicks
-      }, 0);
+        document.body.style.overflow = "auto";
+        document.body.style.pointerEvents = "auto";
+      }
     } catch (error: any) {
       setErrors(
         error.response?.data?.errors || {
@@ -446,9 +457,19 @@ const Goals = () => {
   };
 
   const handleCloseModal = () => {
-    document.body.style.overflow = "auto";
-    document.body.style.pointerEvents = "auto";
-    setShowModal(false);
+    const modal = document.querySelector(`.${styles.modalContent}`);
+    if (!modal) return; // si no encuentra el modal, no hacemos nada
+
+    modal.classList.add(styles.modalContentPreviewClosing); // animación
+    modal.addEventListener(
+      "animationend",
+      () => {
+        setShowModal(false);
+        document.body.style.overflow = "auto";
+        document.body.style.pointerEvents = "auto";
+      },
+      { once: true }
+    );
   };
 
   // funcion abrir el modal de actualizar
@@ -475,11 +496,21 @@ const Goals = () => {
 
   // funcion para cerrar el modal de actualizar
   const handleCloseEditModal = () => {
-    setShowModal(false); //cerramos el modal de editar y eliminar
-    setShowEditModal(false);
-    setErrors({});
-    document.body.style.overflow = "auto";
-    document.body.style.pointerEvents = "auto";
+    const modal = document.querySelector(`.${styles.modalContent}`);
+    if (!modal) return; // si no encuentra el modal, no hacemos nada
+
+    modal.classList.add(styles.modalContentPreviewClosing); // animación
+    modal.addEventListener(
+      "animationend",
+      () => {
+        setShowModal(false); // cerramos el modal padre
+        setShowEditModal(false); // cerramos el modal de editar
+        setErrors({});
+        document.body.style.overflow = "auto";
+        document.body.style.pointerEvents = "auto";
+      },
+      { once: true }
+    );
   };
 
   // funcion para modal de avanzar cerrar

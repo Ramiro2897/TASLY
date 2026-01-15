@@ -383,9 +383,19 @@ const Task = () => {
   };
 
   const handleCloseModal = () => {
-    document.body.style.overflow = "auto";
-    document.body.style.pointerEvents = "auto";
-    setShowModal(false);
+    const modal = document.querySelector(`.${styles.modalContent}`);
+    if (!modal) return;
+
+    modal.classList.add(styles.modalContentClosing);
+    modal.addEventListener(
+      "animationend",
+      () => {
+        setShowModal(false);
+        document.body.style.overflow = "auto";
+        document.body.style.pointerEvents = "auto";
+      },
+      { once: true }
+    );
   };
 
   const handleMouseUp = () => {
@@ -408,11 +418,21 @@ const Task = () => {
   };
   // funcion para cerrar el modal de actualizar
   const handleCloseEditModal = () => {
-    setShowModal(false); //cerramos el modal de editar y eliminar
-    setShowEditModal(false);
-    setErrors({}); // Limpiamos los errores
-    document.body.style.overflow = "auto";
-    document.body.style.pointerEvents = "auto";
+    const modal = document.querySelector(`.${styles.modalContent}`);
+    if (!modal) return;
+
+    modal.classList.add(styles.modalContentClosing);
+    modal.addEventListener(
+      "animationend",
+      () => {
+        setShowModal(false);
+        setShowEditModal(false);
+        setErrors({});
+        document.body.style.overflow = "auto";
+        document.body.style.pointerEvents = "auto";
+      },
+      { once: true }
+    );
   };
 
   const getColombiaDate = () => {

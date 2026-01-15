@@ -22,8 +22,23 @@
   text-align: center;
   color: #F0F0F2;        
   position: relative;
-  animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 1s ease-in-out;
   overflow: hidden;
+}
+
+@keyframes floatUpFade {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+}
+
+.modalContentClosingPowerful {
+  animation: floatUpFade 1s ease-in-out forwards;
 }
 
 /* Fondo de estrellas */
