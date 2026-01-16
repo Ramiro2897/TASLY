@@ -17,6 +17,29 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
+const phraseMessages = [
+  "¿Qué tienes en mente?",
+  "Escribe algo que quieras guardar.",
+  "Comparte una frase o pensamiento.",
+  "¿Quieres escribir algo hoy?",
+  "Escribe una frase o idea.",
+  "¿Qué idea ronda por tu cabeza ahora?",
+  "Escribe eso que no quieres olvidar.",
+  "Deja aquí una frase que te represente.",
+  "¿Hay algo que quieras decirte a ti mismo?",
+  "Escribe una idea rápida.",
+  "Guarda un pensamiento antes de que se te vaya.",
+  "¿Qué te gustaría recordar más tarde?",
+  "Una frase, una idea, lo que quieras.",
+  "Escribe algo que tenga sentido para ti.",
+  "¿Qué pasa por tu mente en este momento?",
+  "Anota una frase que te motive.",
+  "Escribe algo solo para ti.",
+  "¿Quieres dejar un pensamiento aquí?",
+  "Comparte una idea que valga la pena guardar.",
+  "Escribe lo primero que se te ocurra."
+];
+
 const Phrases = () => {
   const [phrases, setPhrases] = useState<
     {
@@ -409,6 +432,9 @@ const Phrases = () => {
     return `${parseInt(day)} ${meses[parseInt(month) - 1]} ${year}`;
   };
 
+  const randomMessage =
+    phraseMessages[Math.floor(Math.random() * phraseMessages.length)];
+
   return (
     <div className={styles["phrases-container"]}>
       {/* 🔹 Modal para eliminar o actualizar frase*/}
@@ -537,6 +563,18 @@ const Phrases = () => {
         {errors.message && (
           <p className={styles["noPhrases"]}> {errors.message}</p>
         )}
+      </div>
+
+      <div className={styles["message_phrases"]}>
+        <motion.p
+          key={randomMessage}
+          className={styles["messageContext"]}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        >
+          {randomMessage}
+        </motion.p>
       </div>
 
       {/* ir atras cuando se genera una busqueda */}

@@ -411,19 +411,37 @@ body{
   align-items: center;
   justify-content: center;
   animation: pulse-shadow-two 1.5s infinite alternate ease-in-out;
+  position: relative;
 }
 
 .goal-completed_modal::before {
   content: '¡Meta completada! 🏆';
+  position: absolute;
   right: 10px;
   bottom: 10px;
-  position: absolute;
   font-size: 1.1rem;
-  opacity: 0.9;
-  animation: emoji-fall 4s linear infinite;
+  opacity: 0.95;
   background-color: var(--btn-hover);
-  padding: 5px 10px;
-  border-radius: 5px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: var(--color-text-global);
+  display: inline-block; /* CLAVE */
+  animation: soft-float 2.8s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes soft-float {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-6px) scale(1.04);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* tarea expirada */
@@ -1146,7 +1164,7 @@ body{
   font-weight: bold;
   border-radius: 5px;
   padding: 2px 5px;
-  background-color: var(--main-bg-color);
+  background-color: var(--count);
   color: var(--color-text-global);
 }
 

@@ -144,6 +144,36 @@ body{
   }
 }
 
+.message_phrases{
+  width: 100%;
+  height: auto;
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  text-align: center;
+  gap: 20px;
+  padding: 10px 10px;
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  border-radius: 5px;
+}
+
+.messageContext  {
+  padding: 8px 12px 5px 8px;
+  font-family: 'Inter', 'Poppins', 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(14px, 1vw, 18px);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+  background: var(--message-container);
+  box-shadow: var(--box-shadow);
+  color: var(--text-container-p);
+  width: fit-content;
+  max-width: 100%;
+  border-radius: 5px;
+}
+
 /* estilos para la barra de buesqueda */
 .search_phrases{
   width: 100%;

@@ -17,18 +17,12 @@ import Modalphrases from "../components/Modalphrases";
 import ModalGoals from "../components/ModalGoals";
 import TaskSkeleton from "../components/TaskSkeleton";
 
-const themes = [
-  "default",
-  "amethyst-haze",
-  "bubblegum",
-  "candyland",
-  "catppuccin",
-  "violet-bloom",
-  "retro-arcade",
-] as const; // Lista de temas
-const defaultTheme: (typeof themes)[number] = "default"; // Tema por defecto
+type HomeProps = {
+  theme: string;
+  onToggleTheme: () => void;
+};
 
-const Home = () => {
+const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
   const username = localStorage.getItem("username");
   const navigate = useNavigate(); // Hook para redirigir al usuario
 
@@ -40,28 +34,6 @@ const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPhraseModalOpen, setIsPhraseModalOpen] = useState(false);
   const [isModalGoalsOpen, setIsModalGoalsOpen] = useState(false);
-  const [theme, setTheme] = useState<(typeof themes)[number]>(defaultTheme);
-
-  // Inicializa el tema desde localStorage
-  useEffect(() => {
-    const savedTheme =
-      (localStorage.getItem("theme") as (typeof themes)[number]) ||
-      defaultTheme;
-    setTheme(savedTheme);
-  }, []);
-
-  // Cada vez que cambia theme, aplicamos al HTML y guardamos
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  // Cambiar al siguiente tema
-  const handleToggleTheme = () => {
-    const currentIndex = themes.indexOf(theme);
-    const nextIndex = (currentIndex + 1) % themes.length;
-    setTheme(themes[nextIndex]); // ¡Esto asegura que cada clic actualiza correctamente!
-  };
 
   // abrir y cerrar modales
   const openModal = () => {
@@ -123,7 +95,6 @@ const Home = () => {
   const [showSkeleton, setShowSkeleton] = useState(false);
 
   const token = localStorage.getItem("token");
-  // console.log(tareas, 'tareeeasssssss');
 
   if (!token) {
     return;
@@ -163,8 +134,6 @@ const Home = () => {
     }
   }, []);
 
-  // console.log(taskSummary, 'todo lo que quiero esta aqui');
-
   useEffect(() => {
     const API_URL = import.meta.env.VITE_API_URL;
     let skeletonTimer: ReturnType<typeof setTimeout>;
@@ -202,14 +171,8 @@ const Home = () => {
         setFrases(frasesRes.data);
         setMetas(metasRes.data);
 
-        console.log(taskSummary, "el objeto completo");
-        console.log(tareasLengthRes.data?.total, "el total");
-        console.log(tareasLengthRes.data?.pending, "pendiente");
-        console.log(tareasLengthRes.data?.completed, "completado");
-
         // Manejo de notificación si tiene tareas pendientes
         const taskNotified = localStorage.getItem("taskNotified") === "true";
-        console.log(taskNotified, "periodo a notificar true o false");
 
         if (
           (tareasLengthRes.data?.pending > 0 ||
@@ -379,6 +342,8 @@ const Home = () => {
   const getDayMoment = () => {
     const hour = new Date().getHours();
 
+    if (hour >= 0 && hour < 6) return "sleep";
+
     if (hour >= 6 && hour < 12) return "morning";
     if (hour >= 12 && hour < 20) return "afternoon";
     return "night";
@@ -422,6 +387,11 @@ const Home = () => {
   const getContextMessage = () => {
     const { total, pending, inProgress, completed } = taskSummary;
     const moment = getDayMoment();
+
+    // 🌙 Sleep time
+    if (moment === "sleep") {
+      return "Ya es tarde. Descansa un poco 🌙";
+    }
 
     // 🌅 MAÑANA
     if (moment === "morning") {
@@ -558,7 +528,7 @@ const Home = () => {
       {username ? (
         <>
           <div className={styles["theme"]}>
-            <div title="Cambiar tema" onClick={handleToggleTheme}>
+            <div title="Cambiar tema" onClick={onToggleTheme}>
               <FontAwesomeIcon
                 icon={faPalette}
                 color="var(--color-btn)"

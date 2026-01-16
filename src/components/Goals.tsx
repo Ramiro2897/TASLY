@@ -581,7 +581,7 @@ const Goals = () => {
     if (selectedGoalPreview?.current_value === 100) {
       if (!sessionStorage.getItem(`goal_${selectedGoalPreview.id}_notified`)) {
         const playSound = () => {
-          const audio = new Audio("/CompleteGoal.mp3");
+          const audio = new Audio("/Taslygoal.mp3");
           audio.volume = 0.8;
           audio.play();
         };

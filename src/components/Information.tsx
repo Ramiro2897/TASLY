@@ -32,27 +32,54 @@ const Information = () => {
           viewport={{ once: false }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          Tasly es una aplicación web diseñada para ayudar a las personas a
-          llevar un control intuitivo de sus tareas diarias y semanales.
+          Tasly es una aplicación web creada para ayudarte a organizar tus
+          tareas, metas y hábitos de forma simple, clara y visualmente cómoda.
+          Nació de la necesidad personal de tener un control real de mis
+          actividades diarias sin depender de aplicaciones de terceros, y con el
+          tiempo fue evolucionando para adaptarse mejor a la forma en la que
+          realmente trabajamos y progresamos.
           <br />
           <br />
-          La idea surgió un día en el que me di cuenta de que no tenía un
-          control adecuado de mis tareas. No quería depender de una aplicación
-          de terceros, así que decidí crear la mía, ajustándola exactamente a
-          mis necesidades y a cómo quería que funcionara. A medida que avanzaba
-          en el desarrollo, se me ocurrían nuevas funcionalidades que podía
-          integrar, y así fue evolucionando.
+          En la versión 1.1.0, Tasly recibió múltiples mejoras enfocadas en
+          estabilidad, diseño y experiencia de usuario. Se corrigieron errores
+          como cierres inesperados de modales, problemas de fechas entre cliente
+          y servidor, y desbordes de diseño en pantallas pequeñas. Ahora la
+          interfaz es 100 % responsiva, más fluida y visualmente equilibrada,
+          con nuevas tipografías y una paleta de colores pensada para cuidar la
+          vista, sin excesos.
           <br />
           <br />
-          Pero Tasly no es solo una app de tareas. También pensé en agregar
-          frases inspiradoras, esas que puedas compartir con otros usuarios,
-          aunque esto es una idea para el futuro, ya que aún no tengo un plan
-          definido para implementarlo. Además, incorporé un sistema de metas,
-          donde el enfoque está en permitir trazar objetivos a largo plazo
-          (mínimo tres meses) y registrar el progreso cada vez que sientas que
-          has avanzado.
+          La sección de tareas fue rediseñada y optimizada tanto a nivel visual
+          como lógico. Ahora las tareas cuentan con tres estados: pendiente, en
+          progreso y completada, lo que permite un seguimiento más realista del
+          avance. Las tareas se agrupan por filtros como pendientes, tareas de
+          hoy, vencidas, futuras y completadas, facilitando una vista clara y
+          ordenada. En la pantalla principal, el usuario puede ver mensajes
+          dinámicos que reflejan su progreso diario y reconocer cuando ha
+          completado todo.
           <br />
           <br />
+          La sección de metas fue la que más evolucionó. Se rediseñó
+          completamente su apariencia y funcionamiento. Las metas avanzan de 1 a
+          100, mostrando mensajes según el progreso, rachas activas y estados
+          actuales. Al completar una meta, se reproduce un audio como refuerzo
+          positivo. Además, el sistema ahora ofrece mensajes más inteligentes
+          relacionados con hábitos y metas en curso.
+          <br />
+          <br />
+          También se mejoraron los modales, validaciones y animaciones de
+          entrada y salida, haciendo la experiencia más suave y agradable. Se
+          añadieron pantallas de carga tipo skeleton, necesarias debido al uso
+          de servicios gratuitos que requieren tiempo de activación inicial.
+          <br />
+          <br />
+          Por último, la arquitectura de la aplicación fue optimizada: la
+          interfaz, el backend y la base de datos están desplegados en servicios
+          independientes, lo que permite respuestas más rápidas y una mejor
+          escalabilidad. La seguridad general del sistema también fue reforzada.
+          Tasly sigue creciendo versión tras versión. Cada mejora busca que la
+          aplicación sea más útil, cómoda y cercana para quien la usa. Tus
+          sugerencias siempre son bienvenidas 💡
           <strong>
             <span
               style={{ fontSize: "1.3em", marginTop: "10px", display: "block" }}
@@ -61,38 +88,20 @@ const Information = () => {
             </span>
           </strong>{" "}
           <br />
-          El acceso a la aplicación es sencillo y seguro. No necesitas ingresar
-          correos ni datos personales adicionales. Aquí tu privacidad es
-          prioridad. Solo crea un usuario, genera una contraseña sencilla pero
-          segura, y empieza a gestionar tus tareas, metas y frases favoritas, ya
-          sean de tu autor preferido o pensamientos que hayas escrito en algún
-          momento de tu vida.
+          El acceso es simple y seguro. No se requieren correos ni datos
+          personales. Crea tu usuario y empieza a gestionar tus tareas y metas.
           <br />
           <br />
-          Las validaciones son gestionadas directamente por el servidor para
-          evitar vulnerabilidades en los campos de ingreso. Siéntete libre de
-          crear y organizar tus tareas y metas como mejor te funcione.
+          Las validaciones se gestionan desde el servidor para mayor seguridad.
+          Organiza tus tareas y metas a tu manera.
           <br />
           <br />
-          Cada mes, el servidor archivará automáticamente las tareas que superen
-          los 30 días de antigüedad. Pero no te preocupes, nada se pierde. La
-          barra de búsqueda te permitirá encontrar cualquier tarea sin importar
-          si es de hace un mes, un día o incluso un año.
+          Las tareas con más de 30 días se archivan automáticamente, pero
+          siempre podrás encontrarlas con la búsqueda.
           <br />
           <br />
-          Como esta es la primera versión del proyecto, se irán registrando
-          ajustes conforme se detecten errores o mejoras en la lógica. Para el
-          desarrollo, he utilizado tecnologías como:
-          <br />
-          <strong>Cliente:</strong> TypeScript, React, CSS
-          <br />
-          <strong>Servidor:</strong> Node.js, Express, PostgreSQL
-          <br />
-          <br />
-          Tus sugerencias son bienvenidas. Si encuentras algo que no encaje
-          contigo o crees que se puede mejorar, házmelo saber. Este proyecto
-          está en constante evolución y tú también puedes ser parte de su
-          crecimiento...💡
+          Tus sugerencias son bienvenidas. Si encuentras un bug o tienes alguna
+          idea de mejora, házmelo saber. Tasly sigue en constante evolución 💡
           <br />
           <br />
           <em>
