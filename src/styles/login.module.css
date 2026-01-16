@@ -10,7 +10,7 @@ body{
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(to right, #141e30, #1B2526);
+  background: var(--bg-gradient-body);
 }
 
 .login-container {
@@ -19,8 +19,8 @@ body{
   display: flex;
   justify-content: center;
   font-family: 'Poppins', sans-serif;
-  border: 1px solid #bdbfbf3f;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border: var(--border-default);
+  box-shadow: var(--shadow-card);
   backdrop-filter: blur(10px);
   padding: 0 20px;
   border-radius: 10px;
@@ -39,13 +39,13 @@ body{
   width: 100%;
   max-width: 400px;
   height: auto;
-  color: #F2F2F2;
+  color: var(--color-text);
 }
 
 .login-form h2 {
   margin-bottom: 10px;
   font-size: 1.5rem;
-  background: linear-gradient(to bottom, #bdbfbfa4, #1b252623);
+  background: var(--bg-h2);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -66,7 +66,7 @@ body{
   display: block;
   font-size: .8rem;
   margin-bottom: 5px;
-  color: #f0f0f2cb;
+  color: var(--color-label);
 }
 
 .input-group input {
@@ -74,19 +74,19 @@ body{
   padding: 15px 29px;
   border: none;
   border-radius: 5px;
-  background: #bdbfbf1e;
-  color: #f2f2f2a4;
+  background: var(--bg-input);
+  color: var(--color-input);
   font-size: .8rem;
   outline: none;
   transition: all 0.3s ease;
 }
 
 .input-group input::placeholder {
-  color: #f2f2f25d;
+  color: var(--color-inputPlaceH);
 }
 
 .input-group input:focus {
-  background: #bdbfbf52;
+  background: var(--input-focus);
 }
 
 /* Botón de envío */
@@ -95,8 +95,8 @@ button {
   padding: 15px 10px;
   border: none;
   border-radius: 5px;
-  background-color: #326A8C;
-  color: #f2f2f2;
+  background-color: var(--color-btn);
+  color: var(--color-text);
   font-size: .8rem;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -107,17 +107,17 @@ button:focus{
 }
 
 button:hover {
-  background-color: #32698cab;
+  background-color: var(--btn-hover);
 }
 
 .register-link {
   margin-top: 20px;
   font-size: 0.8rem;
-  color: #f2f2f25d;
+  color: var(--color-link);
 }
 
 .register-link a {
-  color: #BDBFBF;
+  color: var(--color-enlace);
   text-decoration: none;
   font-weight: bolder;
   transition: color 0.3s ease;
@@ -125,7 +125,7 @@ button:hover {
 }
 
 .register-link a:hover {
-  color: #bdbfbfa1;
+  color: var(--color-enla-hover);
 }
 
 /* Estilos para los iconos de redes sociales */
@@ -138,35 +138,35 @@ button:hover {
 
 .social-icons a {
   font-size: 2rem;
-  color: #656573;
+  color: var(--color-icon);
   transition: color 0.3s ease;
 }
 
 .social-icons a:hover {
-  color: #32698cab;
+  color: var(--icon-color-hover);
 }
 
-.footer {
+/* .footer {
   margin-top: 30px;
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.8);
   text-align: center;
-}
+} */
 
 /* errores para el registrar usuario */
 .input-error {
-  box-shadow: 0 0 0 1px #bf1f11a8 !important;
+  box-shadow: var(--color-inputError) !important;
   transition: box-shadow 0.3s ease-in-out;
 }
 
 .error {
-  color: #bf1f11d3;
+  color: var(--errorAndMessage);
   font-size: .8rem;
   margin-top: 3px;
 }
 
 .message{
-  color: #bf1f11d3;
+  color: var(--errorAndMessage);
   font-size: .8rem;
 }
 

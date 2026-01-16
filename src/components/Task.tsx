@@ -66,7 +66,6 @@ const Task = () => {
   const [isSearching, setIsSearching] = useState(false);
   const [newDate, setNewDate] = useState("");
   const [priority, setPriority] = useState(selectedTask?.priority || "low"); // low por defecto si es null o undefined
-  console.log(tasks, "todas las propiedades de tasks");
 
   useEffect(() => {
     const token = localStorage.getItem("token");

@@ -28,7 +28,7 @@ body{
 .phrases-container .phrases_header .title{
   margin: 10px 0;
   padding: 0 5px;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   margin: 20px;
   display: flex;
   justify-content: center;
@@ -42,7 +42,7 @@ body{
   letter-spacing: 1px;
   font-size: 2rem;
   /* border-bottom: 2px solid #034159; */
-  background: linear-gradient(to bottom, #bdbfbfa4, #1b252623);
+  background: var(--container-h2-info);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -68,9 +68,6 @@ body{
 
 /* From Uiverse.io by Smit-Prajapati */ 
 .button {
-  --main-color: #f0f0f2;
-  --main-bg-color: #456E73;
-  --pattern-color: #32698c21;
   /* change this rotation value */
   filter: hue-rotate(0deg);
   cursor: pointer;
@@ -92,12 +89,12 @@ body{
     center center;
   border-image: radial-gradient(
       circle,
-      var(--main-color) 0%,
+      var(--color-text-global) 0%,
       rgba(0, 0, 0, 0) 100%
     )
     1;
   border-width: 1px 0 1px 0;
-  color: var(--main-color);
+  color: var(--color-text-global);
   padding: .27rem 2rem;
   font-weight: 100;
   font-size: .8rem;
@@ -119,7 +116,7 @@ body{
 .button svg {
   font-size: 18px;
   margin-right: 6px;
-  color: #f0f0f28a;
+  color: var(--color-svg);
   animation: arrowIdle 10s ease-in-out infinite;
 }
 
@@ -163,7 +160,7 @@ body{
   display: flex;
   padding: 5px;
   border-radius: 35px;
-  border: 1px solid #bdbfbf3f;
+  border: var(--border-default);
 }
 
 .search_phrases .content-search input{
@@ -178,25 +175,25 @@ body{
 }
 
 .search_phrases .content-search input::placeholder{
-  color: #F0F0F2;
+  color: var(--color-text-global);
 }
 
 .search_phrases .content-search button{
   width: 10%;
   padding: 10px 10px;
-  background-color: #326A8C;
+  background-color: var(--color-btn);
   border-radius: 35px 35px 35px 35px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .search_phrases .content-search button:hover{
-  background-color: #32698cab;
+  background-color: var(--btn-hover);
 }
 
 .noPhrases{
   width: 100%;
   font-size: 1.5rem;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   margin-top: 50px;
   text-align: center;
   font-weight: bolder;
@@ -207,7 +204,7 @@ body{
   width: 100%;
   height: 30px;
   padding: 0 10px;
-  color: #f0f0f2;
+  color: var(--color-text-global);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -226,16 +223,16 @@ body{
 }
 
 .back svg {
-  color: #F0F0F2; 
+  color: var(--color-text-global); 
   font-size: 1rem; 
   padding: 10px 15px;
-  background-color: #326A8C;
+  background-color: var(--color-btn);
   cursor: pointer;
   border-radius: 5px;
 }
 
 .back svg:hover{
-  background-color: #32698cab;
+  background-color: var(--btn-hover);
 }
 
 .error-container .error-search{
@@ -261,13 +258,13 @@ body{
   display: inline-block; /* Permite que los elementos fluyan en columnas */
   width: 100%;
   padding: 10px;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   cursor: pointer;
   font-size: 0.8rem;
   font-weight: bold;
   border-radius: 5px;
-  background: #0d0d0d3a;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  background: var(--bg-item-global);
+  box-shadow: var(--boxshadowModal);
   word-break: break-word;
   white-space: normal;
   margin: 5px 0;
@@ -276,14 +273,14 @@ body{
 
 
 .phrases-container .dashboard_phrase .phrase-item:hover{
-  background: #0d0d0d5e;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+  background: var(--gb-item-globalHover);
+  box-shadow: var(--box-item-global);
   transform: translateY(-2px);
 }
 
 .phrases-container .dashboard_phrase .phrase-item:active{
   transform: translateY(2px);
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--box-item-globalActive);
 }
 
 .phrase-item .content-infoPhrase{
@@ -311,7 +308,7 @@ body{
   width: auto;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 0.8rem;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   flex: 1; 
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -333,9 +330,9 @@ body{
   padding: 0 10px;
   border-radius: 2px;
   display: inline-block;
-  color: #f0f0f296;
+  color: var(--color-author);
   font-size: .7rem;
-  background: #0d0d0d85;
+  background: var(--bg-author);
   border-radius: 5px;
 }
 
@@ -348,12 +345,12 @@ body{
   font-size: 24px; 
   cursor: pointer;
   transition: color 0.3s ease, filter 0.3s ease, transform 0.3s ease;
-  color: #034159;
+  color: var(--color-heart-label);
 }
 
 .heart-label.favorited {
-  color:#BF2011; 
-  filter: drop-shadow(0px 0px 6px rgba(255, 107, 107, 0.6)); /* Efecto brillo */
+  color: var(--color-heart-label-favorited); 
+  filter: var(--filter-favorited); 
   animation: soft-pop 0.3s ease-in-out;
 }
 
@@ -385,10 +382,10 @@ body{
   padding: 4px 0px;
   font-size: 0.68rem;
   font-weight: 100;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   padding: 5px 5px;
   border-radius: 5px;
-  background-color: #326A8C;
+  background-color: var(--color-btn-date);
 }
 
 /* modal para eliminar, editar una frase */
@@ -403,8 +400,8 @@ body{
   justify-content: center;
   z-index: 10000;
   pointer-events: auto;
-  background: #0d0d0d3a;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  background: var(--bg-modal-overlay);
+  box-shadow: var(--box-shadow);
   backdrop-filter: blur(0.2px);
 }
 
@@ -415,8 +412,8 @@ body{
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background: #0d0d0d3f;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  background: var(--bg-modal-content);
+  box-shadow: var(--box-shadow);
   backdrop-filter: blur(5px);
   margin-top: 15px;
   padding: 20px;
@@ -461,7 +458,7 @@ body{
   word-break: break-word; 
   white-space: normal;
   background: #03415944;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-phraseTitle);
   font-weight: 600;
   padding: 8px 12px;
 }
@@ -479,7 +476,7 @@ body{
 
 .modalContent p{
   font-size: .8rem;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   padding: 5px;
   word-wrap: break-word; 
   overflow-wrap: break-word; 
@@ -489,7 +486,7 @@ body{
 
 .modalContent span{
   font-size: .8rem;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   padding: 12px;
   word-wrap: break-word; 
   overflow-wrap: break-word; 
@@ -506,8 +503,8 @@ body{
   margin: 2px 0;
   border-radius: 5px; 
   border: none;
-  background: rgba(50, 50, 50, 0.3);
-  color: #F0F0F2; 
+  background: var(--bg-inputTaskModal);
+  color: var(--color-text-global); 
   font-size: .8rem; 
   transition: border-color 0.3s;
   outline: none;
@@ -520,7 +517,7 @@ body{
   width: 100%;
   text-align: justify;
   font-size: .8rem;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   margin-top: 15px;
   padding: 0px 12px;
 }
@@ -531,8 +528,8 @@ body{
   margin: 8px 0;
   border-radius: 5px; 
   border: none;
-  background: rgba(50, 50, 50, 0.2);
-  color: #f0f0f2; 
+  background: var(--bg-modal-input);
+  color: var(--color-text-global); 
   font-size: .9rem; 
   transition: border-color 0.3s;
   outline: none;
@@ -542,7 +539,7 @@ body{
   font-size: .8rem;
   font-weight: bold;
   padding: 5px;
-  color: #f0f0f2; 
+  color: var(--color-text-global);
 }
 
 .modalOverlay .modalContent  .btn-options{
@@ -559,15 +556,15 @@ body{
   cursor: pointer;
   border-radius: 5px;
   font-size: .8rem;
-  color: #f0f0f2; 
-  border: 2px solid #bdbfbf3f;
+  color: var(--color-text-global); 
+  border: var(--border-modal-btn);
 }
 
 /* estilo para el modal de actualizar */
 .error-search{
   width: 100%;
   font-size: .8rem !important;
-  color: #F2F2F2;
+  color: var(--color-text-global);
   font-weight: 100 !important;
   border-radius: 5px;
   text-align: center;

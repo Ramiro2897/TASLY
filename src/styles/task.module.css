@@ -28,7 +28,7 @@ body{
 .task-container .task_header .title{
   margin: 10px 0;
   padding: 0 5px;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   margin: 20px;
   display: flex;
   justify-content: center;
@@ -42,7 +42,7 @@ body{
   letter-spacing: 1px;
   font-size: 2rem;
   /* border-bottom: 2px solid #034159; */
-  background: linear-gradient(to bottom, #bdbfbfa4, #1b252623);
+  background: var(--bg-h2);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -68,9 +68,6 @@ body{
 
 /* From Uiverse.io by Smit-Prajapati */ 
 .button {
-  --main-color: #f0f0f2;
-  --main-bg-color: #456E73;
-  --pattern-color: #32698c21;
   /* change this rotation value */
   filter: hue-rotate(0deg);
   cursor: pointer;
@@ -92,12 +89,12 @@ body{
     center center;
   border-image: radial-gradient(
       circle,
-      var(--main-color) 0%,
+      var(--color-text-global) 0%,
       rgba(0, 0, 0, 0) 100%
     )
     1;
   border-width: 1px 0 1px 0;
-  color: var(--main-color);
+  color: var(--color-text-global);
   padding: .27rem 2rem;
   font-weight: 100;
   font-size: .8rem;
@@ -119,7 +116,7 @@ body{
 .button svg {
   font-size: 18px;
   margin-right: 6px;
-  color: #f0f0f28a;
+  color: var(--color-svg);
   animation: arrowIdle 10s ease-in-out infinite;
 }
 
@@ -150,7 +147,7 @@ body{
 /* errores */
 .errorTask {
   font-size: 0.9rem;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   text-align: center;
   padding: 5px;
   border-radius: 5px;
@@ -186,7 +183,7 @@ body{
   display: flex;
   padding: 5px;
   border-radius: 35px;
-  border: 1px solid #bdbfbf3f;
+  border: var(--border-default);
 }
 
 .search_task .content-search input{
@@ -201,25 +198,25 @@ body{
 }
 
 .search_task .content-search input::placeholder{
-  color: #F0F0F2;
+  color: var(--color-text-global);
 }
 
 .search_task .content-search button{
   width: 10%;
   padding: 10px 10px;
-  background-color: #326A8C;
+  background-color: var(--color-btn);
   border-radius: 35px 35px 35px 35px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--box-shadow);
 }
 
 .search_task .content-search button:hover{
-  background-color: #32698cab;
+  background-color: var(--btn-hover);
 }
 
 .noTask{
   width: 100%;
   font-size: 1.5rem;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   margin-top: 50px;
   text-align: center;
   font-weight: bolder;
@@ -229,7 +226,7 @@ body{
 .error-container{
   width: 100%;
   height: 30px;
-  color: #f0f0f2;
+  color: var(--color-text-global);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -248,16 +245,16 @@ body{
 }
 
 .back svg {
-  color: #F0F0F2; 
+  color: var(--color-text-global);
   font-size: 1rem; 
   padding: 10px 15px;
-  background-color: #326A8C;
+  background-color: var(--color-btn);
   cursor: pointer;
   border-radius: 5px;
 }
 
 .back svg:hover{
-  background-color: #32698cab;
+  background-color: var(--btn-hover);
 }
 
 .error-container .error-search{
@@ -294,14 +291,14 @@ body{
   flex: 1; 
   max-width: 300px; 
   white-space: nowrap; 
-  color: #F0F0F2;
+  color: var(--color-text-global);
   cursor: pointer;
   font-size: .8rem;
   font-weight: bold;
   border-radius: 5px; 
   transition: all 0.3s ease-in-out; 
-  background: #0d0d0d3a;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  background: var(--bg-item-global);
+  box-shadow: var(--box-shadow);
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -309,14 +306,14 @@ body{
 }
 
 .task-container .dashboard_task .task-item:hover{
-  background: #0d0d0d5e;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+  background: var(--gb-item-globalHover);
+  box-shadow: var(--box-item-global);
   transform: translateY(-2px);
 }
 
 .task-container .dashboard_task .task-item:hover:active{
   transform: translateY(2px);
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--box-item-globalActive);
 }
 
 /* estilos para el checbox */
@@ -328,7 +325,7 @@ body{
   width: 40px;
   height: 40px;
   border-radius: 20%;
-  border: 2px solid #bdbfbf3f;
+  border: var(--border-modal-btn);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -348,8 +345,8 @@ body{
   content: "";
   width: 14px;
   height: 14px;
-  border: 2px solid #ccc;
-  border-top: 2px solid #326A8C;
+  border: var(--border-modalTask);
+  border-top: var(--borderHabit);
   border-radius: 50%;
   animation: spin 8s linear infinite;
 }
@@ -359,8 +356,8 @@ body{
 
 .checkbox-label.completed {
   background-color: #d99e6a09;
-  border-color: #326A8C;
-  color: #F0F0F2;
+  border-color: var(--color-btn);
+  color: var(--color-text-global);
 }
 
 .checkbox-label.completed::after {
@@ -386,7 +383,7 @@ body{
 
 .dashboard_task .task-name p{
   width: auto;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   font-size: 0.7rem;
   font-weight: 600;
   flex: 1; /* Permite que el texto tome todo el espacio disponible */
@@ -398,8 +395,8 @@ body{
 
 /* Estilos para las prioridades */
 .highPriority {
-  background-color: #BF2011;
-  color: #F0F0F2;
+  background-color: var(--color-heart-label-favorited);
+  color: var(--color-text-global);
   padding: 2px 3px;
   border-radius: 5px;
   font-size: 0.68rem;
@@ -408,8 +405,8 @@ body{
 }
 
 .mediumPriority {
-  background-color: #D99E6A; 
-  color: #F0F0F2;
+  background-color: var(--medium-priority); 
+  color: var(--color-text-global);
   padding: 2px 3px;
   border-radius: 5px;
   font-size: 0.68rem;
@@ -418,8 +415,8 @@ body{
 }
 
 .lowPriority {
-  background-color: #1B2526; 
-  color: #F0F0F2;
+  background-color: var(--lowPriority); 
+  color: var(--color-text-global);
   padding: 2px 3px;
   border-radius: 5px;
   font-size: 0.68rem;
@@ -442,9 +439,9 @@ body{
   padding: 0 10px;
   border-radius: 2px;
   display: inline-block;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   font-size: .7rem;
-  background-color: #326A8C;
+  background-color: var(--pattern-color);
 }
 
 .task-date .content-date{
@@ -457,10 +454,10 @@ body{
   padding: 4px 0px;
   font-size: 0.64rem;
   font-weight: 100;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   padding: 5px 5px;
   border-radius: 5px;
-  background-color: #326A8C;
+  background-color: var(--color-btn-date);
 }
 
 /* estilos para la barra de scroll */
@@ -469,18 +466,18 @@ body{
 }
 
 ::-webkit-scrollbar-track {
-  background: #034159;
+  background: var(--color-heart-label);
   backdrop-filter: blur(5px); /* Efecto de vidrio */
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1b252696;
+  background: var(--webkit-scrollbar-thumb);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #456e736e;
+  background: var(--webkit-scrollbar-thumbHover);
 }
 
 /* modal para eliminar, editar una tarea */
@@ -495,8 +492,8 @@ body{
   justify-content: center;
   z-index: 10000;
   pointer-events: auto;
-  background: #0d0d0d3a;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  background: var(--bg-modal-overlay);
+  box-shadow: var(--box-shadow);
   backdrop-filter: blur(0.2px);
 }
 
@@ -507,8 +504,8 @@ body{
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background: #0d0d0d3f;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  background: var(--bg-modal-content);
+  box-shadow: var(--box-shadow);
   backdrop-filter: blur(5px);
   margin-top: 15px;
   padding: 20px;
@@ -552,8 +549,8 @@ body{
   overflow-wrap: break-word; 
   word-break: break-word; 
   white-space: normal;
-  background: #03415944;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  background: var(--bg-phraseTitle);
+  box-shadow: var(--shadow-goalName);
   font-weight: 600;
   padding: 8px 12px;
 }
@@ -571,7 +568,7 @@ body{
 
 .modalContent p{
   font-size: .9rem;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   padding: 5px;
   font-weight: bold;
   word-wrap: break-word; 
@@ -585,7 +582,7 @@ body{
   width: 100%;
   text-align: left;
   font-size: .8rem;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   margin-top: 5px;
   padding: 0px 4px;
 }
@@ -597,28 +594,28 @@ body{
   margin: 8px 0;
   border-radius: 5px; 
   border: none;
-  background: rgba(50, 50, 50, 0.2);
-  color: #f0f0f2; 
+  background: var(--bg-modal-input);
+  color: var(--color-text-global); 
   font-size: .9rem; 
   transition: border-color 0.3s;
 }
 
 /* estilo para el modal de actualizar */
 select option {
-  background: rgba(0, 0, 0, 0.7); 
-  color: #F0F0F2;
+  background: var(--bg-selectOption); 
+  color: var(--color-text-global);
 }
 
 /* estilo para el modal de actualizar */
 .modal-content select option:hover {
-  background: #bdbfbf7e;
+  background: var(--select-option);
 }
 
 /* estilo para el modal de actualizar */
 .error-search{
   width: 100%;
   font-size: .8rem !important;
-  color: #F2F2F2;
+  color: var(--color-text-global);
   font-weight: 100 !important;
   border-radius: 5px;
   text-align: center;
@@ -626,11 +623,11 @@ select option {
 
 .modalContent input:focus, .modalContent select:focus{
   outline: none;
-  background: rgba(60, 60, 60, 0.4);
+  background: var(--bg-focusModalTask);
 }
 
 .modalContent input::placeholder{
-  color: #F0F0F2;
+  color: var(--color-text-global);
   font-size: .8rem;
 }
 
@@ -639,7 +636,7 @@ select option {
   font-size: .8rem;
   font-weight: bold;
   padding: 5px;
-  color: #F0F0F2;
+  color: var(--color-text-global);
 }
 
 .modalOverlay .modalContent  .btn-options{
@@ -656,14 +653,14 @@ select option {
   cursor: pointer;
   border-radius: 5px;
   font-size: .8rem;
-  color: #F0F0F2;
-  border: 1px solid #bdbfbf3f;
+  color: var(--color-text-global);
+  border: var(--border-default);
 }
 
 /* cuando la tarea expira... */
 .expired-task {
   opacity: 0.6; /* Hace que la tarea se vea más apagada */
-  background: #BDBFBF; /* Hace el fondo más tenue */
+  background: var(--color-enlace); /* Hace el fondo más tenue */
   filter: grayscale(40%); /* Agrega un ligero tono gris para diferenciarla */
 }
 

@@ -10,11 +10,23 @@ import {
   faHeartCircleBolt,
   faClock,
   faQuestion,
+  faPalette,
 } from "@fortawesome/free-solid-svg-icons";
 import ModalTask from "../components/ModalTask";
 import Modalphrases from "../components/Modalphrases";
 import ModalGoals from "../components/ModalGoals";
 import TaskSkeleton from "../components/TaskSkeleton";
+
+const themes = [
+  "default",
+  "amethyst-haze",
+  "bubblegum",
+  "candyland",
+  "catppuccin",
+  "violet-bloom",
+  "retro-arcade",
+] as const; // Lista de temas
+const defaultTheme: (typeof themes)[number] = "default"; // Tema por defecto
 
 const Home = () => {
   const username = localStorage.getItem("username");
@@ -28,6 +40,28 @@ const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPhraseModalOpen, setIsPhraseModalOpen] = useState(false);
   const [isModalGoalsOpen, setIsModalGoalsOpen] = useState(false);
+  const [theme, setTheme] = useState<(typeof themes)[number]>(defaultTheme);
+
+  // Inicializa el tema desde localStorage
+  useEffect(() => {
+    const savedTheme =
+      (localStorage.getItem("theme") as (typeof themes)[number]) ||
+      defaultTheme;
+    setTheme(savedTheme);
+  }, []);
+
+  // Cada vez que cambia theme, aplicamos al HTML y guardamos
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  // Cambiar al siguiente tema
+  const handleToggleTheme = () => {
+    const currentIndex = themes.indexOf(theme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    setTheme(themes[nextIndex]); // ¡Esto asegura que cada clic actualiza correctamente!
+  };
 
   // abrir y cerrar modales
   const openModal = () => {
@@ -523,6 +557,15 @@ const Home = () => {
 
       {username ? (
         <>
+          <div className={styles["theme"]}>
+            <div title="Cambiar tema" onClick={handleToggleTheme}>
+              <FontAwesomeIcon
+                icon={faPalette}
+                color="var(--color-btn)"
+                size="lg"
+              />
+            </div>
+          </div>
           <div className={styles.header}>
             <div className={styles.welcomeTextContainer}>
               <h1 className={styles["welcome-text"]}>

@@ -34,7 +34,7 @@ body{
 .goals-container .goals_header .title{
   margin: 10px 0;
   padding: 0 5px;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   margin: 20px;
   display: flex;
   justify-content: center;
@@ -47,7 +47,7 @@ body{
   font-weight: 600; 
   letter-spacing: 1px;
   font-size: 2rem;
-  background: linear-gradient(to bottom, #bdbfbfa4, #1b252623);
+  background: var(--bg-h2);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -73,9 +73,6 @@ body{
 
 /* From Uiverse.io by Smit-Prajapati */ 
 .button {
-  --main-color: #f0f0f2;
-  --main-bg-color: #456E73;
-  --pattern-color: #32698c21;
   /* change this rotation value */
   filter: hue-rotate(0deg);
   cursor: pointer;
@@ -97,12 +94,12 @@ body{
     center center;
   border-image: radial-gradient(
       circle,
-      var(--main-color) 0%,
+      var(--color-text-global) 0%,
       rgba(0, 0, 0, 0) 100%
     )
     1;
   border-width: 1px 0 1px 0;
-  color: var(--main-color);
+  color: var(--color-text-global);
   padding: .27rem 2rem;
   font-weight: 100;
   font-size: .8rem;
@@ -124,7 +121,7 @@ body{
 .button svg {
   font-size: 18px;
   margin-right: 6px;
-  color: #f0f0f28a;
+  color: var(--color-svg);
   animation: arrowIdle 10s ease-in-out infinite;
 }
 
@@ -155,7 +152,7 @@ body{
 /* errores */
 .errorGoals {
   font-size: 0.9rem;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   text-align: center;
   padding: 5px;
   border-radius: 5px;
@@ -191,7 +188,7 @@ body{
   display: flex;
   padding: 5px;
   border-radius: 35px;
-  border: 1px solid #bdbfbf3f;
+  border: var(--border-default);
 }
 
 .search_goals .content-search input{
@@ -206,26 +203,26 @@ body{
 }
 
 .search_goals .content-search input::placeholder{
-  color: #F0F0F2;
+  color: var(--color-text-global);
 
 }
 
 .search_goals .content-search button{
   width: 10%;
   padding: 10px 10px;
-  background-color: #326A8C;
+  background-color: var(--color-btn);
   border-radius: 35px 35px 35px 35px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--box-shadow);
 }
 
 .search_goals .content-search button:hover{
-  background-color: #32698cab;
+  background-color: var(--btn-hover);
 }
 
 .noGoals{
   width: 100%;
   font-size: 1.5rem;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   margin-top: 50px;
   text-align: center;
   font-weight: bolder;
@@ -236,7 +233,7 @@ body{
   width: 100%;
   height: 30px;
   padding: 0 10px;
-  color: #f0f0f2;
+  color: var(--color-text-global);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -262,16 +259,16 @@ body{
   font-weight: bold;
   padding: 15px 20px;
   border-radius: 5px;
-  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.1);
-  color: #f0f0f28c;
-  border: 2px solid #326A8C;
+  box-shadow: var(--shadowP-habit);
+  color: var(--Pcolor);
+  border: var(--borderHabit);
   font-family: 'Arial', sans-serif;
   transition: all 0.3s ease-in-out;
 }
 
 .atomic_habits p:hover {
   transform: scale(1.01);
-  background: linear-gradient(135deg, #32698c10, #32698c11);
+  background: var(--pHover);
 }
 
 .fadeIn {
@@ -315,16 +312,16 @@ body{
 }
 
 .back svg {
-  color: #F0F0F2; 
+  color: var(--color-text-global); 
   font-size: 1rem; 
   padding: 10px 15px;
-  background-color: #326A8C;
+  background-color: var(--color-btn);
   cursor: pointer;
   border-radius: 5px;
 }
 
 .back svg:hover{
-  background-color: #32698cab;
+  background-color: var(--btn-hover);
 }
 
 .error-container .error-search{
@@ -349,13 +346,13 @@ body{
   display: inline-block; 
   width: 100%;
   padding: 10px;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   cursor: pointer;
   font-size: 0.8rem;
   font-weight: bold;
   border-radius: 5px;
-  background: #0d0d0d3a;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  background: var(--bg-item-global);
+  box-shadow: var(--box-shadow);
   /* backdrop-filter: blur(10px); */
   word-break: break-word;
   white-space: normal;
@@ -368,7 +365,7 @@ body{
 }
 
 .goal-completed {
-  box-shadow: inset 0 0 10px #D99E6A;
+  box-shadow: var(--color-btn);
   animation: pulse-shadow 1.5s infinite alternate ease-in-out;
   position: relative;
   overflow: hidden;
@@ -386,19 +383,19 @@ body{
 /* Sombra interna pulsante */
 @keyframes pulse-shadow {
   0% {
-    box-shadow: inset 0 0 10px #d99e6a73;
+    box-shadow: var(--pulse-shadow);
   }
   100% {
-    box-shadow: inset 0 0 20px #d99e6a73;
+    box-shadow: var(--pulse-shadowTwo);
   }
 }
 
 @keyframes pulse-shadow-two{
   0% {
-    box-shadow: inset 0 0 10px #326A8C;
+    box-shadow: var(--pulseTwoShadow);
   }
   100% {
-    box-shadow: inset 0 0 20px #32698c9c;
+    box-shadow: var(--pulseTwoShadowInset);
   }
 }
 
@@ -409,7 +406,7 @@ body{
   width: 100vw;
   height: 100vh;
   z-index: 9999;
-  background: #0d0d0d9d;
+  background: var(--modalCompleted);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -424,7 +421,7 @@ body{
   font-size: 1.1rem;
   opacity: 0.9;
   animation: emoji-fall 4s linear infinite;
-  background-color: #32698cab;
+  background-color: var(--btn-hover);
   padding: 5px 10px;
   border-radius: 5px;
 }
@@ -443,8 +440,8 @@ body{
   position: absolute;
   top: 0;
   right: 0;
-  background: #BF2011;
-  color: #F0F0F2;
+  background: var(--color-heart-label-favorited);
+  color: var(--color-text-global);
   font-size: 0.8rem;
   padding: 4px 8px;
   border-radius: 0 0 0 8px;
@@ -454,14 +451,14 @@ body{
 
 
 .goals-container .dashboard_goal .goal-item:hover{
-  background: #0d0d0d5e;
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+  background: var(--gb-item-globalHover);
+  box-shadow: var(--box-item-global);
   transform: translateY(-2px);
 }
 
 .goals-container .dashboard_goal .goal-item:active{
   transform: translateY(2px);
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--box-item-globalActive);
 }
 
 .goal-item .content-infoGoal{
@@ -486,7 +483,7 @@ body{
   width: auto;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 1rem;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   font-weight: 600;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -494,7 +491,7 @@ body{
   white-space: normal;
   padding: 5px 10px;
   border-radius: 5px;
-  border: 2px solid #f9f9f911;
+  border: var(--border-goal-name);
 }
 
 .description {
@@ -512,7 +509,7 @@ body{
   display: inline-block;
   font-size: 0.77rem;
   font-weight: 100;
-  color: #f0f0f29c;
+  color: var(--descriptionP);
 }
 
 /* Contenedor de la barra de progreso */
@@ -529,17 +526,8 @@ body{
   height: 18px;
   position: relative;
   /* border-radius: 999px; */
-  background:
-    linear-gradient(
-      to bottom,
-      #0d0d0d3a 0%,
-      #0d0d0d5e 0%,
-       50%,
-      #32698c10 100%
-    );
-  box-shadow:
-    inset 0 2px 3px rgba(0, 0, 0, 0.35),
-    inset 0 -2px 3px rgba(255, 255, 255, 0.15);
+  background: linear-gradient(to bottom, var(--progress-barOne) 0%, var(--progress-barTwo) 50%, var(--progress-barThree) 100%);
+  box-shadow: inset var(--shadowprogressbar), inset var(--shadowprogressbarTwo);
   overflow: visible;
   border-radius: 5px;
 }
@@ -550,9 +538,7 @@ body{
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background-image:
-    radial-gradient(rgba(0, 0, 0, 0.15) 1px, transparent 1px),
-    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-image: var(--radial-dot-dark), var(--radial-dot-light);
   background-size: 6px 6px, 8px 8px;
   background-position: 0 0, 3px 3px;
   pointer-events: none;
@@ -592,7 +578,7 @@ body{
   transform: translateX(-50%);
   font-size: 10px;
   font-weight: 600;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   background-color: #0d0d0dd2;
   padding: 2px 2px;
   border-radius: 5px;
@@ -601,8 +587,8 @@ body{
 
 /* Botón 3D con color vibrante */
 .btn-3d {
-  background: linear-gradient(145deg, #d99e6aef, #D99E6A); /* Naranja cálido */
-  color: #F0F0F2;
+  background: var(--btn-3d-bg); /* Naranja cálido */
+  color: var(--color-text-global);
   font-size: 1rem;
   font-weight: bold;
   padding: 4px 10px;
@@ -611,8 +597,7 @@ body{
   cursor: pointer;
   position: relative;
   transition: all 0.2s ease-in-out;
-  box-shadow: 0 6px 0 #D99E6A, 
-              0 10px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--btn-3d-shadow);
   margin: 10px 0;
 }
 
@@ -622,8 +607,7 @@ body{
 
 /* Efecto al presionar */
 .btn-3d:active {
-  box-shadow: 0 2px 0 #d99e6a, 
-              0 6px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--btn-3d-shadow-active);
   transform: translateY(4px);
 }
 
@@ -635,10 +619,10 @@ body{
   left: 2px;
   right: 2px;
   bottom: 2px;
-  background-color: #1b25261f; 
+  background-color: var(--btn-3d); 
   border-radius: 8px;
   pointer-events: none;
-  color: #F0F0F2;
+  color: var(--color-text-global);
 }
 
 .goal-date .content-date{
@@ -651,10 +635,10 @@ body{
   padding: 4px 0px;
   font-size: 0.68rem;
   font-weight: 100;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   padding: 5px 5px;
   border-radius: 5px;
-  background-color: #326A8C;
+  background-color: var(--color-btn-date);
 }
 
 /* modal para cuando una mate avanza y muestra un mensaje */
@@ -665,7 +649,7 @@ body{
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: var(--goal-message-overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -707,9 +691,6 @@ body{
   font-size: 1.2rem;
   font-weight: bold;
   margin-bottom: 1.5rem;
-    --main-color: #f0f0f2;
-  --main-bg-color: #456E73;
-  --pattern-color: #32698c21;
   /* change this rotation value */
   filter: hue-rotate(0deg);
   cursor: pointer;
@@ -731,12 +712,12 @@ body{
     center center;
   border-image: radial-gradient(
       circle,
-      var(--main-color) 0%,
+      var(--color-text-global) 0%,
       rgba(0, 0, 0, 0) 100%
     )
     1;
   border-width: 1px 0 1px 0;
-  color: var(--main-color);
+  color: var(--color-text-global);
   padding: .27rem 2rem;
   font-weight: 100;
   font-size: .8rem;
@@ -750,21 +731,20 @@ body{
   height: 20px;
   padding: 1.2rem; /* puedes dejar 1.2rem para ambos ejes */
   border-radius: 8px;
-  border: 2px solid #bdbfbf3f;
+  border: var(--border-default);
   background-color: transparent;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   font-weight: bold;
   cursor: pointer;
   transition: background 0.2s;
-
   display: flex;           
   align-items: center;     
   justify-content: center;
 }
 
 .goal-message-button:hover {
-  border: 2px solid #bdbfbf94;
-  background: #0d0d0d3a;
+  border: var(--border-buton-hover);
+  background: var(--bg-item-global);
 }
 
 /* Animación de entrada */
@@ -791,7 +771,7 @@ body{
   justify-content: center;
   z-index: 10000;
   pointer-events: auto;
-  background: #0d0d0d3a;
+  background: var(--bg-item-global);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(0.2px);
 }
@@ -803,8 +783,8 @@ body{
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background: #0d0d0dc0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  background: var(--modal-content);
+  box-shadow: var(--box-shadow);
   backdrop-filter: blur(5px);
   margin-top: 15px;
   padding: 20px;
@@ -827,8 +807,8 @@ body{
   overflow-wrap: break-word; 
   word-break: break-word; 
   white-space: normal;
-  background: #03415944;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  background: var(--bg-phraseTitle);
+  box-shadow: var(--shadow-goalName);
   font-weight: 600;
   padding: 8px 12px;
 }
@@ -841,8 +821,8 @@ body{
   overflow-wrap: break-word; 
   word-break: break-word; 
   white-space: normal;
-  background: #03415944;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  background: var(--bg-phraseTitle);
+  box-shadow: var(--shadow-goalName);
   font-weight: 600;
   padding: 8px 12px;
 }
@@ -861,7 +841,7 @@ body{
 .modalContent span{
   font-size: .9rem;
   font-weight: bold;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   padding: 5px;
   word-wrap: break-word; 
   overflow-wrap: break-word; 
@@ -869,13 +849,13 @@ body{
   white-space: normal;
   width: 100%;
   border-radius: 5px;
-  border: 1px solid #bdbfbf3f;
+  border: var(--border-default);
 }
 
 .modalContent p{
   width: 100%;
   font-size: .9rem;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   padding: 5px;
   font-weight: 500;
   word-wrap: break-word; 
@@ -891,8 +871,8 @@ body{
   margin: 2px 0;
   border-radius: 5px; 
   border: none;
-  background: rgba(50, 50, 50, 0.3);
-  color: #F0F0F2; 
+  background: var(--textarea);
+  color: var(--color-text-global); 
   font-size: .8rem; 
   transition: border-color 0.3s;
   outline: none;
@@ -915,8 +895,8 @@ body{
   cursor: pointer;
   border-radius: 5px;
   font-size: .8rem;
-  color: #F0F0F2;
-  border: 2px solid #bdbfbf3f;
+  color: var(--color-text-global);
+  border: var(--border-modal-btn);
 }
 
 /* estilo para el modal de actualizar */
@@ -924,7 +904,7 @@ body{
   width: 100%;
   height: 20px;
   font-size: .8rem !important;
-  color: #F0F0F2;
+  color: var(--color-text-global);
   font-style: italic;
   font-weight: 100 !important;
   border-radius: 5px;
@@ -943,7 +923,7 @@ body{
   justify-content: center;
   z-index: 10000;
   pointer-events: auto;
-  background: #0d0d0d3a;
+  background: var(--bg-item-global);
   backdrop-filter: blur(0.2px);
 }
 .modalContentPreview {
@@ -953,8 +933,8 @@ body{
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background: #0d0d0dc0;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  background: var(--modal-content);
+  box-shadow: var(--box-shadow);
   backdrop-filter: blur(5px);
   margin-top: 15px;
   padding: 20px;
@@ -1000,7 +980,7 @@ body{
   overflow-wrap: break-word; 
   word-break: break-word; 
   white-space: normal;
-  background: #03415944;
+  background: var(--bg-phraseTitle);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   font-weight: 600;
   padding: 8px 12px;
@@ -1010,13 +990,13 @@ body{
 .modalOverlayPreview .modalContentPreview .inputAdvance {
   padding: 10px 5px;
   border-radius: 7px;
-  background: #03415944;
-  color: #F0F0F2;
+  background: var(--bg-phraseTitle);
+  color: var(--color-text-global);
   text-align: center;
   font-size: 1.2rem;
   border: none;
   outline: none;
-  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-input);
   font-weight: bold;
   transition: background 0.3s ease;
   margin: 10px 0;
@@ -1024,7 +1004,7 @@ body{
 
 /* Efecto cuando el input está en foco */
 .modalOverlayPreview .modalContentPreview .inputAdvance:focus {
-  background: #326A8C; 
+  background: var(--color-btn); 
 }
 
 .modalOverlayPreview .modalContentPreview .inputAdvance::-webkit-outer-spin-button,
@@ -1058,8 +1038,8 @@ body{
   cursor: pointer;
   border-radius: 5px;
   font-size: .8rem;
-  color: #F0F0F2;
-  border: 2px solid #bdbfbf3f;
+  color: var(--color-text-global);
+  border: var(--border-modal-btn);
 }
 
 /* Contenedor de la barra de progreso */
@@ -1075,17 +1055,8 @@ body{
   height: 18px;
   position: relative;
   /* border-radius: 999px; */
-  background:
-    linear-gradient(
-      to bottom,
-      #0d0d0d3a 0%,
-      #0d0d0d5e 0%,
-       50%,
-      #32698c10 100%
-    );
-  box-shadow:
-    inset 0 2px 3px rgba(0, 0, 0, 0.35),
-    inset 0 -2px 3px rgba(255, 255, 255, 0.15);
+  background: linear-gradient(to bottom, var(--progress-barOne) 0%, var(--progress-barTwo) 50%, var(--progress-barThree) 100%);
+  box-shadow: inset var(--shadowprogressbar), inset var(--shadowprogressbarTwo);
   overflow: visible;
   border-radius: 5px;
 }
@@ -1095,9 +1066,7 @@ body{
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background-image:
-    radial-gradient(rgba(0, 0, 0, 0.15) 1px, transparent 1px),
-    radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-image: var(--radial-dot-dark), var(--radial-dot-light);
   background-size: 6px 6px, 8px 8px;
   background-position: 0 0, 3px 3px;
   pointer-events: none;
@@ -1135,8 +1104,8 @@ body{
   transform: translateX(-50%);
   font-size: 10px;
   font-weight: 600;
-  color: #F0F0F2;
-  background-color: #0d0d0dd2;
+  color: var(--color-text-global);
+  background-color: var(--progress-after);
   padding: 2px 4px;
   border-radius: 5px;
   white-space: nowrap; /* CLAVE */
@@ -1177,10 +1146,9 @@ body{
   font-weight: bold;
   border-radius: 5px;
   padding: 2px 5px;
-  background-color:#456e738f;
-  color: #f0f0f2;
+  background-color: var(--main-bg-color);
+  color: var(--color-text-global);
 }
-
 
 /* media queries pantallas inferiores a 768px */
 @media (max-width: 768px) {

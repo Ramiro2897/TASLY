@@ -547,7 +547,7 @@ const Phrases = () => {
         <FontAwesomeIcon icon={faArrowLeft} title="Ir atrás" />
       </div>
 
-      {/* Lista de tareas */}
+      {/* Lista de frases */}
       <motion.div
         className={styles["dashboard_phrase"]}
         initial={{ opacity: 0, y: 50 }}
