@@ -80,7 +80,7 @@ html, body, * {
   --filter-favorited: drop-shadow(0 0 6px rgba(255, 107, 107, 0.6));
   --bg-modal-overlay: #0d0d0d3a;
   --bg-modal-content: #0d0d0d3f;
-  --bg-phraseTitle: #03415944;
+  --bg-phraseTitle: #0341591e;
   --shadow-phraseTitle: 0 1px 2px rgba(0, 0, 0, 0.3);
   --bg-modal-input: rgba(50, 50, 50, 0.2);
   --border-modal-btn: 2px solid #bdbfbf3f;

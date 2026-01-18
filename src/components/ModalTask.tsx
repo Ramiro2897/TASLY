@@ -33,12 +33,17 @@ const ModalTask: React.FC<ModalTaskProps> = ({
   const [priority, setPriority] = useState("medium"); // Prioridad
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // estados para manejar el toggle de horas
+  const [useTime, setUseTime] = useState(false);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
 
   const [errors, setErrors] = useState<{
     task_name?: string;
     date?: string;
     category?: string;
     priority?: string;
+    time_hour?: string;
   }>({});
 
   const timeoutRef = useRef<number | null>(null);
@@ -47,7 +52,16 @@ const ModalTask: React.FC<ModalTaskProps> = ({
     e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
 
     // Crear el objeto con los datos
-    const taskData = { task, startDate, endDate, category, priority };
+    const taskData = {
+      task,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      category,
+      priority,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    };
 
     const token = localStorage.getItem("token");
 
@@ -74,11 +88,14 @@ const ModalTask: React.FC<ModalTaskProps> = ({
       setTask("");
       setStartDate("");
       setEndDate("");
+      setStartTime("");
+      setEndTime("");
       setCategory("");
       setPriority("medium");
       setSuccessMessage("La tarea se agregó!");
       // Limpiar los errores
       setErrors({});
+      setUseTime(false);
 
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       timeoutRef.current = window.setTimeout(() => {
@@ -113,6 +130,7 @@ const ModalTask: React.FC<ModalTaskProps> = ({
     setSuccessMessage(null);
     setErrorMessage(null);
     setErrors({});
+    setUseTime(false);
 
     const modal = document.querySelector(`.${styles["modal-content"]}`);
     if (!modal) {
@@ -128,7 +146,7 @@ const ModalTask: React.FC<ModalTaskProps> = ({
         document.body.style.overflow = "auto";
         document.body.style.pointerEvents = "auto";
       },
-      { once: true }
+      { once: true },
     );
   };
 
@@ -138,13 +156,6 @@ const ModalTask: React.FC<ModalTaskProps> = ({
     <div className={styles["modal-overlay"]}>
       <div className={styles["modal-content"]}>
         <h2>Agregar Tarea</h2>
-        {successMessage && (
-          <div className={styles["success-message"]}>{successMessage}</div>
-        )}
-        {errorMessage && (
-          <div className={styles["error-message"]}>{errorMessage}</div>
-        )}
-
         <form onSubmit={handleSubmit}>
           {errors.task_name && (
             <div className={styles["errorContainer"]}>
@@ -163,22 +174,60 @@ const ModalTask: React.FC<ModalTaskProps> = ({
               <span className={styles["errorTask"]}>{errors.date}</span>
             </div>
           )}
-          <div className={styles["starDate"]}>
-            <label htmlFor="startDate">Fecha de inicio:</label>
+          <div className={styles.starDate}>
+            <div>
+              <label htmlFor="startDate">Fecha de inicio</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="endDate">Fecha final</label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
           </div>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-          <div className={styles["starDate"]}>
-            <label htmlFor="endDate">Fecha final:</label>
+
+          <div className={styles["timeToggle"]}>
+            <span>¿Agregar horario?</span>
+            <input
+              type="checkbox"
+              checked={useTime}
+              onChange={(e) => setUseTime(e.target.checked)}
+            />
           </div>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
+
+          {errors.time_hour && (
+            <div className={styles["errorContainer"]}>
+              <span className={styles["errorTask"]}>{errors.time_hour}</span>
+            </div>
+          )}
+          {useTime && (
+            <div className={styles["starDate"]}>
+              <div>
+                <label htmlFor="startTime">Hora de inicio:</label>
+                <input
+                  type="time"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="endTime">Hora de fin:</label>
+                <input
+                  type="time"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
 
           {errors.category && (
             <div className={styles["errorContainer"]}>
@@ -189,9 +238,17 @@ const ModalTask: React.FC<ModalTaskProps> = ({
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
-            <option value="">Selecciona una categoría</option>
+            <option value="" disabled>
+              Elige una categoría
+            </option>
+            
             <option value="personal">Personal</option>
             <option value="trabajo">Trabajo</option>
+            <option value="estudios">Estudios</option>
+            <option value="universidad">Universidad</option>
+            <option value="salud">Salud</option>
+            <option value="finanzas">Finanzas</option>
+            <option value="hogar">Hogar</option>
             <option value="urgente">Urgente</option>
             <option value="otro">Otro</option>
           </select>
@@ -209,6 +266,13 @@ const ModalTask: React.FC<ModalTaskProps> = ({
             <option value="medium">Media</option>
             <option value="high">Alta</option>
           </select>
+
+          {successMessage && (
+            <div className={styles["success-message"]}>{successMessage}</div>
+          )}
+          {errorMessage && (
+            <div className={styles["error-message"]}>{errorMessage}</div>
+          )}
 
           <div className={styles["modal-actions"]}>
             <button type="submit">Guardar</button>

@@ -24,6 +24,8 @@ const Task = () => {
       task_name: string;
       start_date: string;
       end_date: string;
+      start_time: string;
+      end_time: string;
       category: string;
       priority: string;
       complete: boolean;
@@ -46,6 +48,8 @@ const Task = () => {
       task_name: string;
       start_date: string;
       end_date: string;
+      start_time: string;
+      end_time: string;
       category: string;
       priority: string;
       complete: boolean;
@@ -62,10 +66,19 @@ const Task = () => {
     name: string;
     date: string;
     priority: string;
+    start_time?: string;
+    end_time?: string;
+    status?: string;
   } | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [newDate, setNewDate] = useState("");
+  const [newStartTime, setNewStartTime] = useState("");
+  const [newEndTime, setNewEndTime] = useState("");
   const [priority, setPriority] = useState(selectedTask?.priority || "low"); // low por defecto si es null o undefined
+  const [showStartDate, setShowStartDate] = useState(true);
+  const [showEndDate, setShowEndDate] = useState(true);
+
+  console.log(tasks, "tareas con horas");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -76,13 +89,20 @@ const Task = () => {
         setNewDate(selectedTask.date.split("T")[0]); // Establece la fecha si está disponible
       }
 
+      if (selectedTask.start_time) {
+        setNewStartTime(selectedTask.start_time);
+      }
+      if (selectedTask.end_time) {
+        setNewEndTime(selectedTask.end_time);
+      }
+
       if (selectedTask.priority) {
         const priorityInSpanish =
           selectedTask.priority === "high"
             ? "alta"
             : selectedTask.priority === "medium"
-            ? "media"
-            : "baja";
+              ? "media"
+              : "baja";
         setPriority(priorityInSpanish);
       }
     }
@@ -105,13 +125,117 @@ const Task = () => {
         setErrors(
           error.response?.data.errors || {
             general: "Error inesperado. Comunícalo al programador.",
-          }
+          },
         );
       }
     };
 
     loadTasks();
   }, [selectedTask]); // Se ejecuta cada vez que cambia `selectedTask`
+
+  // tareas eb automatico
+  useEffect(() => {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    const interval = setInterval(() => {
+      const now = new Date(new Date().toLocaleString("en-US", { timeZone }));
+
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => {
+          console.log("Evaluando tarea:", {
+            id: task.id,
+            status: task.status,
+            start_date: task.start_date,
+            start_time: task.start_time,
+            end_time: task.end_time,
+            now: now.toISOString(),
+          });
+
+          // Solo tareas pendientes, con rango horario
+          if (task.status !== "pending" || !task.start_time || !task.end_time) {
+            return task;
+          }
+
+          // Fecha de la tarea en TZ usuario
+          const taskDate = new Date(
+            new Date(task.start_date).toLocaleString("en-US", { timeZone }),
+          );
+
+          // Si no es hoy, no hacer nada
+          if (
+            taskDate.getFullYear() !== now.getFullYear() ||
+            taskDate.getMonth() !== now.getMonth() ||
+            taskDate.getDate() !== now.getDate()
+          ) {
+            return task;
+          }
+
+          // Construimos rango horario
+          const [startHour, startMinute] = task.start_time
+            .split(":")
+            .map(Number);
+          const [endHour, endMinute] = task.end_time.split(":").map(Number);
+
+          const taskStart = new Date(taskDate);
+          taskStart.setHours(startHour, startMinute, 0, 0);
+
+          const taskEnd = new Date(taskDate);
+          taskEnd.setHours(endHour, endMinute, 0, 0);
+
+          console.log("Rango calculado:", {
+            taskId: task.id,
+            taskStart: taskStart.toISOString(),
+            taskEnd: taskEnd.toISOString(),
+            now: now.toISOString(),
+          });
+
+          // SOLO si ahora está dentro del rango → auto iniciar (una sola vez)
+          if (
+            now.getTime() >= taskStart.getTime() &&
+            now.getTime() <= taskEnd.getTime()
+          ) {
+            const API_URL = import.meta.env.VITE_API_URL;
+            const token = localStorage.getItem("token");
+            console.log("⏰ Auto-start detectado para tarea:", task.id);
+
+            axios
+              .put(
+                `${API_URL}/api/auth/auto-start`,
+                { taskId: task.id },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                },
+              )
+              .then((res) => {
+                const updatedTask = res.data.task;
+
+                // Actualizamos SOLO esa tarea en ambas vistas
+                setTasks((current) =>
+                  current.map((t) =>
+                    t.id === updatedTask.id ? updatedTask : t,
+                  ),
+                );
+
+                setSearchResults((current) =>
+                  current.map((t) =>
+                    t.id === updatedTask.id ? updatedTask : t,
+                  ),
+                );
+              })
+              .catch(() => {});
+
+            return task;
+          }
+
+          return task;
+        }),
+      );
+    }, 500_000); // intervalo de prueba 500_000
+
+    return () => clearInterval(interval);
+  }, []);
 
   // funcion para hacer la busqueda de tareas
   const handleSearch = async () => {
@@ -135,7 +259,7 @@ const Task = () => {
       setSearchResults([]);
       setIsSearching(false); // no aparece el boton de ir atras cuando se hace una busqueda en caso de error...
       setErrors(
-        error.response?.data?.errors || { general: "Error en la búsqueda." }
+        error.response?.data?.errors || { general: "Error en la búsqueda." },
       );
       setTimeout(() => {
         setErrors(() => {
@@ -178,13 +302,18 @@ const Task = () => {
   // funcion para actualizar las tareas a completa o viceversa
   const handleCheckboxChange = async (
     taskId: number,
-    currentStatus: string
+    currentStatus: string,
   ) => {
     // 🔊 notificación de audio INMEDIATA
     if (currentStatus !== "completed") {
       const audio = new Audio("/complete.mp3");
       audio.volume = 0.3;
       audio.play().catch(() => {});
+    }
+
+    // 🔹 Si ya está completa, no hacemos la llamada a la API
+    if (currentStatus === "completed") {
+      return; // Detenemos la función aquí
     }
 
     const getNextStatus = (status: string) => {
@@ -205,23 +334,23 @@ const Task = () => {
             "Task-Id": taskId,
             Status: nextStatus,
           },
-        }
+        },
       );
 
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
-          task.id === taskId ? { ...task, status: nextStatus } : task
-        )
+          task.id === taskId ? { ...task, status: nextStatus } : task,
+        ),
       );
 
       setSearchResults((prevResults) =>
         prevResults.map((task) =>
-          task.id === taskId ? { ...task, status: nextStatus } : task
-        )
+          task.id === taskId ? { ...task, status: nextStatus } : task,
+        ),
       );
     } catch (error: any) {
       setErrors(
-        error.response?.data?.errors || { general: "Error en la búsqueda." }
+        error.response?.data?.errors || { general: "Error en la búsqueda." },
       );
       setTimeout(() => {
         setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
@@ -246,7 +375,7 @@ const Task = () => {
       // 🔹 Filtrar tareas actualizadas
       const updatedTasks = tasks.filter((task) => task.id !== selectedTask.id);
       const updatedSearchResults = searchResults.filter(
-        (task) => task.id !== selectedTask.id
+        (task) => task.id !== selectedTask.id,
       );
 
       // 🔹 Actualizar el estado con los nuevos valores
@@ -269,7 +398,7 @@ const Task = () => {
       setErrors(
         error.response?.data?.errors || {
           general: "Error al eliminar la tarea.",
-        }
+        },
       );
       setTimeout(() => {
         setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
@@ -294,10 +423,11 @@ const Task = () => {
   // funcion para actualizar tarea
   const handleUpdateTask = async () => {
     if (!selectedTask) return;
+
     const updatedPriority = convertPriorityToEnglish(priority);
     const localDate = new Date(`${newDate}T00:00:00-05:00`).toISOString();
 
-    // 🔊 notificación de audio INMEDIATA
+    // 🔊 notificación de audio inmediata
     const playSound = () => {
       const audio = new Audio("/OpenClose.mp3");
       audio.volume = 0.3;
@@ -308,43 +438,47 @@ const Task = () => {
     try {
       const API_URL = import.meta.env.VITE_API_URL;
 
-      await axios.put(
+      // 🔹 Llamada al backend
+      const response = await axios.put(
         `${API_URL}/api/auth/taskUpdate`,
         {
           taskId: selectedTask.id,
           updatedDate: localDate,
+          updatedStartTime: newStartTime,
+          updatedEndTime: newEndTime,
           updatedPriority,
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
-      // Actualizar tareas en el estado principal
+      // 🔹 Obtenemos los valores reales que devolvió el backend
+      const updatedTask = response.data.task;
+
+      // 🔹 Actualizamos el estado principal de tareas
       const updatedTasks = tasks.map((task) =>
-        task.id === selectedTask.id
-          ? { ...task, end_date: localDate, priority: updatedPriority }
-          : task
+        task.id === updatedTask.id ? { ...task, ...updatedTask } : task,
       );
 
-      // Actualizar las tareas en los resultados de búsqueda
+      // 🔹 Actualizamos los resultados de búsqueda
       const updatedSearchResults = searchResults.map((task) =>
-        task.id === selectedTask.id
-          ? { ...task, end_date: localDate, priority: updatedPriority }
-          : task
+        task.id === updatedTask.id ? { ...task, ...updatedTask } : task,
       );
 
-      // Actualizamos ambos estados
-      setSearchResults(updatedSearchResults);
+      // 🔹 Aplicamos los estados actualizados
       setTasks(updatedTasks);
-      handleCloseEditModal(); //cierra el modal
+      setSearchResults(updatedSearchResults);
+
+      handleCloseEditModal(); // 🔹 Cerrar modal
     } catch (error: any) {
       setErrors(
         error.response?.data?.errors || {
           general: "Error al actualizar la tarea.",
-        }
+        },
       );
       setTimeout(() => {
         setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
@@ -352,14 +486,17 @@ const Task = () => {
     }
   };
 
-  // contenido para activar el modal al dejar presioanda la pantalla para eliminar
+  // contenido para activar el modal al dejar presioanda la pantalla para editar y eliminar
   let pressTimer: ReturnType<typeof setTimeout> | null = null;
 
   const handleMouseDown = (
     taskId: number,
     taskName: string,
     endDate: string,
-    priority: string
+    priority: string,
+    startTime?: string,
+    endTime?: string,
+    status?: string,
   ) => {
     if (pressTimer) {
       clearTimeout(pressTimer);
@@ -375,7 +512,10 @@ const Task = () => {
         id: taskId,
         name: taskName,
         date: endDate,
+        start_time: startTime,
+        end_time: endTime,
         priority: priority,
+        status: status,
       });
       document.body.style.overflow = "hidden";
       document.body.style.pointerEvents = "none";
@@ -394,7 +534,7 @@ const Task = () => {
         document.body.style.overflow = "auto";
         document.body.style.pointerEvents = "auto";
       },
-      { once: true }
+      { once: true },
     );
   };
 
@@ -431,28 +571,38 @@ const Task = () => {
         document.body.style.overflow = "auto";
         document.body.style.pointerEvents = "auto";
       },
-      { once: true }
+      { once: true },
     );
   };
 
-  const getColombiaDate = () => {
-    const formatter = new Intl.DateTimeFormat("sv-SE", {
-      timeZone: "America/Bogota",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-    return formatter.format(new Date()); // esto da "2025-04-04"
+  // 🔹 Función para obtener la fecha de hoy según la zona horaria del usuario
+  const getUserNow = (timeZone: string) => {
+    return new Date(new Date().toLocaleString("en-US", { timeZone }));
   };
 
   // funcion para validar si la tarea esta vencida y sin completar
-  const isTaskExpired = (endDate: string, status: string): boolean => {
+  const isTaskExpired = (
+    endDate: string,
+    endTime: string | null,
+    status: string,
+    timeZone: string,
+  ): boolean => {
     if (status === "completed") return false;
     // Convertimos las fechas al timezone de Colombia y las truncamos a medianoche
-    const today = getColombiaDate();
-    const taskEnd = endDate.split("T")[0];
+    const nowUser = getUserNow(timeZone);
+    if (!endTime) {
+      // Solo comparamos la fecha, horas se ignoran
+      const [year, month, day] = endDate.split("T")[0].split("-").map(Number);
+      const taskEndDate = new Date(year, month - 1, day, 0, 0, 0, 0); // medianoche en zona local
+      return taskEndDate.getTime() < nowUser.getTime();
+    }
 
-    return taskEnd < today;
+    const [year, month, day] = endDate.split("T")[0].split("-").map(Number);
+    const [hour, minute] = endTime.split(":").map(Number);
+
+    const taskEndDateTime = new Date(year, month - 1, day, hour, minute, 0, 0);
+
+    return taskEndDateTime.getTime() < nowUser.getTime();
   };
 
   const formatDateWithoutTimezoneShift = (dateStr: string) => {
@@ -474,17 +624,59 @@ const Task = () => {
     return `${parseInt(day)} ${meses[parseInt(month) - 1]} ${year}`;
   };
 
-  const today = getColombiaDate();
+  // Formatea hora en HH:mm a hh:mm AM/PM
+  const formatHour = (hourStr: string | null) => {
+    if (!hourStr) return "--:--";
 
+    // Separar horas y minutos
+    const [hour, minute] = hourStr.split(":").map(Number);
+    if (isNaN(hour) || isNaN(minute)) return "--:--";
+
+    // Calcular AM/PM
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+
+    return `${hour12}:${minute.toString().padStart(2, "0")} ${ampm}`;
+  };
+
+  // 🔄 Toggle cada 10s
+  useEffect(() => {
+    const startInterval = setInterval(
+      () => setShowStartDate((prev) => !prev),
+      10000,
+    );
+    const endInterval = setInterval(
+      () => setShowEndDate((prev) => !prev),
+      10000,
+    );
+    return () => {
+      clearInterval(startInterval);
+      clearInterval(endInterval);
+    };
+  }, []);
+
+  // 🔹 Ordenar las tareas según estado y vencimiento
   const orderedTasks = [...tasks].sort((a, b) => {
     const getOrder = (task: any) => {
       const taskDate = task.start_date.split("T")[0];
 
-      if (taskDate > today) return 3; // 📅 Futuras
-      if (isTaskExpired(task.end_date, task.status)) return 4; // ❌ Vencidas
-      if (task.status === "in_progress") return 0; // 🟡 En progreso (hoy)
-      if (task.status === "pending") return 1; // ⏳ Pendientes (hoy)
-      if (task.status === "completed") return 5; // ✅ Completadas
+      if (
+        new Date(taskDate) >
+        getUserNow(Intl.DateTimeFormat().resolvedOptions().timeZone)
+      )
+        return 3; // Futuras
+      if (
+        isTaskExpired(
+          task.end_date,
+          task.end_time,
+          task.status,
+          Intl.DateTimeFormat().resolvedOptions().timeZone,
+        )
+      )
+        return 4; // Vencidas
+      if (task.status === "in_progress") return 0; // En progreso
+      if (task.status === "pending") return 1; // Pendientes hoy
+      if (task.status === "completed") return 5; // Completadas
 
       return 6;
     };
@@ -530,12 +722,38 @@ const Task = () => {
               onChange={(e) => {
                 setNewDate(e.target.value);
               }}
+              disabled={selectedTask?.status === "completed"}
             />
+            {selectedTask &&
+              selectedTask.start_time !== null &&
+              selectedTask.end_time !== null && (
+                <>
+                  <label>Hora de inicio:</label>
+                  <input
+                    type="time"
+                    value={newStartTime}
+                    onChange={(e) => setNewStartTime(e.target.value)}
+                    disabled={
+                      selectedTask?.status === "in_progress" ||
+                      selectedTask?.status === "completed"
+                    }
+                  />
+
+                  <label>Hora final:</label>
+                  <input
+                    type="time"
+                    value={newEndTime}
+                    onChange={(e) => setNewEndTime(e.target.value)}
+                    disabled={selectedTask?.status === "completed"}
+                  />
+                </>
+              )}
 
             <select
-              onChange={(e) => setPriority(e.target.value)} // Actualiza el estado al seleccionar
-              value={priority} // Se establece el valor del select según el estado
+              onChange={(e) => setPriority(e.target.value)}
+              value={priority}
               required
+              disabled={selectedTask?.status === "completed"}
             >
               <option value="baja">Baja</option>
               <option value="media">Media</option>
@@ -638,7 +856,12 @@ const Task = () => {
               <div
                 key={task.id}
                 className={`${styles["task-item"]} ${
-                  isTaskExpired(task.end_date, task.status)
+                  isTaskExpired(
+                    task.end_date,
+                    task.end_time,
+                    task.status,
+                    Intl.DateTimeFormat().resolvedOptions().timeZone,
+                  )
                     ? styles["expired-task"]
                     : ""
                 }`}
@@ -657,7 +880,10 @@ const Task = () => {
                       task.id,
                       task.task_name,
                       task.end_date,
-                      task.priority
+                      task.priority,
+                      task.start_time,
+                      task.end_time,
+                      task.status,
                     )
                   }
                   onMouseUp={handleMouseUp}
@@ -667,7 +893,10 @@ const Task = () => {
                       task.id,
                       task.task_name,
                       task.end_date,
-                      task.priority
+                      task.priority,
+                      task.start_time,
+                      task.end_time,
+                      task.status,
                     )
                   }
                   onTouchEnd={handleMouseUp}
@@ -712,9 +941,19 @@ const Task = () => {
               let section = "";
               const taskDate = task.start_date.split("T")[0];
 
-              if (taskDate > today) {
+              if (
+                new Date(taskDate) >
+                getUserNow(Intl.DateTimeFormat().resolvedOptions().timeZone)
+              ) {
                 section = "Tareas futuras";
-              } else if (isTaskExpired(task.end_date, task.status)) {
+              } else if (
+                isTaskExpired(
+                  task.end_date,
+                  task.end_time,
+                  task.status,
+                  Intl.DateTimeFormat().resolvedOptions().timeZone,
+                )
+              ) {
                 section = "Tareas vencidas";
               } else if (task.status === "in_progress") {
                 section = "En progreso";
@@ -734,7 +973,12 @@ const Task = () => {
                   )}
                   <div
                     className={`${styles["task-item"]} ${
-                      isTaskExpired(task.end_date, task.status)
+                      isTaskExpired(
+                        task.end_date,
+                        task.end_time,
+                        task.status,
+                        Intl.DateTimeFormat().resolvedOptions().timeZone,
+                      )
                         ? styles["expired-task"]
                         : ""
                     }`}
@@ -752,7 +996,10 @@ const Task = () => {
                           task.id,
                           task.task_name,
                           task.end_date,
-                          task.priority
+                          task.priority,
+                          task.start_time,
+                          task.end_time,
+                          task.status,
                         )
                       }
                       onMouseUp={handleMouseUp}
@@ -762,7 +1009,10 @@ const Task = () => {
                           task.id,
                           task.task_name,
                           task.end_date,
-                          task.priority
+                          task.priority,
+                          task.start_time,
+                          task.end_time,
+                          task.status,
                         )
                       }
                       onTouchEnd={handleMouseUp}
@@ -790,14 +1040,54 @@ const Task = () => {
                               icon={faClock}
                               style={{ marginRight: "5px" }}
                             />
-                            {formatDateWithoutTimezoneShift(task.start_date)}
+                            {
+                              task.start_time // si tiene hora
+                                ? [
+                                    "Tareas vencidas",
+                                    "Tareas de hoy",
+                                    "Pendientes",
+                                    "En progreso",
+                                    "Tareas futuras",
+                                  ].includes(section)
+                                  ? showStartDate
+                                    ? formatDateWithoutTimezoneShift(
+                                        task.start_date,
+                                      )
+                                    : formatHour(task.start_time)
+                                  : formatDateWithoutTimezoneShift(
+                                      task.start_date,
+                                    ) // solo día si sección no aplica
+                                : formatDateWithoutTimezoneShift(
+                                    task.start_date,
+                                  ) // si no hay hora, solo día
+                            }
                           </p>
+
                           <p title="fecha final">
                             <FontAwesomeIcon
                               icon={faClock}
                               style={{ marginRight: "5px" }}
+                              className={styles["date-toggle"]}
                             />
-                            {formatDateWithoutTimezoneShift(task.end_date)}
+                            {
+                              task.end_time // solo si la tarea tiene hora
+                                ? [
+                                    "Tareas vencidas",
+                                    "Tareas de hoy",
+                                    "En progreso",
+                                    "Pendientes",
+                                    "Tareas futuras",
+                                  ].includes(section)
+                                  ? showEndDate
+                                    ? formatDateWithoutTimezoneShift(
+                                        task.end_date,
+                                      )
+                                    : formatHour(task.end_time)
+                                  : formatDateWithoutTimezoneShift(
+                                      task.end_date,
+                                    ) // secciones donde solo mostramos el día
+                                : formatDateWithoutTimezoneShift(task.end_date) // si no hay hora, mostramos solo el día
+                            }
                           </p>
                         </div>
                       </div>

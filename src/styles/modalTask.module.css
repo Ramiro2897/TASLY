@@ -14,7 +14,7 @@
 
 .modal-content {
   background: var(--bg-modal-content);
-  box-shadow: var(--boxshadowModal);
+  box-shadow: var(--box-shadow);
   padding: 25px;
   border-radius: 5px; 
   max-width: 400px;
@@ -23,7 +23,14 @@
   color: var(--color-text-global);        
   position: relative;
   animation: fadeIn 1s ease-in-out;
-  overflow: hidden;
+  max-height: 97vh;   /* límite */
+  overflow-y: auto;
+  scrollbar-width: none;      /* Firefox */
+  -ms-overflow-style: none; 
+}
+
+.modal-content::-webkit-scrollbar {
+  display: none;              /* Chrome, Safari */
 }
 
 @keyframes floatUpFade {
@@ -68,16 +75,72 @@
 }
 
 .modal-content h2 {
-  font-size: 1.1rem;
-  margin-bottom: 20px;
+  font-size: 1rem;
+  margin-bottom: 10px;
   border: var(--border-modalTask);
   border-radius: 5px; 
 }
 
 /* label para fechas de inicio y final */
-.starDate{
-  text-align: left;
+.starDate {
+  display: grid;
+  grid-template-columns: 1fr; /* 👈 UNA columna */
+  gap: 12px;
   padding: 5px;
+  text-align: left;
+}
+
+.timeToggle {
+  width: 50%;
+  display: grid;
+  grid-template-columns: 1fr auto; /* texto | checkbox */
+  align-items: center;
+  gap: 8px;
+  padding: 2px 12px;
+  cursor: pointer;
+}
+
+.timeToggle span {
+  justify-self: start;   
+  text-align: left;
+  font-size: .8rem;
+  color: var(--color-input);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timeToggle input[type="checkbox"] {
+  appearance: none;
+  width: 10px;
+  height: 10px;
+
+  border: var(--border-default);
+  border-radius: 2px;
+  background: var(--bg-inputTaskModal);
+
+  transform: scale(0.7);      
+  transform-origin: center;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.timeToggle input[type="checkbox"] {
+  position: relative;
+}
+
+.timeToggle input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 12px;
+  color: var(--color-text-global);
 }
 
 .starDate label {
@@ -193,7 +256,7 @@
 .success-message {
   background-color: var(--color-btn); 
   color: var(--color-text-global);
-  padding: 12px;
+  padding: 5px 12px;
   margin-bottom: 10px;
   text-align: center;
   border-radius: 6px;
@@ -255,10 +318,33 @@
 }
 
 /* Responsividad */
+
+@media (min-width: 768px) {
+  .starDate {
+    grid-template-columns: 1fr 1fr; /* 👈 DOS columnas */
+  }
+}
+
 @media (max-width: 600px) {
   .modal-content input,
-.modal-content select {
+  .modal-content select {
   background: var(--bg-inputTaskModal);
+  }
+
+  .timeToggle {
+  width: 70%;
+  display: grid;
+  grid-template-columns: 1fr auto; /* texto | checkbox */
+  align-items: center;
+  gap: 8px;
+  padding: 2px 12px;
+  cursor: pointer;
+}
+}
+
+@media (max-width: 350px) {
+  .timeToggle {
+  width: 80%;
 }
 }
 

@@ -28,7 +28,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
 
   // manejar errores del servidor
   const [errors, setErrors] = useState<{ userId?: string; general?: string }>(
-    {}
+    {},
   );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,26 +37,32 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
 
   // abrir y cerrar modales
   const openModal = () => {
+    document.body.style.overflow = "hidden";
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
+    document.body.style.overflow = "";
     setIsModalOpen(false);
   };
 
   const openPhraseModal = () => {
+    document.body.style.overflow = "hidden";
     setIsPhraseModalOpen(true);
   };
 
   const closePhraseModal = () => {
+    document.body.style.overflow = "";
     setIsPhraseModalOpen(false);
   };
 
   const openGoalsModal = () => {
+    document.body.style.overflow = "hidden";
     setIsModalGoalsOpen(true);
   };
 
   const closeGoalsModal = () => {
+    document.body.style.overflow = "";
     setIsModalGoalsOpen(false);
   };
   // -------------.......-----------
@@ -111,6 +117,8 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     inProgress: 0,
     completed: 0,
   });
+
+  console.log(taskSummary, "todo lo total, pendiente etc");
 
   // Manejamos la notificación en otro useEffect independiente
   useEffect(() => {
@@ -197,7 +205,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
         setErrors(
           error.response?.data.errors || {
             general: "Error inesperado. Comunícalo al programador.",
-          }
+          },
         );
       } finally {
         clearTimeout(skeletonTimer);
@@ -301,7 +309,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
       // Eliminar los datos del localStorage al cerrar sesión
       localStorage.clear();
@@ -345,7 +353,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     if (hour >= 0 && hour < 6) return "sleep";
 
     if (hour >= 6 && hour < 12) return "morning";
-    if (hour >= 12 && hour < 20) return "afternoon";
+    if (hour >= 12 && hour < 18) return "afternoon";
     return "night";
   };
 
@@ -494,6 +502,8 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
           Completaste <span className={styles.taskCount}>{completed}</span> de{" "}
           <span className={styles.taskCount}>{total}</span> tareas 💪
         </>
+      ) : inProgress > 0 ? (
+        <>Tienes tareas en progreso. ¡Sigue trabajando! 🔄</>
       ) : (
         <>Hoy no se dio, y está bien. Mañana continúas 🌘</>
       );

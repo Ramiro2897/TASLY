@@ -102,7 +102,7 @@ const ModalGoals: React.FC<ModalGoalsProps> = ({
         document.body.style.overflow = "auto";
         document.body.style.pointerEvents = "auto";
       },
-      { once: true }
+      { once: true },
     );
   };
 
@@ -149,22 +149,24 @@ const ModalGoals: React.FC<ModalGoalsProps> = ({
             </div>
           )}
 
-          <div className={styles["starDate"]}>
-            <label htmlFor="startDate">Fecha de inicio:</label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-          </div>
+          <div className={styles.starDate}>
+            <div>
+              <label htmlFor="startDate">Fecha de inicio</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
 
-          <div className={styles["starDate"]}>
-            <label htmlFor="endDate">Fecha final:</label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
+            <div>
+              <label htmlFor="endDate">Fecha final</label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
           </div>
 
           {errors.unit && (
