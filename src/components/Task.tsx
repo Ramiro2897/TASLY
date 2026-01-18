@@ -232,7 +232,7 @@ const Task = () => {
           return task;
         }),
       );
-    }, 500_000); // intervalo de prueba 500_000
+    }, 50_000); // intervalo de prueba 500_000
 
     return () => clearInterval(interval);
   }, []);
