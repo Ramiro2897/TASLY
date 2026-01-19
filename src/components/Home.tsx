@@ -117,7 +117,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     inProgress: 0,
     completed: 0,
   });
-  console.log(tareas, 'las tareas ey');
+  console.log(tareas, "las tareas ey");
   // console.log(taskSummary, "todo lo total, pendiente etc");
 
   // Manejamos la notificación en otro useEffect independiente
@@ -599,20 +599,26 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                       )}
                     </div>
 
-                    {/* Mostrar la fecha final de la tarea */}
+                    {/* Mostrar la fecha incial de la tarea */}
                     <div className={styles["task-date"]}>
                       <FontAwesomeIcon
                         icon={faClock}
                         style={{ marginRight: "5px" }}
                       />
-                      {new Intl.DateTimeFormat("es-ES", {
-                        timeZone: "America/Bogota",
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })
-                        .format(new Date(tareas[0].start_date))
-                        .replace(/ de /g, " ")}
+                      {(() => {
+                        // Dividir YYYY-MM-DD
+                        const [year, month, day] = tareas[0].start_date
+                          .split("T")[0]
+                          .split("-");
+                        const date = new Date(+year, +month - 1, +day); // JS interpreta como local
+                        return new Intl.DateTimeFormat("es-ES", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
+                          .format(date)
+                          .replace(/ de /g, " ");
+                      })()}
                     </div>
                   </div>
                 ) : (
