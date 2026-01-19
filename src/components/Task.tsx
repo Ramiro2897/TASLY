@@ -78,7 +78,7 @@ const Task = () => {
   const [showStartDate, setShowStartDate] = useState(true);
   const [showEndDate, setShowEndDate] = useState(true);
 
-  console.log(tasks, "tareas con horas");
+  // console.log(tasks, "tareas con horas");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -138,7 +138,8 @@ const Task = () => {
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
     const interval = setInterval(() => {
-      const now = new Date(new Date().toLocaleString("en-US", { timeZone }));
+      const nowUser = getUserNow(timeZone); // Hora actual del usuario, TZ correcta
+      console.log("⏰ Hora actual del usuario:", nowUser.toISOString());
 
       setTasks((prevTasks) =>
         prevTasks.map((task) => {
@@ -148,51 +149,45 @@ const Task = () => {
             start_date: task.start_date,
             start_time: task.start_time,
             end_time: task.end_time,
-            now: now.toISOString(),
+            now: nowUser.toISOString(),
           });
 
-          // Solo tareas pendientes, con rango horario
+          // Solo tareas pendientes con rango horario
           if (task.status !== "pending" || !task.start_time || !task.end_time) {
             return task;
           }
 
-          // Fecha de la tarea en TZ usuario
-          const taskDate = new Date(
-            new Date(task.start_date).toLocaleString("en-US", { timeZone }),
-          );
-
-          // Si no es hoy, no hacer nada
-          if (
-            taskDate.getFullYear() !== now.getFullYear() ||
-            taskDate.getMonth() !== now.getMonth() ||
-            taskDate.getDate() !== now.getDate()
-          ) {
-            return task;
-          }
-
-          // Construimos rango horario
+          // Parseamos la fecha de inicio de la tarea directamente
+          const [year, month, day] = task.start_date
+            .split("T")[0]
+            .split("-")
+            .map(Number);
           const [startHour, startMinute] = task.start_time
             .split(":")
             .map(Number);
           const [endHour, endMinute] = task.end_time.split(":").map(Number);
 
-          const taskStart = new Date(taskDate);
-          taskStart.setHours(startHour, startMinute, 0, 0);
-
-          const taskEnd = new Date(taskDate);
-          taskEnd.setHours(endHour, endMinute, 0, 0);
+          const taskStart = new Date(
+            year,
+            month - 1,
+            day,
+            startHour,
+            startMinute,
+            0,
+          );
+          const taskEnd = new Date(year, month - 1, day, endHour, endMinute, 0);
 
           console.log("Rango calculado:", {
             taskId: task.id,
             taskStart: taskStart.toISOString(),
             taskEnd: taskEnd.toISOString(),
-            now: now.toISOString(),
+            now: nowUser.toISOString(),
           });
 
           // SOLO si ahora está dentro del rango → auto iniciar (una sola vez)
           if (
-            now.getTime() >= taskStart.getTime() &&
-            now.getTime() <= taskEnd.getTime()
+            nowUser.getTime() >= taskStart.getTime() &&
+            nowUser.getTime() <= taskEnd.getTime()
           ) {
             const API_URL = import.meta.env.VITE_API_URL;
             const token = localStorage.getItem("token");
@@ -224,7 +219,9 @@ const Task = () => {
                   ),
                 );
               })
-              .catch(() => {});
+              .catch((err) => {
+                console.error("Error al auto-iniciar tarea:", task.id, err);
+              });
 
             return task;
           }
@@ -232,7 +229,7 @@ const Task = () => {
           return task;
         }),
       );
-    }, 50_000); // intervalo de prueba 500_000
+    }, 50_000); // Intervalo de prueba: 50 seg
 
     return () => clearInterval(interval);
   }, []);
@@ -639,13 +636,14 @@ const Task = () => {
 
     // Hora actual del usuario
     const nowUser = getUserNow(timeZone);
-    console.log("Hora actual del usuario en servidor:", nowUser);
+    // console.log("Hora actual del usuario en servidor:", nowUser);
 
     if (!endTime) {
       const [y, m, d] = endDate.split("T")[0].split("-").map(Number);
       const taskEndDate = new Date(y, m - 1, d, 23, 59, 59); // fin del día en TZ local
-      console.log(taskEndDate, " ", "fecha final tarea");
-      console.log(taskEndDate.getTime() < nowUser.getTime()), 'esta vencida? ';
+      // console.log(taskEndDate, " ", "fecha final tarea");
+      // (console.log(taskEndDate.getTime() < nowUser.getTime()),
+      //   "esta vencida? ");
       return taskEndDate.getTime() < nowUser.getTime();
     }
 
@@ -653,8 +651,8 @@ const Task = () => {
     const [y, m, d] = endDate.split("T")[0].split("-").map(Number);
     const [hour, minute] = endTime.split(":").map(Number);
     const taskEndDateTime = new Date(y, m - 1, d, hour, minute, 0);
-    console.log(taskEndDateTime, "valorrrr para horas");
-    console.log('es falso?', taskEndDateTime.getTime() < nowUser.getTime() )
+    // console.log(taskEndDateTime, "valorrrr para horas");
+    // console.log("es falso?", taskEndDateTime.getTime() < nowUser.getTime());
     return taskEndDateTime.getTime() < nowUser.getTime();
   };
 
@@ -996,17 +994,6 @@ const Task = () => {
                 task.start_date,
                 userTimeZone,
               );
-
-              console.log("DEBUG TASK", {
-                taskId: task.id,
-                taskDateUTC: task.start_date,
-                taskDateOnly,
-                endDateUTC: task.end_date,
-                endTime: task.end_time,
-                todayStr,
-                userTimeZone,
-                nowUser: nowUser.toISOString(),
-              });
               let section = "";
 
               // 1️⃣ Primero: vencidas
