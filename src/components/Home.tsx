@@ -117,8 +117,8 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     inProgress: 0,
     completed: 0,
   });
-
-  console.log(taskSummary, "todo lo total, pendiente etc");
+  console.log(tareas, 'las tareas ey');
+  // console.log(taskSummary, "todo lo total, pendiente etc");
 
   // Manejamos la notificación en otro useEffect independiente
   useEffect(() => {
@@ -599,7 +599,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                       )}
                     </div>
 
-                    {/* Mostrar la fecha de creación de la tarea */}
+                    {/* Mostrar la fecha final de la tarea */}
                     <div className={styles["task-date"]}>
                       <FontAwesomeIcon
                         icon={faClock}
