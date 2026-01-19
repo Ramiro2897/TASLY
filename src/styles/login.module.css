@@ -5,17 +5,26 @@
 }
 
 body{
+  /* width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center; */
+  background: var(--bg-gradient-body);
+}
+
+.container-all{
   width: 100%;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: var(--bg-gradient-body);
 }
 
 .login-container {
-  width: 100%;
-  min-height: auto;
+  max-width: 500px;
+  min-height: 350px;
+  max-height: 500px;
   display: flex;
   justify-content: center;
   font-family: 'Poppins', sans-serif;

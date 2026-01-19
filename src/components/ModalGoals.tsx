@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import styles from "../styles/modalTask.module.css";
 
@@ -35,6 +35,17 @@ const ModalGoals: React.FC<ModalGoalsProps> = ({
     unit?: string;
   }>({});
 
+  const timeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -64,9 +75,12 @@ const ModalGoals: React.FC<ModalGoalsProps> = ({
       setSuccessMessage("La meta se agregó correctamente!");
       setErrors({});
 
-      setTimeout(() => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+      timeoutRef.current = window.setTimeout(() => {
         setSuccessMessage(null);
         onClose();
+        timeoutRef.current = null;
       }, 5000);
     } catch (error: any) {
       if (error.response?.data?.errors) {
@@ -79,6 +93,10 @@ const ModalGoals: React.FC<ModalGoalsProps> = ({
   };
 
   const handleClose = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
     setGoal("");
     setDescription("");
     setStartDate("");

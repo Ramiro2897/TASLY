@@ -4,16 +4,19 @@
   box-sizing: border-box;
 }
 
-body{
+.goals-container-all{
   width: 100%;
-  height: 100%;
-  overflow: auto;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
 }
 
 /* contenedor en de todo el contenido de metas */
 .goals-container{
-  width: 100%;
-  height: 100vh; 
+  max-width: 800px;
+  min-height: 350px;
+  max-height: 500px;
+  height: 100%; 
 }
 
 .logo {
@@ -221,7 +224,7 @@ body{
 
 .noGoals{
   width: 100%;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: var(--color-text-global);
   margin-top: 50px;
   text-align: center;

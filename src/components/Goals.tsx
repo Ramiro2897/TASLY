@@ -73,7 +73,7 @@ const Goals = () => {
   } | null>(null);
   const [currentPhrase, setCurrentPhrase] = useState<GoalMessage | null>(null);
   const [editedDescription, setEditedDescription] = useState(
-    selectedGoal?.description || ""
+    selectedGoal?.description || "",
   );
   const [newValue, setNewValue] = useState(0);
   const [showGoalMessage, setShowGoalMessage] = useState(false);
@@ -111,7 +111,7 @@ const Goals = () => {
     // mensajes dinámicos desde metas
     const dynamicMessages: GoalMessage[] = generateGoalMessages(
       goals,
-      new Date()
+      new Date(),
     );
 
     // unir todo
@@ -204,7 +204,7 @@ const Goals = () => {
       setSearchResults([]);
       setIsSearching(false); // no aparece el boton de ir atras cuando se hace una busqueda en caso de error...
       setErrors(
-        error.response?.data?.errors || { general: "Error en la búsqueda." }
+        error.response?.data?.errors || { general: "Error en la búsqueda." },
       );
       setTimeout(() => {
         setErrors(() => {
@@ -232,7 +232,7 @@ const Goals = () => {
       // 🔹 Filtrar tareas actualizadas
       const updatedGoals = goals.filter((goal) => goal.id !== selectedGoal.id);
       const updatedSearchResults = searchResults.filter(
-        (goal) => goal.id !== selectedGoal.id
+        (goal) => goal.id !== selectedGoal.id,
       );
 
       // 🔹 Actualizar el estado con los nuevos valores
@@ -255,7 +255,7 @@ const Goals = () => {
       setErrors(
         error.response?.data?.errors || {
           general: "Error al eliminar la tarea.",
-        }
+        },
       );
       setTimeout(() => {
         setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
@@ -280,21 +280,21 @@ const Goals = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       // Actualizar tareas en el estado principal
       const updatedGoals = goals.map((goal) =>
         goal.id === selectedGoal.id
           ? { ...goal, description: editedDescription }
-          : goal
+          : goal,
       );
 
       // Actualizar las tareas en los resultados de búsqueda
       const updatedSearchResults = searchResults.map((goal) =>
         goal.id === selectedGoal.id
           ? { ...goal, description: editedDescription }
-          : goal
+          : goal,
       );
       // Actualizamos ambos estados
       setSearchResults(updatedSearchResults);
@@ -311,7 +311,7 @@ const Goals = () => {
       setErrors(
         error.response?.data?.errors || {
           general: "Error al actualizar la tarea.",
-        }
+        },
       );
       setTimeout(() => {
         setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
@@ -344,27 +344,27 @@ const Goals = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       // Actualizar tareas en el estado principal
       const updatedGoals = goals.map((goal) =>
         goal.id === selectedGoalPreview.id
           ? { ...goal, current_value: newValue }
-          : goal
+          : goal,
       );
 
       // Actualizar las tareas en los resultados de búsqueda
       const updatedSearchResults = searchResults.map((goal) =>
         goal.id === selectedGoalPreview.id
           ? { ...goal, current_value: newValue }
-          : goal
+          : goal,
       );
       // Actualizamos ambos estados
       setSearchResults(updatedSearchResults);
       setGoals(updatedGoals);
       setSelectedGoalPreview((prev) =>
-        prev ? { ...prev, current_value: newValue } : prev
+        prev ? { ...prev, current_value: newValue } : prev,
       );
 
       // Solo mostrar mensajes cuando se alcanza un hito
@@ -402,7 +402,7 @@ const Goals = () => {
             document.body.style.overflow = "auto";
             document.body.style.pointerEvents = "auto";
           },
-          { once: true }
+          { once: true },
         );
       } else {
         setShowAddPreviewModal(false);
@@ -414,7 +414,7 @@ const Goals = () => {
       setErrors(
         error.response?.data?.errors || {
           general: "Error al avanzar en la meta.",
-        }
+        },
       );
       setTimeout(() => {
         setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
@@ -434,7 +434,7 @@ const Goals = () => {
     goalId: number,
     goalName: string,
     date: string,
-    description: string
+    description: string,
   ) => {
     if (pressTimer) {
       clearTimeout(pressTimer);
@@ -469,7 +469,7 @@ const Goals = () => {
         document.body.style.overflow = "auto";
         document.body.style.pointerEvents = "auto";
       },
-      { once: true }
+      { once: true },
     );
   };
 
@@ -483,7 +483,7 @@ const Goals = () => {
   const handleAddPreview = (
     idGoal: number,
     nameGoal: string,
-    current_value: number
+    current_value: number,
   ) => {
     setShowAddPreviewModal(true);
     document.body.style.overflow = "hidden";
@@ -510,7 +510,7 @@ const Goals = () => {
         document.body.style.overflow = "auto";
         document.body.style.pointerEvents = "auto";
       },
-      { once: true }
+      { once: true },
     );
   };
 
@@ -527,7 +527,7 @@ const Goals = () => {
           document.body.style.overflow = "auto";
           document.body.style.pointerEvents = "auto";
         },
-        { once: true }
+        { once: true },
       );
     } else {
       setShowAddPreviewModal(false);
@@ -589,7 +589,7 @@ const Goals = () => {
         playSound();
         sessionStorage.setItem(
           `goal_${selectedGoalPreview.id}_notified`,
-          "true"
+          "true",
         );
       }
     }
@@ -620,431 +620,435 @@ const Goals = () => {
     : null;
 
   return (
-    <div className={styles["goals-container"]}>
-      {/* 🔹 Modal que muestra mensajes cada que se avanza en la meta */}
-      {showGoalMessage && (
-        <div className={styles["goal-message-overlay"]}>
-          <div className={styles["goal-message-modal"]}>
-            <p className={styles["goal-message-text"]}>{goalMessage}</p>
-            <button
-              className={styles["goal-message-button"]}
-              onClick={() => setShowGoalMessage(false)}
-            >
-              x
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* 🔹 Modal para eliminar o actualizar una meta*/}
-      {showModal && selectedGoal && (
-        <div className={styles["modalOverlay"]}>
-          <div className={styles["modalContent"]}>
-            <p className={styles["goalTitle"]}>{selectedGoal.name}</p>
-            <p className={styles["question"]}> ¿Qué quieres hacer?</p>
-            <div className={styles["btn-options"]}>
-              <button onClick={handleOpenEditModal}>
-                <FontAwesomeIcon icon={faPen} /> Editar
-              </button>
-              <button onClick={handleDeleteGoal}>
-                <FontAwesomeIcon icon={faTrash} /> Eliminar
-              </button>
-              <button onClick={handleCloseModal}>
-                <FontAwesomeIcon icon={faTimes} /> Cerrar
+    <div className={styles["goals-container-all"]}>
+      <div className={styles["goals-container"]}>
+        {/* 🔹 Modal que muestra mensajes cada que se avanza en la meta */}
+        {showGoalMessage && (
+          <div className={styles["goal-message-overlay"]}>
+            <div className={styles["goal-message-modal"]}>
+              <p className={styles["goal-message-text"]}>{goalMessage}</p>
+              <button
+                className={styles["goal-message-button"]}
+                onClick={() => setShowGoalMessage(false)}
+              >
+                x
               </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* 🔹 Modal para editar meta o agregar una nota o avance */}
-      {showEditModal && selectedGoal && (
-        <div className={styles["modalOverlay"]}>
-          <div className={styles["modalContent"]}>
-            <span>Agregar una nota:</span>
-            <p className={styles["goalName"]}>{selectedGoal.name}</p>
-            <textarea
-              value={editedDescription}
-              onChange={(e) => setEditedDescription(e.target.value)}
-              className={styles["textarea-description"]}
-            />
-            <div className={styles["btn-options"]}>
-              <button onClick={handleUpdateGoal}>
-                Actualizar
-                <FontAwesomeIcon icon={faSave} />
-              </button>
-              <button onClick={handleCloseEditModal}>
-                <FontAwesomeIcon icon={faTimes} />
-                Cerrar
-              </button>
-            </div>
-            {errors.errorUpdate && (
-              <p className={styles["error-Update"]}> {errors.errorUpdate}</p>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* 🔹 Modal para agregar avance a una meta */}
-      {showAddPreviewModal && selectedGoalPreview && (
-        <div
-          key={selectedGoalPreview?.id}
-          className={`${styles["modalOverlayPreview"]} ${
-            Number(selectedGoalPreview?.current_value) === 100
-              ? styles["goal-completed_modal"]
-              : ""
-          }`}
-        >
-          <div className={styles["modalContentPreview"]}>
-            <span>¿Qué tanto avanzaste?</span>
-            <p className={styles["goalName"]}>{selectedGoalPreview.name}</p>
-            <input
-              className={styles["inputAdvance"]}
-              type="number"
-              min={0}
-              max={100}
-              value={newValue}
-              onChange={(e) => {
-                const newValue = Number(e.target.value);
-                if (
-                  newValue <= 100 &&
-                  newValue >= Number(selectedGoalPreview?.current_value)
-                ) {
-                  setNewValue(newValue);
-                }
-              }}
-            />
-            <div className={styles["goal_progress"]}>
-              <div className={styles["progress-bar"]}>
-                <div
-                  className={styles["progress"]}
-                  style={{
-                    width: `${selectedGoalPreview.current_value}%`,
-                    background: modalProgressInfo?.color,
-                  }}
-                  data-value={selectedGoalPreview.current_value}
-                ></div>
+        {/* 🔹 Modal para eliminar o actualizar una meta*/}
+        {showModal && selectedGoal && (
+          <div className={styles["modalOverlay"]}>
+            <div className={styles["modalContent"]}>
+              <p className={styles["goalTitle"]}>{selectedGoal.name}</p>
+              <p className={styles["question"]}> ¿Qué quieres hacer?</p>
+              <div className={styles["btn-options"]}>
+                <button onClick={handleOpenEditModal}>
+                  <FontAwesomeIcon icon={faPen} /> Editar
+                </button>
+                <button onClick={handleDeleteGoal}>
+                  <FontAwesomeIcon icon={faTrash} /> Eliminar
+                </button>
+                <button onClick={handleCloseModal}>
+                  <FontAwesomeIcon icon={faTimes} /> Cerrar
+                </button>
               </div>
             </div>
-            <div className={styles["btn-options"]}>
-              <button onClick={handleGoalAdvance}>
-                Avanzar
-                <FontAwesomeIcon icon={faSpaceShuttle} />
-              </button>
-              <button onClick={handleClosePreviewModal}>
-                <FontAwesomeIcon icon={faTimes} />
-                Cerrar
-              </button>
+          </div>
+        )}
+
+        {/* 🔹 Modal para editar meta o agregar una nota o avance */}
+        {showEditModal && selectedGoal && (
+          <div className={styles["modalOverlay"]}>
+            <div className={styles["modalContent"]}>
+              <span>Agregar una nota:</span>
+              <p className={styles["goalName"]}>{selectedGoal.name}</p>
+              <textarea
+                value={editedDescription}
+                onChange={(e) => setEditedDescription(e.target.value)}
+                className={styles["textarea-description"]}
+              />
+              <div className={styles["btn-options"]}>
+                <button onClick={handleUpdateGoal}>
+                  Actualizar
+                  <FontAwesomeIcon icon={faSave} />
+                </button>
+                <button onClick={handleCloseEditModal}>
+                  <FontAwesomeIcon icon={faTimes} />
+                  Cerrar
+                </button>
+              </div>
+              {errors.errorUpdate && (
+                <p className={styles["error-Update"]}> {errors.errorUpdate}</p>
+              )}
             </div>
-            {errors.errorUpdate && (
-              <p className={styles["error-Update"]}> {errors.errorUpdate}</p>
-            )}
           </div>
-        </div>
-      )}
-
-      <motion.div
-        className={styles["goals_header"]}
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, amount: 0.2 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className={styles["title"]}>
-          <h2>Tasly</h2>
-        </div>
-
-        <div className={styles["options"]}>
-          <div
-            className={styles["button"]}
-            onClick={() => handleNavigation("/Home")}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} /> Ir Home
-          </div>
-          <div
-            className={styles["button"]}
-            onClick={() => handleNavigation("/tasks")}
-          >
-            <FontAwesomeIcon icon={faListCheck} /> Tareas
-          </div>
-          <div
-            className={styles["button"]}
-            onClick={() => handleNavigation("/phrases")}
-          >
-            <FontAwesomeIcon icon={faQuoteLeft} /> Frases
-          </div>
-        </div>
-      </motion.div>
-
-      {errors.userId && (
-        <p className={styles["errorPhrases"]}>{errors.userId}</p>
-      )}
-
-      {/* Barra de búsqueda */}
-      <motion.div
-        className={styles["search_goals"]}
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className={styles["content-search"]}>
-          <input
-            type="text"
-            placeholder="Buscar meta..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button onClick={handleSearch}>
-            <FontAwesomeIcon icon={faSearch} />
-          </button>
-        </div>
-      </motion.div>
-      <div className={styles["error-container"]}>
-        {errors.general && (
-          <p className={styles["error-search"]}> {errors.general}</p>
         )}
-        {errors.message && (
-          <p className={styles["noGoals"]}> {errors.message}</p>
-        )}
-      </div>
 
-      {/* contenido de frases */}
-      {!isSearching && (
+        {/* 🔹 Modal para agregar avance a una meta */}
+        {showAddPreviewModal && selectedGoalPreview && (
+          <div
+            key={selectedGoalPreview?.id}
+            className={`${styles["modalOverlayPreview"]} ${
+              Number(selectedGoalPreview?.current_value) === 100
+                ? styles["goal-completed_modal"]
+                : ""
+            }`}
+          >
+            <div className={styles["modalContentPreview"]}>
+              <span>¿Qué tanto avanzaste?</span>
+              <p className={styles["goalName"]}>{selectedGoalPreview.name}</p>
+              <input
+                className={styles["inputAdvance"]}
+                type="number"
+                min={0}
+                max={100}
+                value={newValue}
+                onChange={(e) => {
+                  const newValue = Number(e.target.value);
+                  if (
+                    newValue <= 100 &&
+                    newValue >= Number(selectedGoalPreview?.current_value)
+                  ) {
+                    setNewValue(newValue);
+                  }
+                }}
+              />
+              <div className={styles["goal_progress"]}>
+                <div className={styles["progress-bar"]}>
+                  <div
+                    className={styles["progress"]}
+                    style={{
+                      width: `${selectedGoalPreview.current_value}%`,
+                      background: modalProgressInfo?.color,
+                    }}
+                    data-value={selectedGoalPreview.current_value}
+                  ></div>
+                </div>
+              </div>
+              <div className={styles["btn-options"]}>
+                <button onClick={handleGoalAdvance}>
+                  Avanzar
+                  <FontAwesomeIcon icon={faSpaceShuttle} />
+                </button>
+                <button onClick={handleClosePreviewModal}>
+                  <FontAwesomeIcon icon={faTimes} />
+                  Cerrar
+                </button>
+              </div>
+              {errors.errorUpdate && (
+                <p className={styles["error-Update"]}> {errors.errorUpdate}</p>
+              )}
+            </div>
+          </div>
+        )}
+
         <motion.div
-          className={styles["atomic_habits"]}
+          className={styles["goals_header"]}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className={styles["title"]}>
+            <h2>Tasly</h2>
+          </div>
+
+          <div className={styles["options"]}>
+            <div
+              className={styles["button"]}
+              onClick={() => handleNavigation("/Home")}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} /> Ir Home
+            </div>
+            <div
+              className={styles["button"]}
+              onClick={() => handleNavigation("/tasks")}
+            >
+              <FontAwesomeIcon icon={faListCheck} /> Tareas
+            </div>
+            <div
+              className={styles["button"]}
+              onClick={() => handleNavigation("/phrases")}
+            >
+              <FontAwesomeIcon icon={faQuoteLeft} /> Frases
+            </div>
+          </div>
+        </motion.div>
+
+        {errors.userId && (
+          <p className={styles["errorPhrases"]}>{errors.userId}</p>
+        )}
+
+        {/* Barra de búsqueda */}
+        <motion.div
+          className={styles["search_goals"]}
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false }}
           transition={{ duration: 0.6 }}
         >
-          <p className={styles.fadeIn}>
-            {currentPhrase &&
-              (currentPhrase.highlight
-                ? currentPhrase.text
-                    .split(currentPhrase.highlight)
-                    .map((part, i, arr) => (
-                      <span key={i}>
-                        {part}
-                        {i < arr.length - 1 && (
-                          <span className={styles.highlight}>
-                            {currentPhrase.highlight}
-                          </span>
-                        )}
-                      </span>
-                    ))
-                : currentPhrase.text)}
-          </p>
+          <div className={styles["content-search"]}>
+            <input
+              type="text"
+              placeholder="Buscar meta..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button onClick={handleSearch}>
+              <FontAwesomeIcon icon={faSearch} />
+            </button>
+          </div>
         </motion.div>
-      )}
+        <div className={styles["error-container"]}>
+          {errors.general && (
+            <p className={styles["error-search"]}> {errors.general}</p>
+          )}
+          {errors.message && (
+            <p className={styles["noGoals"]}> {errors.message}</p>
+          )}
+        </div>
 
-      {/* ir atras cuando se genera una busqueda */}
-      <div
-        className={`${styles["back"]} ${isSearching ? styles["visible"] : ""}`}
-        onClick={handleBack}
-      >
-        <FontAwesomeIcon icon={faArrowLeft} title="Ir atrás" />
+        {/* contenido de frases */}
+        {!isSearching && (
+          <motion.div
+            className={styles["atomic_habits"]}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false }}
+            transition={{ duration: 0.6 }}
+          >
+            <p className={styles.fadeIn}>
+              {currentPhrase &&
+                (currentPhrase.highlight
+                  ? currentPhrase.text
+                      .split(currentPhrase.highlight)
+                      .map((part, i, arr) => (
+                        <span key={i}>
+                          {part}
+                          {i < arr.length - 1 && (
+                            <span className={styles.highlight}>
+                              {currentPhrase.highlight}
+                            </span>
+                          )}
+                        </span>
+                      ))
+                  : currentPhrase.text)}
+            </p>
+          </motion.div>
+        )}
+
+        {/* ir atras cuando se genera una busqueda */}
+        <div
+          className={`${styles["back"]} ${isSearching ? styles["visible"] : ""}`}
+          onClick={handleBack}
+        >
+          <FontAwesomeIcon icon={faArrowLeft} title="Ir atrás" />
+        </div>
+
+        {/* Lista de metas */}
+        <motion.div
+          className={styles["dashboard_goal"]}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+        >
+          {searchResults.length > 0
+            ? searchResults.map((goal) => (
+                <div
+                  key={goal.id}
+                  className={`
+                ${styles["goal-item"]} 
+                ${
+                  Number(goal.current_value) === 100
+                    ? styles["goal-completed"]
+                    : ""
+                } 
+                ${
+                  goal.end_date.split("T")[0] <
+                    new Date().toISOString().split("T")[0] &&
+                  Number(goal.current_value) < 100
+                    ? styles["goal-expired"]
+                    : ""
+                }
+              `}
+                >
+                  <div
+                    className={styles["content-infoGoal"]}
+                    onMouseDown={() =>
+                      handleMouseDown(
+                        goal.id,
+                        goal.goal,
+                        goal.start_date,
+                        goal.description,
+                      )
+                    }
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                    onTouchStart={() =>
+                      handleMouseDown(
+                        goal.id,
+                        goal.goal,
+                        goal.start_date,
+                        goal.description,
+                      )
+                    }
+                    onTouchEnd={handleMouseUp}
+                    onTouchCancel={handleMouseUp}
+                  >
+                    <div className={styles["goal-name"]}>
+                      <p>{goal.goal}</p>
+                    </div>
+                    <div className={styles["description"]}>
+                      <p>{goal.description}</p>
+                    </div>
+
+                    {/* boton en 3d */}
+                    <button
+                      className={styles["btn-3d"]}
+                      onClick={() =>
+                        handleAddPreview(goal.id, goal.goal, goal.current_value)
+                      }
+                    >
+                      Avanzar 🚀
+                    </button>
+
+                    {/* avence o progreso de la meta */}
+                    <div className={styles["goal_progress"]}>
+                      <div className={styles["progress-bar"]}>
+                        <div
+                          className={styles["progress"]}
+                          style={{
+                            width: `${goal.current_value}%`,
+                            background: getProgressInfo(goal.current_value)
+                              .color,
+                          }}
+                          data-value={goal.current_value}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div className={styles["goal-date"]}>
+                      <div className={styles["content-date"]}>
+                        <p title="fecha de creación">
+                          <FontAwesomeIcon
+                            icon={faClock}
+                            style={{ marginRight: "5px" }}
+                          />
+                          {formatDateWithoutTimezoneShift(goal.start_date)}
+                        </p>
+                        <p title="fecha de terminación">
+                          <FontAwesomeIcon
+                            icon={faClock}
+                            style={{ marginRight: "5px" }}
+                          />
+                          {formatDateWithoutTimezoneShift(goal.end_date)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            : goals.length > 0 &&
+              goals.map((goal) => (
+                <div
+                  key={goal.id}
+                  className={`
+                ${styles["goal-item"]} 
+                ${
+                  Number(goal.current_value) === 100
+                    ? styles["goal-completed"]
+                    : ""
+                } 
+                ${
+                  goal.end_date.split("T")[0] <
+                    new Date().toISOString().split("T")[0] &&
+                  Number(goal.current_value) < 100
+                    ? styles["goal-expired"]
+                    : ""
+                }
+              `}
+                >
+                  <div
+                    className={styles["content-infoGoal"]}
+                    onMouseDown={() =>
+                      handleMouseDown(
+                        goal.id,
+                        goal.goal,
+                        goal.start_date,
+                        goal.description,
+                      )
+                    }
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                    onTouchStart={() =>
+                      handleMouseDown(
+                        goal.id,
+                        goal.goal,
+                        goal.start_date,
+                        goal.description,
+                      )
+                    }
+                    onTouchEnd={handleMouseUp}
+                    onTouchCancel={handleMouseUp}
+                  >
+                    <div className={styles["goal-name"]}>
+                      <p>{goal.goal}</p>
+                    </div>
+                    <div className={styles["description"]}>
+                      <p>{goal.description}</p>
+                    </div>
+
+                    {/* boton en 3d */}
+                    <button
+                      className={styles["btn-3d"]}
+                      onClick={() =>
+                        handleAddPreview(goal.id, goal.goal, goal.current_value)
+                      }
+                    >
+                      Avanzar 🚀
+                    </button>
+
+                    {/* avence o progreso de la meta */}
+                    <div className={styles["goal_progress"]}>
+                      <div className={styles["progress-bar"]}>
+                        <div
+                          className={styles["progress"]}
+                          style={{
+                            width: `${goal.current_value}%`,
+                            background: getProgressInfo(goal.current_value)
+                              .color,
+                          }}
+                          data-value={goal.current_value}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div className={styles["goal-date"]}>
+                      <div className={styles["content-date"]}>
+                        <p title="fecha de creación">
+                          <FontAwesomeIcon
+                            icon={faClock}
+                            style={{ marginRight: "5px" }}
+                          />
+                          {formatDateWithoutTimezoneShift(goal.start_date)}
+                        </p>
+                        <p title="fecha de terminación">
+                          <FontAwesomeIcon
+                            icon={faClock}
+                            style={{ marginRight: "5px" }}
+                          />
+                          {formatDateWithoutTimezoneShift(goal.end_date)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+        </motion.div>
       </div>
-
-      {/* Lista de metas */}
-      <motion.div
-        className={styles["dashboard_goal"]}
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, amount: 0.2 }}
-        transition={{ duration: 0.6 }}
-      >
-        {searchResults.length > 0
-          ? searchResults.map((goal) => (
-              <div
-                key={goal.id}
-                className={`
-                ${styles["goal-item"]} 
-                ${
-                  Number(goal.current_value) === 100
-                    ? styles["goal-completed"]
-                    : ""
-                } 
-                ${
-                  goal.end_date.split("T")[0] <
-                    new Date().toISOString().split("T")[0] &&
-                  Number(goal.current_value) < 100
-                    ? styles["goal-expired"]
-                    : ""
-                }
-              `}
-              >
-                <div
-                  className={styles["content-infoGoal"]}
-                  onMouseDown={() =>
-                    handleMouseDown(
-                      goal.id,
-                      goal.goal,
-                      goal.start_date,
-                      goal.description
-                    )
-                  }
-                  onMouseUp={handleMouseUp}
-                  onMouseLeave={handleMouseUp}
-                  onTouchStart={() =>
-                    handleMouseDown(
-                      goal.id,
-                      goal.goal,
-                      goal.start_date,
-                      goal.description
-                    )
-                  }
-                  onTouchEnd={handleMouseUp}
-                  onTouchCancel={handleMouseUp}
-                >
-                  <div className={styles["goal-name"]}>
-                    <p>{goal.goal}</p>
-                  </div>
-                  <div className={styles["description"]}>
-                    <p>{goal.description}</p>
-                  </div>
-
-                  {/* boton en 3d */}
-                  <button
-                    className={styles["btn-3d"]}
-                    onClick={() =>
-                      handleAddPreview(goal.id, goal.goal, goal.current_value)
-                    }
-                  >
-                    Avanzar 🚀
-                  </button>
-
-                  {/* avence o progreso de la meta */}
-                  <div className={styles["goal_progress"]}>
-                    <div className={styles["progress-bar"]}>
-                      <div
-                        className={styles["progress"]}
-                        style={{
-                          width: `${goal.current_value}%`,
-                          background: getProgressInfo(goal.current_value).color,
-                        }}
-                        data-value={goal.current_value}
-                      ></div>
-                    </div>
-                  </div>
-
-                  <div className={styles["goal-date"]}>
-                    <div className={styles["content-date"]}>
-                      <p title="fecha de creación">
-                        <FontAwesomeIcon
-                          icon={faClock}
-                          style={{ marginRight: "5px" }}
-                        />
-                        {formatDateWithoutTimezoneShift(goal.start_date)}
-                      </p>
-                      <p title="fecha de terminación">
-                        <FontAwesomeIcon
-                          icon={faClock}
-                          style={{ marginRight: "5px" }}
-                        />
-                        {formatDateWithoutTimezoneShift(goal.end_date)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))
-          : goals.length > 0 &&
-            goals.map((goal) => (
-              <div
-                key={goal.id}
-                className={`
-                ${styles["goal-item"]} 
-                ${
-                  Number(goal.current_value) === 100
-                    ? styles["goal-completed"]
-                    : ""
-                } 
-                ${
-                  goal.end_date.split("T")[0] <
-                    new Date().toISOString().split("T")[0] &&
-                  Number(goal.current_value) < 100
-                    ? styles["goal-expired"]
-                    : ""
-                }
-              `}
-              >
-                <div
-                  className={styles["content-infoGoal"]}
-                  onMouseDown={() =>
-                    handleMouseDown(
-                      goal.id,
-                      goal.goal,
-                      goal.start_date,
-                      goal.description
-                    )
-                  }
-                  onMouseUp={handleMouseUp}
-                  onMouseLeave={handleMouseUp}
-                  onTouchStart={() =>
-                    handleMouseDown(
-                      goal.id,
-                      goal.goal,
-                      goal.start_date,
-                      goal.description
-                    )
-                  }
-                  onTouchEnd={handleMouseUp}
-                  onTouchCancel={handleMouseUp}
-                >
-                  <div className={styles["goal-name"]}>
-                    <p>{goal.goal}</p>
-                  </div>
-                  <div className={styles["description"]}>
-                    <p>{goal.description}</p>
-                  </div>
-
-                  {/* boton en 3d */}
-                  <button
-                    className={styles["btn-3d"]}
-                    onClick={() =>
-                      handleAddPreview(goal.id, goal.goal, goal.current_value)
-                    }
-                  >
-                    Avanzar 🚀
-                  </button>
-
-                  {/* avence o progreso de la meta */}
-                  <div className={styles["goal_progress"]}>
-                    <div className={styles["progress-bar"]}>
-                      <div
-                        className={styles["progress"]}
-                        style={{
-                          width: `${goal.current_value}%`,
-                          background: getProgressInfo(goal.current_value).color,
-                        }}
-                        data-value={goal.current_value}
-                      ></div>
-                    </div>
-                  </div>
-
-                  <div className={styles["goal-date"]}>
-                    <div className={styles["content-date"]}>
-                      <p title="fecha de creación">
-                        <FontAwesomeIcon
-                          icon={faClock}
-                          style={{ marginRight: "5px" }}
-                        />
-                        {formatDateWithoutTimezoneShift(goal.start_date)}
-                      </p>
-                      <p title="fecha de terminación">
-                        <FontAwesomeIcon
-                          icon={faClock}
-                          style={{ marginRight: "5px" }}
-                        />
-                        {formatDateWithoutTimezoneShift(goal.end_date)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-      </motion.div>
     </div>
   );
 };

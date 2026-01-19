@@ -4,16 +4,25 @@
   box-sizing: border-box;
 }
 
-body{
+/* body{
   width: 100%;
   height: 100%;
   overflow: auto;
+} */
+
+.phrases-container-all{
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
 }
 
 /* contenedor en de todo el contenido de frases */
 .phrases-container{
-  width: 100%;
-  height: 100vh; 
+  max-width: 800px;
+  min-height: 350px;
+  max-height: 500px;
+  height: 100%; 
 }
 
 /* estilos para el header */
@@ -148,7 +157,7 @@ body{
   width: 100%;
   height: auto;
   display: flex;
-  /* justify-content: center; */
+  justify-content: center;
   align-items: center;
   text-align: center;
   gap: 20px;
@@ -157,6 +166,7 @@ body{
   transform: translateY(0);
   transition: opacity 0.3s ease, transform 0.3s ease;
   border-radius: 5px;
+  margin: 10px 0;
 }
 
 .messageContext  {
@@ -172,6 +182,7 @@ body{
   width: fit-content;
   max-width: 100%;
   border-radius: 5px;
+  margin: 10px 0;
 }
 
 /* estilos para la barra de buesqueda */
@@ -222,7 +233,7 @@ body{
 
 .noPhrases{
   width: 100%;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: var(--color-text-global);
   margin-top: 50px;
   text-align: center;
@@ -631,6 +642,7 @@ body{
     grid-template-columns: repeat(2, 1fr); /* 2 tarjetas por fila */
     max-width: 600px;
   }
+
 }
 
 @media (max-width: 480px) {

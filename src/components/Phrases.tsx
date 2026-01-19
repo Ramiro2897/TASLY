@@ -37,7 +37,7 @@ const phraseMessages = [
   "Escribe algo solo para ti.",
   "¿Quieres dejar un pensamiento aquí?",
   "Comparte una idea que valga la pena guardar.",
-  "Escribe lo primero que se te ocurra."
+  "Escribe lo primero que se te ocurra.",
 ];
 
 const Phrases = () => {
@@ -89,7 +89,7 @@ const Phrases = () => {
 
         // Convertimos la fecha a la zona horaria de Bogotá y luego al formato YYYY-MM-DD
         const offsetDate = new Date(
-          date.toLocaleString("en-US", { timeZone: "America/Bogota" })
+          date.toLocaleString("en-US", { timeZone: "America/Bogota" }),
         );
         const year = offsetDate.getFullYear();
         const month = String(offsetDate.getMonth() + 1).padStart(2, "0");
@@ -159,7 +159,7 @@ const Phrases = () => {
       setSearchResults([]);
       setIsSearching(false); // no aparece el boton de ir atras cuando se hace una busqueda en caso de error...
       setErrors(
-        error.response?.data?.errors || { general: "Error en la búsqueda." }
+        error.response?.data?.errors || { general: "Error en la búsqueda." },
       );
       setTimeout(() => {
         setErrors(() => {
@@ -187,10 +187,10 @@ const Phrases = () => {
 
       // 🔹 Filtrar frases actualizadas
       const updatedPhrase = phrases.filter(
-        (phrase) => phrase.id !== selectedPhrase.id
+        (phrase) => phrase.id !== selectedPhrase.id,
       );
       const updatedSearchResults = searchResults.filter(
-        (phrase) => phrase.id !== selectedPhrase.id
+        (phrase) => phrase.id !== selectedPhrase.id,
       );
 
       // 🔹 Actualizar el estado con los nuevos valores
@@ -213,7 +213,7 @@ const Phrases = () => {
       setErrors(
         error.response?.data?.errors || {
           general: "Error al eliminar la frase.",
-        }
+        },
       );
       setTimeout(() => {
         setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
@@ -238,21 +238,21 @@ const Phrases = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       // Actualizar tareas en el estado principal
       const updatedPhrases = phrases.map((phrase) =>
         phrase.id === selectedPhrase.id
           ? { ...phrase, created_at: localDate, phrase: editedName }
-          : phrase
+          : phrase,
       );
 
       // Actualizar las tareas en los resultados de búsqueda
       const updatedSearchResults = searchResults.map((phrase) =>
         phrase.id === selectedPhrase.id
           ? { ...phrase, created_at: localDate, phrase: editedName }
-          : phrase
+          : phrase,
       );
       // Actualizamos ambos estados
       setSearchResults(updatedSearchResults);
@@ -269,7 +269,7 @@ const Phrases = () => {
       setErrors(
         error.response?.data?.errors || {
           general: "Error al actualizar la tarea.",
-        }
+        },
       );
       setTimeout(() => {
         setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
@@ -280,7 +280,7 @@ const Phrases = () => {
   // funcion para actualizar las frases a favorita o viceversa
   const handleFavoriteToggle = async (
     phraseId: number,
-    isFavorite: boolean
+    isFavorite: boolean,
   ) => {
     try {
       // Llamada PUT para actualizar el estado del "favorite"
@@ -293,28 +293,28 @@ const Phrases = () => {
             "Phrase-Id": phraseId,
             Favorite: isFavorite.toString(), // Enviamos como string para facilitar la interpretación
           },
-        }
+        },
       );
       setPhrases((prevPhrase) =>
         prevPhrase.map((phrases) =>
           phrases.id === phraseId
             ? { ...phrases, favorite: isFavorite }
-            : phrases
-        )
+            : phrases,
+        ),
       );
       // Actualización del estado en la interfaz
       setSearchResults((prevResults) =>
         prevResults.map((phrases) =>
           phrases.id === phraseId
             ? { ...phrases, favorite: isFavorite }
-            : phrases
-        )
+            : phrases,
+        ),
       );
     } catch (error: any) {
       setErrors(
         error.response?.data?.errors || {
           general: "Error al actualizar el favorito.",
-        }
+        },
       );
       setTimeout(() => {
         setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
@@ -329,7 +329,7 @@ const Phrases = () => {
     phraseName: string,
     date: string,
     favorite: boolean,
-    author: string
+    author: string,
   ) => {
     if (pressTimer) {
       clearTimeout(pressTimer);
@@ -365,7 +365,7 @@ const Phrases = () => {
         document.body.style.overflow = "auto";
         document.body.style.pointerEvents = "auto";
       },
-      { once: true }
+      { once: true },
     );
   };
 
@@ -397,7 +397,7 @@ const Phrases = () => {
         document.body.style.overflow = "auto";
         document.body.style.pointerEvents = "auto";
       },
-      { once: true }
+      { once: true },
     );
   };
 
@@ -436,294 +436,296 @@ const Phrases = () => {
     phraseMessages[Math.floor(Math.random() * phraseMessages.length)];
 
   return (
-    <div className={styles["phrases-container"]}>
-      {/* 🔹 Modal para eliminar o actualizar frase*/}
-      {showModal && selectedPhrase && (
-        <div className={styles["modalOverlay"]}>
-          <div className={styles["modalContent"]}>
-            <p className={styles["phraseTitle"]}>
-              {selectedPhrase.name.length > 225
-                ? selectedPhrase.name.slice(0, 225) + "..."
-                : selectedPhrase.name}
-            </p>
-            <p className={styles["question"]}> ¿Qué quieres hacer?</p>
-            <div className={styles["btn-options"]}>
-              <button onClick={handleOpenEditModal}>
-                <FontAwesomeIcon icon={faPen} /> Editar
-              </button>
-              <button onClick={handleDeletePhrase}>
-                <FontAwesomeIcon icon={faTrash} /> Eliminar
-              </button>
-              <button onClick={handleCloseModal}>
-                <FontAwesomeIcon icon={faTimes} /> Cerrar
-              </button>
+    <div className={styles["phrases-container-all"]}>
+      <div className={styles["phrases-container"]}>
+        {/* 🔹 Modal para eliminar o actualizar frase*/}
+        {showModal && selectedPhrase && (
+          <div className={styles["modalOverlay"]}>
+            <div className={styles["modalContent"]}>
+              <p className={styles["phraseTitle"]}>
+                {selectedPhrase.name.length > 225
+                  ? selectedPhrase.name.slice(0, 225) + "..."
+                  : selectedPhrase.name}
+              </p>
+              <p className={styles["question"]}> ¿Qué quieres hacer?</p>
+              <div className={styles["btn-options"]}>
+                <button onClick={handleOpenEditModal}>
+                  <FontAwesomeIcon icon={faPen} /> Editar
+                </button>
+                <button onClick={handleDeletePhrase}>
+                  <FontAwesomeIcon icon={faTrash} /> Eliminar
+                </button>
+                <button onClick={handleCloseModal}>
+                  <FontAwesomeIcon icon={faTimes} /> Cerrar
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* 🔹 Modal para editar tarea */}
-      {showEditModal && selectedPhrase && (
-        <div className={styles["modalOverlay"]}>
-          <div className={styles["modalContent"]}>
-            <span>Actualizar frase:</span>
-            <textarea
-              value={editedName}
-              onChange={(e) => setEditedName(e.target.value)}
-              className={styles["textarea-name"]}
-            />
-            <label className={styles["label-question"]}>
-              ¿Modificar la fecha de actualización?
-            </label>
-            <input
-              type="date"
-              value={newDate}
-              onChange={(e) => {
-                setNewDate(e.target.value);
-              }}
-            />
-            <div className={styles["btn-options"]}>
-              <button onClick={handleUpdatePhrase}>
-                Actualizar
-                <FontAwesomeIcon icon={faSave} />
-              </button>
-              <button onClick={handleCloseEditModal}>
-                <FontAwesomeIcon icon={faTimes} />
-                Cerrar
-              </button>
+        {/* 🔹 Modal para editar tarea */}
+        {showEditModal && selectedPhrase && (
+          <div className={styles["modalOverlay"]}>
+            <div className={styles["modalContent"]}>
+              <span>Actualizar frase:</span>
+              <textarea
+                value={editedName}
+                onChange={(e) => setEditedName(e.target.value)}
+                className={styles["textarea-name"]}
+              />
+              <label className={styles["label-question"]}>
+                ¿Modificar la fecha de actualización?
+              </label>
+              <input
+                type="date"
+                value={newDate}
+                onChange={(e) => {
+                  setNewDate(e.target.value);
+                }}
+              />
+              <div className={styles["btn-options"]}>
+                <button onClick={handleUpdatePhrase}>
+                  Actualizar
+                  <FontAwesomeIcon icon={faSave} />
+                </button>
+                <button onClick={handleCloseEditModal}>
+                  <FontAwesomeIcon icon={faTimes} />
+                  Cerrar
+                </button>
+              </div>
+              {errors.errorUpdate && (
+                <p className={styles["error-search"]}>{errors.errorUpdate}</p>
+              )}
             </div>
-            {errors.errorUpdate && (
-              <p className={styles["error-search"]}>{errors.errorUpdate}</p>
-            )}
           </div>
-        </div>
-      )}
-
-      <motion.div
-        className={styles["phrases_header"]}
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, amount: 0.2 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className={styles["title"]}>
-          <h2>Tasly</h2>
-        </div>
-
-        <div className={styles["options"]}>
-          <div
-            className={styles["button"]}
-            onClick={() => handleNavigation("/Home")}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} /> Ir Home
-          </div>
-          <div
-            className={styles["button"]}
-            onClick={() => handleNavigation("/tasks")}
-          >
-            <FontAwesomeIcon icon={faListCheck} /> Tareas
-          </div>
-          <div
-            className={styles["button"]}
-            onClick={() => handleNavigation("/goals")}
-          >
-            <FontAwesomeIcon icon={faBullseye} /> Metas
-          </div>
-        </div>
-      </motion.div>
-
-      {errors.userId && (
-        <p className={styles["errorPhrases"]}>{errors.userId}</p>
-      )}
-
-      {/* Barra de búsqueda */}
-      <motion.div
-        className={styles["search_phrases"]}
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, amount: 0.2 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className={styles["content-search"]}>
-          <input
-            type="text"
-            placeholder="Buscar frase..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button onClick={handleSearch}>
-            <FontAwesomeIcon icon={faSearch} />
-          </button>
-        </div>
-      </motion.div>
-      <div className={styles["error-container"]}>
-        {errors.general && (
-          <p className={styles["error-search"]}> {errors.general}</p>
         )}
-        {errors.message && (
-          <p className={styles["noPhrases"]}> {errors.message}</p>
-        )}
-      </div>
 
-      <div className={styles["message_phrases"]}>
-        <motion.p
-          key={randomMessage}
-          className={styles["messageContext"]}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
+        <motion.div
+          className={styles["phrases_header"]}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
         >
-          {randomMessage}
-        </motion.p>
-      </div>
+          <div className={styles["title"]}>
+            <h2>Tasly</h2>
+          </div>
 
-      {/* ir atras cuando se genera una busqueda */}
-      <div
-        className={`${styles["back"]} ${isSearching ? styles["visible"] : ""}`}
-        onClick={handleBack}
-      >
-        <FontAwesomeIcon icon={faArrowLeft} title="Ir atrás" />
-      </div>
+          <div className={styles["options"]}>
+            <div
+              className={styles["button"]}
+              onClick={() => handleNavigation("/Home")}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} /> Ir Home
+            </div>
+            <div
+              className={styles["button"]}
+              onClick={() => handleNavigation("/tasks")}
+            >
+              <FontAwesomeIcon icon={faListCheck} /> Tareas
+            </div>
+            <div
+              className={styles["button"]}
+              onClick={() => handleNavigation("/goals")}
+            >
+              <FontAwesomeIcon icon={faBullseye} /> Metas
+            </div>
+          </div>
+        </motion.div>
 
-      {/* Lista de frases */}
-      <motion.div
-        className={styles["dashboard_phrase"]}
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, amount: 0.2 }}
-        transition={{ duration: 0.6 }}
-      >
-        {searchResults.length > 0
-          ? searchResults.map((phrase) => (
-              <div key={phrase.id} className={styles["phrase-item"]}>
-                <div
-                  className={styles["content-infoPhrase"]}
-                  onMouseDown={() =>
-                    handleMouseDown(
-                      phrase.id,
-                      phrase.phrase,
-                      phrase.created_at,
-                      phrase.favorite,
-                      phrase.author
-                    )
-                  }
-                  onMouseUp={handleMouseUp}
-                  onMouseLeave={handleMouseUp}
-                  onTouchStart={() =>
-                    handleMouseDown(
-                      phrase.id,
-                      phrase.phrase,
-                      phrase.created_at,
-                      phrase.favorite,
-                      phrase.author
-                    )
-                  }
-                  onTouchEnd={handleMouseUp}
-                  onTouchCancel={handleMouseUp}
-                >
-                  <div className={styles["phrase-name"]}>
-                    <p>{phrase.phrase}</p>
-                  </div>
-                  <div className={styles["author"]}>
-                    <p>{phrase.author}</p>
-                    <input
-                      type="checkbox"
-                      id={`favorite-${phrase.id}`}
-                      checked={phrase.favorite}
-                      onChange={(e) =>
-                        handleFavoriteToggle(phrase.id, e.target.checked)
-                      }
-                      className={styles["favorite-checkbox"]}
-                    />
-                    <label
-                      htmlFor={`favorite-${phrase.id}`}
-                      className={`${styles["heart-label"]} ${
-                        phrase.favorite ? styles["favorited"] : ""
-                      }`}
-                    >
-                      <FontAwesomeIcon icon={faHeart} />
-                    </label>
-                  </div>
-                  <div className={styles["phrase-date"]}>
-                    <div className={styles["content-date"]}>
-                      <p title="fecha de creación">
-                        <FontAwesomeIcon
-                          icon={faClock}
-                          style={{ marginRight: "5px" }}
-                        />
-                        {formatDateWithoutTimezoneShift(phrase.created_at)}
-                      </p>
+        {errors.userId && (
+          <p className={styles["errorPhrases"]}>{errors.userId}</p>
+        )}
+
+        {/* Barra de búsqueda */}
+        <motion.div
+          className={styles["search_phrases"]}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className={styles["content-search"]}>
+            <input
+              type="text"
+              placeholder="Buscar frase..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button onClick={handleSearch}>
+              <FontAwesomeIcon icon={faSearch} />
+            </button>
+          </div>
+        </motion.div>
+        <div className={styles["error-container"]}>
+          {errors.general && (
+            <p className={styles["error-search"]}> {errors.general}</p>
+          )}
+          {errors.message && (
+            <p className={styles["noPhrases"]}> {errors.message}</p>
+          )}
+        </div>
+
+        <div className={styles["message_phrases"]}>
+          <motion.p
+            key={randomMessage}
+            className={styles["messageContext"]}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+          >
+            {randomMessage}
+          </motion.p>
+        </div>
+
+        {/* ir atras cuando se genera una busqueda */}
+        <div
+          className={`${styles["back"]} ${isSearching ? styles["visible"] : ""}`}
+          onClick={handleBack}
+        >
+          <FontAwesomeIcon icon={faArrowLeft} title="Ir atrás" />
+        </div>
+
+        {/* Lista de frases */}
+        <motion.div
+          className={styles["dashboard_phrase"]}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+        >
+          {searchResults.length > 0
+            ? searchResults.map((phrase) => (
+                <div key={phrase.id} className={styles["phrase-item"]}>
+                  <div
+                    className={styles["content-infoPhrase"]}
+                    onMouseDown={() =>
+                      handleMouseDown(
+                        phrase.id,
+                        phrase.phrase,
+                        phrase.created_at,
+                        phrase.favorite,
+                        phrase.author,
+                      )
+                    }
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                    onTouchStart={() =>
+                      handleMouseDown(
+                        phrase.id,
+                        phrase.phrase,
+                        phrase.created_at,
+                        phrase.favorite,
+                        phrase.author,
+                      )
+                    }
+                    onTouchEnd={handleMouseUp}
+                    onTouchCancel={handleMouseUp}
+                  >
+                    <div className={styles["phrase-name"]}>
+                      <p>{phrase.phrase}</p>
+                    </div>
+                    <div className={styles["author"]}>
+                      <p>{phrase.author}</p>
+                      <input
+                        type="checkbox"
+                        id={`favorite-${phrase.id}`}
+                        checked={phrase.favorite}
+                        onChange={(e) =>
+                          handleFavoriteToggle(phrase.id, e.target.checked)
+                        }
+                        className={styles["favorite-checkbox"]}
+                      />
+                      <label
+                        htmlFor={`favorite-${phrase.id}`}
+                        className={`${styles["heart-label"]} ${
+                          phrase.favorite ? styles["favorited"] : ""
+                        }`}
+                      >
+                        <FontAwesomeIcon icon={faHeart} />
+                      </label>
+                    </div>
+                    <div className={styles["phrase-date"]}>
+                      <div className={styles["content-date"]}>
+                        <p title="fecha de creación">
+                          <FontAwesomeIcon
+                            icon={faClock}
+                            style={{ marginRight: "5px" }}
+                          />
+                          {formatDateWithoutTimezoneShift(phrase.created_at)}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))
-          : phrases.length > 0 &&
-            phrases.map((phrase) => (
-              <div key={phrase.id} className={styles["phrase-item"]}>
-                <div
-                  className={styles["content-infoPhrase"]}
-                  onMouseDown={() =>
-                    handleMouseDown(
-                      phrase.id,
-                      phrase.phrase,
-                      phrase.created_at,
-                      phrase.favorite,
-                      phrase.author
-                    )
-                  }
-                  onMouseUp={handleMouseUp}
-                  onMouseLeave={handleMouseUp}
-                  onTouchStart={() =>
-                    handleMouseDown(
-                      phrase.id,
-                      phrase.phrase,
-                      phrase.created_at,
-                      phrase.favorite,
-                      phrase.author
-                    )
-                  }
-                  onTouchEnd={handleMouseUp}
-                  onTouchCancel={handleMouseUp}
-                >
-                  <div className={styles["phrase-name"]}>
-                    <p>{phrase.phrase}</p>
-                  </div>
-                  <div className={styles["author"]}>
-                    <p>{phrase.author}</p>
-                    <input
-                      type="checkbox"
-                      id={`favorite-${phrase.id}`}
-                      checked={phrase.favorite}
-                      onChange={(e) =>
-                        handleFavoriteToggle(phrase.id, e.target.checked)
-                      }
-                      className={styles["favorite-checkbox"]}
-                    />
-                    <label
-                      htmlFor={`favorite-${phrase.id}`}
-                      className={`${styles["heart-label"]} ${
-                        phrase.favorite ? styles["favorited"] : ""
-                      }`}
-                    >
-                      <FontAwesomeIcon icon={faHeart} />
-                    </label>
-                  </div>
-                  <div className={styles["phrase-date"]}>
-                    <div className={styles["content-date"]}>
-                      <p title="fecha de creación">
-                        <FontAwesomeIcon
-                          icon={faClock}
-                          style={{ marginRight: "5px" }}
-                        />
-                        {formatDateWithoutTimezoneShift(phrase.created_at)}
-                      </p>
+              ))
+            : phrases.length > 0 &&
+              phrases.map((phrase) => (
+                <div key={phrase.id} className={styles["phrase-item"]}>
+                  <div
+                    className={styles["content-infoPhrase"]}
+                    onMouseDown={() =>
+                      handleMouseDown(
+                        phrase.id,
+                        phrase.phrase,
+                        phrase.created_at,
+                        phrase.favorite,
+                        phrase.author,
+                      )
+                    }
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                    onTouchStart={() =>
+                      handleMouseDown(
+                        phrase.id,
+                        phrase.phrase,
+                        phrase.created_at,
+                        phrase.favorite,
+                        phrase.author,
+                      )
+                    }
+                    onTouchEnd={handleMouseUp}
+                    onTouchCancel={handleMouseUp}
+                  >
+                    <div className={styles["phrase-name"]}>
+                      <p>{phrase.phrase}</p>
+                    </div>
+                    <div className={styles["author"]}>
+                      <p>{phrase.author}</p>
+                      <input
+                        type="checkbox"
+                        id={`favorite-${phrase.id}`}
+                        checked={phrase.favorite}
+                        onChange={(e) =>
+                          handleFavoriteToggle(phrase.id, e.target.checked)
+                        }
+                        className={styles["favorite-checkbox"]}
+                      />
+                      <label
+                        htmlFor={`favorite-${phrase.id}`}
+                        className={`${styles["heart-label"]} ${
+                          phrase.favorite ? styles["favorited"] : ""
+                        }`}
+                      >
+                        <FontAwesomeIcon icon={faHeart} />
+                      </label>
+                    </div>
+                    <div className={styles["phrase-date"]}>
+                      <div className={styles["content-date"]}>
+                        <p title="fecha de creación">
+                          <FontAwesomeIcon
+                            icon={faClock}
+                            style={{ marginRight: "5px" }}
+                          />
+                          {formatDateWithoutTimezoneShift(phrase.created_at)}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-      </motion.div>
+              ))}
+        </motion.div>
+      </div>
     </div>
   );
 };

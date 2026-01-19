@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import styles from "../styles/modalTask.module.css";
 
@@ -20,8 +20,18 @@ const ModalPhrases: React.FC<ModalPhrasesProps> = ({
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errors, setErrors] = useState<{ phrase?: string; author?: string }>(
-    {}
+    {},
   );
+  const timeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +52,7 @@ const ModalPhrases: React.FC<ModalPhrasesProps> = ({
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       onPhrasesAdded(response.data);
@@ -52,9 +62,12 @@ const ModalPhrases: React.FC<ModalPhrasesProps> = ({
       setAuthor("");
       setSuccessMessage("Frase agregada correctamente!");
       setErrors({});
-      setTimeout(() => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = window.setTimeout(() => {
+        alert("entraaa");
         setSuccessMessage(null);
         onClose();
+        timeoutRef.current = null; // limpiar la referencia
       }, 5000);
     } catch (error: any) {
       if (error.response?.data?.errors) {
@@ -67,6 +80,12 @@ const ModalPhrases: React.FC<ModalPhrasesProps> = ({
   };
   // cierra el modal y ademas eso limpia los errores etc
   const handleClose = () => {
+    // 🔴 cancelar timeout pendiente
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+
     setPhrase("");
     setAuthor("");
     setErrors({});
@@ -87,7 +106,7 @@ const ModalPhrases: React.FC<ModalPhrasesProps> = ({
         document.body.style.overflow = "auto";
         document.body.style.pointerEvents = "auto";
       },
-      { once: true }
+      { once: true },
     );
   };
 

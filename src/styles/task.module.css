@@ -4,16 +4,20 @@
   box-sizing: border-box;
 }
 
-body{
+.task-container-all{
   width: 100%;
-  height: 100%;
-  overflow: auto;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
 }
 
 /* contenedor en de todo el contenido de tareas */
 .task-container{
-  width: 100%;
-  height: 100vh; 
+  max-width: 800px;
+  min-height: 350px;
+  max-height: 500px;
+  height: 100%;
 }
 
 /* estilos para el header */

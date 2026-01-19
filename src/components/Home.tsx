@@ -513,169 +513,107 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
   };
 
   return (
-    <div className={styles["home-container"]}>
-      {/* mostrar que tiene tareas pendientes */}
-      {showAlert && (
-        <div
-          className={`${styles["card-notification"]} ${
-            closing ? styles["slide-up"] : styles["slide-down"]
-          }`}
-        >
-          <div className={styles.icon}>🫠</div>
-          <div className={styles["modal-content-notification"]}>
-            <p className={styles["message-text"]}>Tareas pendientes</p>
-            <p className={styles["sub-text"]}>{motivation}</p>
+    <div className={styles["container-home-all"]}>
+      <div className={styles["home-container"]}>
+        {/* mostrar que tiene tareas pendientes */}
+        {showAlert && (
+          <div
+            className={`${styles["card-notification"]} ${
+              closing ? styles["slide-up"] : styles["slide-down"]
+            }`}
+          >
+            <div className={styles.icon}>🫠</div>
+            <div className={styles["modal-content-notification"]}>
+              <p className={styles["message-text"]}>Tareas pendientes</p>
+              <p className={styles["sub-text"]}>{motivation}</p>
+            </div>
           </div>
+        )}
+
+        {/* mostrar error aqui */}
+        <div className={styles.errors}>
+          {errors.userId && <p className={styles.error}>{errors.userId}</p>}
+          {errors.general && <p className={styles.error}>{errors.general}</p>}
         </div>
-      )}
 
-      {/* mostrar error aqui */}
-      <div className={styles.errors}>
-        {errors.userId && <p className={styles.error}>{errors.userId}</p>}
-        {errors.general && <p className={styles.error}>{errors.general}</p>}
-      </div>
-
-      {username ? (
-        <>
-          <div className={styles["theme"]}>
-            <div title="Cambiar tema" onClick={onToggleTheme}>
-              <FontAwesomeIcon
-                icon={faPalette}
-                color="var(--color-btn)"
-                size="lg"
-              />
-            </div>
-          </div>
-          <div className={styles.header}>
-            <div className={styles.welcomeTextContainer}>
-              <h1 className={styles["welcome-text"]}>
-                {getGreeting()},{" "}
-                <span className={styles.username}>{username}</span>{" "}
-                <span className={styles.wave}>{getGreetingIcon()}</span>
-              </h1>
-              <div className={`${styles.messageContainer}`}>
-                {!isLoading && (
-                  <p className={styles.contextMessage}>{getContextMessage()}</p>
-                )}
+        {username ? (
+          <>
+            <div className={styles["theme"]}>
+              <div title="Cambiar tema" onClick={onToggleTheme}>
+                <FontAwesomeIcon
+                  icon={faPalette}
+                  color="var(--color-btn)"
+                  size="lg"
+                />
               </div>
             </div>
-          </div>
-
-          <div className={styles.dashboard}>
-            {/* 📌 SECCIÓN DE TAREAS */}
-            <div className={styles.card}>
-              <h3>Tareas Diarias</h3>
-              <div
-                className={`${styles["list-container"]} ${
-                  showAlert ? styles["alert-red"] : ""
-                }`}
-                onClick={handleNavigate}
-              >
-                {showSkeleton ? (
-                  <TaskSkeleton />
-                ) : tareas.length > 0 ? (
-                  <div className={styles["task-text"]} title="Ver contenido">
-                    {/* Mostrar task_name */}
-                    <div className={styles["title-name"]}>
-                      {tareas[0].task_name && tareas[0].task_name.length > 25
-                        ? `${tareas[0].task_name.substring(0, 25)}...`
-                        : tareas[0].task_name}
-                    </div>
-
-                    {/* Mostrar si la tarea está completa o en progreso */}
-                    <div className={styles["task-status"]}>
-                      {tareas[0].status === "completed" ? (
-                        <span className={styles["complete-status"]}>
-                          Completada
-                        </span>
-                      ) : tareas[0].status === "in_progress" ? (
-                        <span className={styles["in-progress-status"]}>
-                          En progreso
-                        </span>
-                      ) : (
-                        <span className={styles["incomplete-status"]}>
-                          Pendiente
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Mostrar la fecha incial de la tarea */}
-                    <div className={styles["task-date"]}>
-                      <FontAwesomeIcon
-                        icon={faClock}
-                        style={{ marginRight: "5px" }}
-                      />
-                      {(() => {
-                        // Dividir YYYY-MM-DD
-                        const [year, month, day] = tareas[0].start_date
-                          .split("T")[0]
-                          .split("-");
-                        const date = new Date(+year, +month - 1, +day); // JS interpreta como local
-                        return new Intl.DateTimeFormat("es-ES", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })
-                          .format(date)
-                          .replace(/ de /g, " ");
-                      })()}
-                    </div>
-                  </div>
-                ) : (
-                  <p className={styles["empty-text"]}>No hay tareas aún.</p>
-                )}
+            <div className={styles.header}>
+              <div className={styles.welcomeTextContainer}>
+                <h1 className={styles["welcome-text"]}>
+                  {getGreeting()},{" "}
+                  <span className={styles.username}>{username}</span>{" "}
+                  <span className={styles.wave}>{getGreetingIcon()}</span>
+                </h1>
+                <div className={`${styles.messageContainer}`}>
+                  {!isLoading && (
+                    <p className={styles.contextMessage}>
+                      {getContextMessage()}
+                    </p>
+                  )}
+                </div>
               </div>
-
-              <button
-                className={styles["add-button"]}
-                onClick={() => openModal()}
-                disabled={isLoading}
-              >
-                <FontAwesomeIcon icon={faPlus} /> Agregar Tarea
-              </button>
             </div>
 
-            {/* 🎯 SECCIÓN DE FRASES */}
-            <div className={styles.card}>
-              <h3>Frases o Notas</h3>
-              <div
-                className={styles["list-container"]}
-                onClick={handleGoPhrases}
-              >
-                {showSkeleton ? (
-                  <TaskSkeleton />
-                ) : frases.length > 0 ? (
-                  <div className={styles["task-text"]}>
-                    <div className={styles["title-name"]}>
-                      {frases[0].phrase && frases[0].phrase.length > 25
-                        ? `${frases[0].phrase.substring(0, 25)}...`
-                        : frases[0].phrase}
-                    </div>
-                    <div className={styles["author-info"]}>
-                      <div className={styles["content-author"]}>
-                        <span className={styles.author}>
-                          {frases[0].author}
-                        </span>
-                        <span
-                          className={`${styles["favorite-icon"]} ${
-                            frases[0].favorite
-                              ? styles.favorite
-                              : styles["not-favorite"]
-                          }`}
-                        >
-                          <FontAwesomeIcon icon={faHeartCircleBolt} />
-                        </span>
+            <div className={styles.dashboard}>
+              {/* 📌 SECCIÓN DE TAREAS */}
+              <div className={styles.card}>
+                <h3>Tareas Diarias</h3>
+                <div
+                  className={`${styles["list-container"]} ${
+                    showAlert ? styles["alert-red"] : ""
+                  }`}
+                  onClick={handleNavigate}
+                >
+                  {showSkeleton ? (
+                    <TaskSkeleton />
+                  ) : tareas.length > 0 ? (
+                    <div className={styles["task-text"]} title="Ver contenido">
+                      {/* Mostrar task_name */}
+                      <div className={styles["title-name"]}>
+                        {tareas[0].task_name && tareas[0].task_name.length > 25
+                          ? `${tareas[0].task_name.substring(0, 25)}...`
+                          : tareas[0].task_name}
                       </div>
-                      <span className={styles["task-date"]}>
+
+                      {/* Mostrar si la tarea está completa o en progreso */}
+                      <div className={styles["task-status"]}>
+                        {tareas[0].status === "completed" ? (
+                          <span className={styles["complete-status"]}>
+                            Completada
+                          </span>
+                        ) : tareas[0].status === "in_progress" ? (
+                          <span className={styles["in-progress-status"]}>
+                            En progreso
+                          </span>
+                        ) : (
+                          <span className={styles["incomplete-status"]}>
+                            Pendiente
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Mostrar la fecha incial de la tarea */}
+                      <div className={styles["task-date"]}>
                         <FontAwesomeIcon
                           icon={faClock}
                           style={{ marginRight: "5px" }}
                         />
                         {(() => {
-                          const [year, month, day] = frases[0].created_at
+                          // Dividir YYYY-MM-DD
+                          const [year, month, day] = tareas[0].start_date
                             .split("T")[0]
                             .split("-");
-                          const date = new Date(+year, +month - 1, +day);
+                          const date = new Date(+year, +month - 1, +day); // JS interpreta como local
                           return new Intl.DateTimeFormat("es-ES", {
                             year: "numeric",
                             month: "long",
@@ -684,48 +622,60 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                             .format(date)
                             .replace(/ de /g, " ");
                         })()}
-                      </span>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <p className={styles["empty-text"]}>No hay frases aún.</p>
-                )}
+                  ) : (
+                    <p className={styles["empty-text"]}>No hay tareas aún.</p>
+                  )}
+                </div>
+
+                <button
+                  className={styles["add-button"]}
+                  onClick={() => openModal()}
+                  disabled={isLoading}
+                >
+                  <FontAwesomeIcon icon={faPlus} /> Agregar Tarea
+                </button>
               </div>
 
-              <button
-                className={styles["add-button"]}
-                onClick={openPhraseModal}
-                disabled={isLoading}
-              >
-                <FontAwesomeIcon icon={faPlus} /> Agregar Frase
-              </button>
-            </div>
-
-            {/* ✨ SECCIÓN DE METAS */}
-            <div className={styles.card}>
-              <h3>Metas</h3>
-              <div className={styles["list-container"]} onClick={handleGoGoals}>
-                {showSkeleton ? (
-                  <TaskSkeleton />
-                ) : metas.length > 0 ? (
-                  <div className={styles["task-text"]}>
-                    <div className={styles["title-name"]}>
-                      <p className={styles.goals}>
-                        {metas[0].goal && metas[0].goal.length > 25
-                          ? `${metas[0].goal.substring(0, 25)}...`
-                          : metas[0].goal}
-                      </p>
-                    </div>
-                    <p className={styles["goals-unit"]}> {metas[0].unit}</p>
-                    <p className={styles["task-date"]}>
-                      <FontAwesomeIcon
-                        icon={faClock}
-                        style={{ marginRight: "5px" }}
-                      />
-                      Termina el:{" "}
-                      {metas[0].end_date
-                        ? (() => {
-                            const [year, month, day] = metas[0].end_date
+              {/* 🎯 SECCIÓN DE FRASES */}
+              <div className={styles.card}>
+                <h3>Frases o Notas</h3>
+                <div
+                  className={styles["list-container"]}
+                  onClick={handleGoPhrases}
+                >
+                  {showSkeleton ? (
+                    <TaskSkeleton />
+                  ) : frases.length > 0 ? (
+                    <div className={styles["task-text"]}>
+                      <div className={styles["title-name"]}>
+                        {frases[0].phrase && frases[0].phrase.length > 25
+                          ? `${frases[0].phrase.substring(0, 25)}...`
+                          : frases[0].phrase}
+                      </div>
+                      <div className={styles["author-info"]}>
+                        <div className={styles["content-author"]}>
+                          <span className={styles.author}>
+                            {frases[0].author}
+                          </span>
+                          <span
+                            className={`${styles["favorite-icon"]} ${
+                              frases[0].favorite
+                                ? styles.favorite
+                                : styles["not-favorite"]
+                            }`}
+                          >
+                            <FontAwesomeIcon icon={faHeartCircleBolt} />
+                          </span>
+                        </div>
+                        <span className={styles["task-date"]}>
+                          <FontAwesomeIcon
+                            icon={faClock}
+                            style={{ marginRight: "5px" }}
+                          />
+                          {(() => {
+                            const [year, month, day] = frases[0].created_at
                               .split("T")[0]
                               .split("-");
                             const date = new Date(+year, +month - 1, +day);
@@ -736,75 +686,132 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                             })
                               .format(date)
                               .replace(/ de /g, " ");
-                          })()
-                        : "Fecha no disponible"}
-                    </p>
-                  </div>
-                ) : (
-                  <p className={styles["empty-text"]}>No hay metas aún.</p>
-                )}
+                          })()}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className={styles["empty-text"]}>No hay frases aún.</p>
+                  )}
+                </div>
+
+                <button
+                  className={styles["add-button"]}
+                  onClick={openPhraseModal}
+                  disabled={isLoading}
+                >
+                  <FontAwesomeIcon icon={faPlus} /> Agregar Frase
+                </button>
               </div>
 
-              <button
-                className={styles["add-button"]}
-                onClick={openGoalsModal}
-                disabled={isLoading}
-              >
-                <FontAwesomeIcon icon={faPlus} /> Agregar Meta
-              </button>
+              {/* ✨ SECCIÓN DE METAS */}
+              <div className={styles.card}>
+                <h3>Metas</h3>
+                <div
+                  className={styles["list-container"]}
+                  onClick={handleGoGoals}
+                >
+                  {showSkeleton ? (
+                    <TaskSkeleton />
+                  ) : metas.length > 0 ? (
+                    <div className={styles["task-text"]}>
+                      <div className={styles["title-name"]}>
+                        <p className={styles.goals}>
+                          {metas[0].goal && metas[0].goal.length > 25
+                            ? `${metas[0].goal.substring(0, 25)}...`
+                            : metas[0].goal}
+                        </p>
+                      </div>
+                      <p className={styles["goals-unit"]}> {metas[0].unit}</p>
+                      <p className={styles["task-date"]}>
+                        <FontAwesomeIcon
+                          icon={faClock}
+                          style={{ marginRight: "5px" }}
+                        />
+                        Termina el:{" "}
+                        {metas[0].end_date
+                          ? (() => {
+                              const [year, month, day] = metas[0].end_date
+                                .split("T")[0]
+                                .split("-");
+                              const date = new Date(+year, +month - 1, +day);
+                              return new Intl.DateTimeFormat("es-ES", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })
+                                .format(date)
+                                .replace(/ de /g, " ");
+                            })()
+                          : "Fecha no disponible"}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className={styles["empty-text"]}>No hay metas aún.</p>
+                  )}
+                </div>
+
+                <button
+                  className={styles["add-button"]}
+                  onClick={openGoalsModal}
+                  disabled={isLoading}
+                >
+                  <FontAwesomeIcon icon={faPlus} /> Agregar Meta
+                </button>
+              </div>
             </div>
-          </div>
 
-          {/* Footer */}
-          <footer className={styles["footer"]}>
-            <p>
-              © TASLY - Created by Ramiro {currentYear}{" "}
-              <span
-                className={styles["span"]}
-                title="información"
-                onClick={handleGoInformation}
-              >
-                <FontAwesomeIcon icon={faQuestion} />
-              </span>
-            </p>
-            <div className={styles["btn-buttons"]}>
-              <button
-                onClick={handleLogout}
-                disabled={isLoading}
-                className={styles["logout-button"]}
-                title="Cerrar sesión"
-              >
-                <FontAwesomeIcon icon={faSignOutAlt} />
-              </button>
-            </div>
-          </footer>
-        </>
-      ) : (
-        "Cargando..."
-      )}
+            {/* Footer */}
+            <footer className={styles["footer"]}>
+              <p>
+                © TASLY - Created by Ramiro {currentYear}{" "}
+                <span
+                  className={styles["span"]}
+                  title="información"
+                  onClick={handleGoInformation}
+                >
+                  <FontAwesomeIcon icon={faQuestion} />
+                </span>
+              </p>
+              <div className={styles["btn-buttons"]}>
+                <button
+                  onClick={handleLogout}
+                  disabled={isLoading}
+                  className={styles["logout-button"]}
+                  title="Cerrar sesión"
+                >
+                  <FontAwesomeIcon icon={faSignOutAlt} />
+                </button>
+              </div>
+            </footer>
+          </>
+        ) : (
+          "Cargando..."
+        )}
 
-      {/* modales donde se maneja el actualizar tarea, el cerrar modal, desde ModalTask a Home */}
-      <ModalTask
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onSubmit={() => {}}
-        onTaskAdded={handleTaskAdded}
-        onTasksLengthUpdated={handleTasksLengthUpdated}
-      />
+        {/* modales donde se maneja el actualizar tarea, el cerrar modal, desde ModalTask a Home */}
+        <ModalTask
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          onSubmit={() => {}}
+          onTaskAdded={handleTaskAdded}
+          onTasksLengthUpdated={handleTasksLengthUpdated}
+        />
 
-      <Modalphrases
-        isOpen={isPhraseModalOpen}
-        onClose={closePhraseModal}
-        onSubmit={() => {}}
-        onPhrasesAdded={handlePhrasesAdded}
-      />
+        <Modalphrases
+          isOpen={isPhraseModalOpen}
+          onClose={closePhraseModal}
+          onSubmit={() => {}}
+          onPhrasesAdded={handlePhrasesAdded}
+        />
 
-      <ModalGoals
-        isOpen={isModalGoalsOpen}
-        onClose={closeGoalsModal}
-        onSubmit={() => {}}
-        onGoalsAdded={handleGoalsAdded}
-      />
+        <ModalGoals
+          isOpen={isModalGoalsOpen}
+          onClose={closeGoalsModal}
+          onSubmit={() => {}}
+          onGoalsAdded={handleGoalsAdded}
+        />
+      </div>
     </div>
   );
 };

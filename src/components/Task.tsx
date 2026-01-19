@@ -143,7 +143,6 @@ const Task = () => {
 
       setTasks((prevTasks) =>
         prevTasks.map((task) => {
-
           // Solo tareas pendientes con rango horario
           if (task.status !== "pending" || !task.start_time || !task.end_time) {
             return task;
@@ -732,425 +731,433 @@ const Task = () => {
   let lastSection: string | null = null;
 
   return (
-    <div className={styles["task-container"]}>
-      {" "}
-      {/* Usar estilos del módulo */}
-      {/* 🔹 Modal para eliminar o actualizar tarea*/}
-      {showModal && selectedTask && (
-        <div className={styles["modalOverlay"]}>
-          <div className={styles["modalContent"]}>
-            <p className={styles["taskTitle"]}>{selectedTask.name}</p>
-            <p className={styles["question"]}> ¿Qué quieres hacer?</p>
-            <div className={styles["btn-options"]}>
-              <button onClick={handleOpenEditModal}>
-                <FontAwesomeIcon icon={faPen} /> Editar
-              </button>
-              <button onClick={handleDeleteTask}>
-                <FontAwesomeIcon icon={faTrash} /> Eliminar
-              </button>
-              <button onClick={handleCloseModal}>
-                <FontAwesomeIcon icon={faTimes} /> Cerrar
-              </button>
+    <div className={styles["task-container-all"]}>
+      <div className={styles["task-container"]}>
+        {" "}
+        {/* Usar estilos del módulo */}
+        {/* 🔹 Modal para eliminar o actualizar tarea*/}
+        {showModal && selectedTask && (
+          <div className={styles["modalOverlay"]}>
+            <div className={styles["modalContent"]}>
+              <p className={styles["taskTitle"]}>{selectedTask.name}</p>
+              <p className={styles["question"]}> ¿Qué quieres hacer?</p>
+              <div className={styles["btn-options"]}>
+                <button onClick={handleOpenEditModal}>
+                  <FontAwesomeIcon icon={faPen} /> Editar
+                </button>
+                <button onClick={handleDeleteTask}>
+                  <FontAwesomeIcon icon={faTrash} /> Eliminar
+                </button>
+                <button onClick={handleCloseModal}>
+                  <FontAwesomeIcon icon={faTimes} /> Cerrar
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-      {/* 🔹 Modal para editar tarea */}
-      {showEditModal && selectedTask && (
-        <div className={styles["modalOverlay"]}>
-          <div className={styles["modalContent"]}>
-            <p className={styles["taskTitle"]}>{selectedTask.name}</p>
-            <label>Fecha final:</label>
-            <input
-              type="date"
-              value={newDate}
-              onChange={(e) => {
-                setNewDate(e.target.value);
-              }}
-              disabled={selectedTask?.status === "completed"}
-            />
-            {selectedTask &&
-              selectedTask.start_time !== null &&
-              selectedTask.end_time !== null && (
-                <>
-                  <label>Hora de inicio:</label>
-                  <input
-                    type="time"
-                    value={newStartTime}
-                    onChange={(e) => setNewStartTime(e.target.value)}
-                    disabled={
-                      selectedTask?.status === "in_progress" ||
-                      selectedTask?.status === "completed"
-                    }
-                  />
+        )}
+        {/* 🔹 Modal para editar tarea */}
+        {showEditModal && selectedTask && (
+          <div className={styles["modalOverlay"]}>
+            <div className={styles["modalContent"]}>
+              <p className={styles["taskTitle"]}>{selectedTask.name}</p>
+              <label>Fecha final:</label>
+              <input
+                type="date"
+                value={newDate}
+                onChange={(e) => {
+                  setNewDate(e.target.value);
+                }}
+                disabled={selectedTask?.status === "completed"}
+              />
+              {selectedTask &&
+                selectedTask.start_time !== null &&
+                selectedTask.end_time !== null && (
+                  <>
+                    <label>Hora de inicio:</label>
+                    <input
+                      type="time"
+                      value={newStartTime}
+                      onChange={(e) => setNewStartTime(e.target.value)}
+                      disabled={
+                        selectedTask?.status === "in_progress" ||
+                        selectedTask?.status === "completed"
+                      }
+                    />
 
-                  <label>Hora final:</label>
-                  <input
-                    type="time"
-                    value={newEndTime}
-                    onChange={(e) => setNewEndTime(e.target.value)}
-                    disabled={selectedTask?.status === "completed"}
-                  />
-                </>
+                    <label>Hora final:</label>
+                    <input
+                      type="time"
+                      value={newEndTime}
+                      onChange={(e) => setNewEndTime(e.target.value)}
+                      disabled={selectedTask?.status === "completed"}
+                    />
+                  </>
+                )}
+
+              <select
+                onChange={(e) => setPriority(e.target.value)}
+                value={priority}
+                required
+                disabled={selectedTask?.status === "completed"}
+              >
+                <option value="baja">Baja</option>
+                <option value="media">Media</option>
+                <option value="alta">Alta</option>
+              </select>
+
+              <div className={styles["btn-options"]}>
+                <button onClick={handleUpdateTask}>
+                  Actualizar
+                  <FontAwesomeIcon icon={faSave} />
+                </button>
+                <button onClick={handleCloseEditModal}>
+                  <FontAwesomeIcon icon={faTimes} />
+                  Cerrar
+                </button>
+              </div>
+              {errors.errorUpdate && (
+                <p className={styles["error-search"]}> {errors.errorUpdate}</p>
               )}
-
-            <select
-              onChange={(e) => setPriority(e.target.value)}
-              value={priority}
-              required
-              disabled={selectedTask?.status === "completed"}
-            >
-              <option value="baja">Baja</option>
-              <option value="media">Media</option>
-              <option value="alta">Alta</option>
-            </select>
-
-            <div className={styles["btn-options"]}>
-              <button onClick={handleUpdateTask}>
-                Actualizar
-                <FontAwesomeIcon icon={faSave} />
-              </button>
-              <button onClick={handleCloseEditModal}>
-                <FontAwesomeIcon icon={faTimes} />
-                Cerrar
-              </button>
             </div>
-            {errors.errorUpdate && (
-              <p className={styles["error-search"]}> {errors.errorUpdate}</p>
-            )}
           </div>
-        </div>
-      )}
-      <motion.div
-        className={styles["task_header"]}
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, amount: 0.2 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className={styles["title"]}>
-          <h2>Tasly</h2>
-        </div>
-        <div className={styles["options"]}>
-          <div
-            className={styles["button"]}
-            onClick={() => handleNavigation("/Home")}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} /> Ir Home
-          </div>
-          <div
-            className={styles["button"]}
-            onClick={() => handleNavigation("/phrases")}
-          >
-            <FontAwesomeIcon icon={faQuoteLeft} /> Frases
-          </div>
-          <div
-            className={styles["button"]}
-            onClick={() => handleNavigation("/goals")}
-          >
-            <FontAwesomeIcon icon={faBullseye} /> Metas
-          </div>
-        </div>
-      </motion.div>
-      {errors.userId && <p className={styles["errorTask"]}>{errors.userId}</p>}
-      {/* Barra de búsqueda */}
-      <motion.div
-        className={styles["search_task"]}
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className={styles["content-search"]}>
-          <input
-            type="text"
-            placeholder="Buscar tarea..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button onClick={handleSearch}>
-            <FontAwesomeIcon icon={faSearch} />
-          </button>
-        </div>
-      </motion.div>
-      <div className={styles["error-container"]}>
-        {errors.general && (
-          <p className={styles["error-search"]}> {errors.general}</p>
         )}
-        {errors.message && (
-          <p className={styles["noTask"]}> {errors.message}</p>
+        <motion.div
+          className={styles["task_header"]}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className={styles["title"]}>
+            <h2>Tasly</h2>
+          </div>
+          <div className={styles["options"]}>
+            <div
+              className={styles["button"]}
+              onClick={() => handleNavigation("/Home")}
+            >
+              <FontAwesomeIcon icon={faArrowLeft} /> Ir Home
+            </div>
+            <div
+              className={styles["button"]}
+              onClick={() => handleNavigation("/phrases")}
+            >
+              <FontAwesomeIcon icon={faQuoteLeft} /> Frases
+            </div>
+            <div
+              className={styles["button"]}
+              onClick={() => handleNavigation("/goals")}
+            >
+              <FontAwesomeIcon icon={faBullseye} /> Metas
+            </div>
+          </div>
+        </motion.div>
+        {errors.userId && (
+          <p className={styles["errorTask"]}>{errors.userId}</p>
         )}
-      </div>
-      {/* ir atras cuando se genera una busqueda */}
-      <div
-        className={`${styles["back"]} ${isSearching ? styles["visible"] : ""}`}
-        onClick={handleBack}
-      >
-        <FontAwesomeIcon icon={faArrowLeft} title="Ir atrás" />
-      </div>
-      {/* Lista de tareas */}
-      <motion.div
-        className={styles["dashboard_task"]}
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false }}
-        transition={{ duration: 0.6 }}
-      >
-        {searchResults.length > 0
-          ? searchResults.map((task) => (
-              <div
-                key={task.id}
-                className={`${styles["task-item"]} ${
+        {/* Barra de búsqueda */}
+        <motion.div
+          className={styles["search_task"]}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className={styles["content-search"]}>
+            <input
+              type="text"
+              placeholder="Buscar tarea..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button onClick={handleSearch}>
+              <FontAwesomeIcon icon={faSearch} />
+            </button>
+          </div>
+        </motion.div>
+        <div className={styles["error-container"]}>
+          {errors.general && (
+            <p className={styles["error-search"]}> {errors.general}</p>
+          )}
+          {errors.message && (
+            <p className={styles["noTask"]}> {errors.message}</p>
+          )}
+        </div>
+        {/* ir atras cuando se genera una busqueda */}
+        <div
+          className={`${styles["back"]} ${isSearching ? styles["visible"] : ""}`}
+          onClick={handleBack}
+        >
+          <FontAwesomeIcon icon={faArrowLeft} title="Ir atrás" />
+        </div>
+        {/* Lista de tareas */}
+        <motion.div
+          className={styles["dashboard_task"]}
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ duration: 0.6 }}
+        >
+          {searchResults.length > 0
+            ? searchResults.map((task) => (
+                <div
+                  key={task.id}
+                  className={`${styles["task-item"]} ${
+                    isTaskExpired(
+                      task.end_date,
+                      task.end_time,
+                      task.status,
+                      Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    )
+                      ? styles["expired-task"]
+                      : ""
+                  }`}
+                >
+                  <div
+                    className={`${styles["checkbox-label"]} ${
+                      styles[task.status]
+                    }`}
+                    onClick={() => handleCheckboxChange(task.id, task.status)}
+                  ></div>
+
+                  <div
+                    className={styles["content-infoTask"]}
+                    onMouseDown={() =>
+                      handleMouseDown(
+                        task.id,
+                        task.task_name,
+                        task.end_date,
+                        task.priority,
+                        task.start_time,
+                        task.end_time,
+                        task.status,
+                      )
+                    }
+                    onMouseUp={handleMouseUp}
+                    onMouseLeave={handleMouseUp}
+                    onTouchStart={() =>
+                      handleMouseDown(
+                        task.id,
+                        task.task_name,
+                        task.end_date,
+                        task.priority,
+                        task.start_time,
+                        task.end_time,
+                        task.status,
+                      )
+                    }
+                    onTouchEnd={handleMouseUp}
+                    onTouchCancel={handleMouseUp}
+                  >
+                    <div className={styles["task-name"]}>
+                      <p>{task.task_name}</p>
+                      <div
+                        className={`${styles["task-priority"]} ${
+                          getPriorityData(task.priority)?.className ||
+                          "default-class"
+                        }`}
+                      >
+                        {getPriorityData(task.priority)?.label || "No Priority"}
+                      </div>
+                    </div>
+                    <div className={styles["task-category"]}>
+                      <p>{task.category}</p>
+                    </div>
+                    <div className={styles["task-date"]}>
+                      <div className={styles["content-date"]}>
+                        <p title="fecha de inicio">
+                          <FontAwesomeIcon
+                            icon={faClock}
+                            style={{ marginRight: "5px" }}
+                          />
+                          {formatDateWithoutTimezoneShift(task.start_date)}
+                        </p>
+                        <p title="fecha final">
+                          <FontAwesomeIcon
+                            icon={faClock}
+                            style={{ marginRight: "5px" }}
+                          />
+                          {formatDateWithoutTimezoneShift(task.end_date)}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            : orderedTasks.map((task) => {
+                const taskDateOnly = getTaskDateInUserTZ(
+                  task.start_date,
+                  userTimeZone,
+                );
+                let section = "";
+
+                // 1️⃣ Primero: vencidas
+                if (
                   isTaskExpired(
                     task.end_date,
                     task.end_time,
                     task.status,
-                    Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    userTimeZone,
                   )
-                    ? styles["expired-task"]
-                    : ""
-                }`}
-              >
-                <div
-                  className={`${styles["checkbox-label"]} ${
-                    styles[task.status]
-                  }`}
-                  onClick={() => handleCheckboxChange(task.id, task.status)}
-                ></div>
+                ) {
+                  section = "Tareas vencidas";
+                }
+                // 2️⃣ Tareas futuras
+                else if (taskDateOnly > todayStr) {
+                  section = "Tareas futuras";
+                }
+                // 3️⃣ En progreso
+                else if (task.status === "in_progress") {
+                  section = "En progreso";
+                }
+                // 4️⃣ Pendientes de hoy
+                else if (task.status === "pending") {
+                  section = "Tareas de hoy";
+                }
+                // 5️⃣ Completadas
+                else if (task.status === "completed") {
+                  section = "Completadas";
+                }
 
-                <div
-                  className={styles["content-infoTask"]}
-                  onMouseDown={() =>
-                    handleMouseDown(
-                      task.id,
-                      task.task_name,
-                      task.end_date,
-                      task.priority,
-                      task.start_time,
-                      task.end_time,
-                      task.status,
-                    )
-                  }
-                  onMouseUp={handleMouseUp}
-                  onMouseLeave={handleMouseUp}
-                  onTouchStart={() =>
-                    handleMouseDown(
-                      task.id,
-                      task.task_name,
-                      task.end_date,
-                      task.priority,
-                      task.start_time,
-                      task.end_time,
-                      task.status,
-                    )
-                  }
-                  onTouchEnd={handleMouseUp}
-                  onTouchCancel={handleMouseUp}
-                >
-                  <div className={styles["task-name"]}>
-                    <p>{task.task_name}</p>
+                const showTitle = section !== lastSection;
+                lastSection = section;
+
+                return (
+                  <React.Fragment key={task.id}>
+                    {showTitle && (
+                      <p className={styles.sectionTitle}>{section}</p>
+                    )}
                     <div
-                      className={`${styles["task-priority"]} ${
-                        getPriorityData(task.priority)?.className ||
-                        "default-class"
-                      }`}
-                    >
-                      {getPriorityData(task.priority)?.label || "No Priority"}
-                    </div>
-                  </div>
-                  <div className={styles["task-category"]}>
-                    <p>{task.category}</p>
-                  </div>
-                  <div className={styles["task-date"]}>
-                    <div className={styles["content-date"]}>
-                      <p title="fecha de inicio">
-                        <FontAwesomeIcon
-                          icon={faClock}
-                          style={{ marginRight: "5px" }}
-                        />
-                        {formatDateWithoutTimezoneShift(task.start_date)}
-                      </p>
-                      <p title="fecha final">
-                        <FontAwesomeIcon
-                          icon={faClock}
-                          style={{ marginRight: "5px" }}
-                        />
-                        {formatDateWithoutTimezoneShift(task.end_date)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))
-          : orderedTasks.map((task) => {
-              const taskDateOnly = getTaskDateInUserTZ(
-                task.start_date,
-                userTimeZone,
-              );
-              let section = "";
-
-              // 1️⃣ Primero: vencidas
-              if (
-                isTaskExpired(
-                  task.end_date,
-                  task.end_time,
-                  task.status,
-                  userTimeZone,
-                )
-              ) {
-                section = "Tareas vencidas";
-              }
-              // 2️⃣ Tareas futuras
-              else if (taskDateOnly > todayStr) {
-                section = "Tareas futuras";
-              }
-              // 3️⃣ En progreso
-              else if (task.status === "in_progress") {
-                section = "En progreso";
-              }
-              // 4️⃣ Pendientes de hoy
-              else if (task.status === "pending") {
-                section = "Tareas de hoy";
-              }
-              // 5️⃣ Completadas
-              else if (task.status === "completed") {
-                section = "Completadas";
-              }
-
-              const showTitle = section !== lastSection;
-              lastSection = section;
-
-              return (
-                <React.Fragment key={task.id}>
-                  {showTitle && (
-                    <p className={styles.sectionTitle}>{section}</p>
-                  )}
-                  <div
-                    className={`${styles["task-item"]} ${
-                      isTaskExpired(
-                        task.end_date,
-                        task.end_time,
-                        task.status,
-                        Intl.DateTimeFormat().resolvedOptions().timeZone,
-                      )
-                        ? styles["expired-task"]
-                        : ""
-                    }`}
-                  >
-                    <div
-                      className={`${styles["checkbox-label"]} ${
-                        styles[task.status]
-                      }`}
-                      onClick={() => handleCheckboxChange(task.id, task.status)}
-                    />
-                    <div
-                      className={styles["content-infoTask"]}
-                      onMouseDown={() =>
-                        handleMouseDown(
-                          task.id,
-                          task.task_name,
+                      className={`${styles["task-item"]} ${
+                        isTaskExpired(
                           task.end_date,
-                          task.priority,
-                          task.start_time,
                           task.end_time,
                           task.status,
+                          Intl.DateTimeFormat().resolvedOptions().timeZone,
                         )
-                      }
-                      onMouseUp={handleMouseUp}
-                      onMouseLeave={handleMouseUp}
-                      onTouchStart={() =>
-                        handleMouseDown(
-                          task.id,
-                          task.task_name,
-                          task.end_date,
-                          task.priority,
-                          task.start_time,
-                          task.end_time,
-                          task.status,
-                        )
-                      }
-                      onTouchEnd={handleMouseUp}
-                      onTouchCancel={handleMouseUp}
+                          ? styles["expired-task"]
+                          : ""
+                      }`}
                     >
-                      <div className={styles["task-name"]}>
-                        <p>{task.task_name}</p>
-                        <div
-                          className={`${styles["task-priority"]} ${
-                            getPriorityData(task.priority)?.className ||
-                            "default-class"
-                          }`}
-                        >
-                          {getPriorityData(task.priority)?.label ||
-                            "No Priority"}
+                      <div
+                        className={`${styles["checkbox-label"]} ${
+                          styles[task.status]
+                        }`}
+                        onClick={() =>
+                          handleCheckboxChange(task.id, task.status)
+                        }
+                      />
+                      <div
+                        className={styles["content-infoTask"]}
+                        onMouseDown={() =>
+                          handleMouseDown(
+                            task.id,
+                            task.task_name,
+                            task.end_date,
+                            task.priority,
+                            task.start_time,
+                            task.end_time,
+                            task.status,
+                          )
+                        }
+                        onMouseUp={handleMouseUp}
+                        onMouseLeave={handleMouseUp}
+                        onTouchStart={() =>
+                          handleMouseDown(
+                            task.id,
+                            task.task_name,
+                            task.end_date,
+                            task.priority,
+                            task.start_time,
+                            task.end_time,
+                            task.status,
+                          )
+                        }
+                        onTouchEnd={handleMouseUp}
+                        onTouchCancel={handleMouseUp}
+                      >
+                        <div className={styles["task-name"]}>
+                          <p>{task.task_name}</p>
+                          <div
+                            className={`${styles["task-priority"]} ${
+                              getPriorityData(task.priority)?.className ||
+                              "default-class"
+                            }`}
+                          >
+                            {getPriorityData(task.priority)?.label ||
+                              "No Priority"}
+                          </div>
                         </div>
-                      </div>
-                      <div className={styles["task-category"]}>
-                        <p>{task.category}</p>
-                      </div>
-                      <div className={styles["task-date"]}>
-                        <div className={styles["content-date"]}>
-                          <p title="fecha de inicio">
-                            <FontAwesomeIcon
-                              icon={faClock}
-                              style={{ marginRight: "5px" }}
-                            />
-                            {
-                              task.start_time // si tiene hora
-                                ? [
-                                    "Tareas vencidas",
-                                    "Tareas de hoy",
-                                    "Pendientes",
-                                    "En progreso",
-                                    "Tareas futuras",
-                                  ].includes(section)
-                                  ? showStartDate
-                                    ? formatDateWithoutTimezoneShift(
+                        <div className={styles["task-category"]}>
+                          <p>{task.category}</p>
+                        </div>
+                        <div className={styles["task-date"]}>
+                          <div className={styles["content-date"]}>
+                            <p title="fecha de inicio">
+                              <FontAwesomeIcon
+                                icon={faClock}
+                                style={{ marginRight: "5px" }}
+                              />
+                              {
+                                task.start_time // si tiene hora
+                                  ? [
+                                      "Tareas vencidas",
+                                      "Tareas de hoy",
+                                      "Pendientes",
+                                      "En progreso",
+                                      "Tareas futuras",
+                                    ].includes(section)
+                                    ? showStartDate
+                                      ? formatDateWithoutTimezoneShift(
+                                          task.start_date,
+                                        )
+                                      : formatHour(task.start_time)
+                                    : formatDateWithoutTimezoneShift(
                                         task.start_date,
-                                      )
-                                    : formatHour(task.start_time)
+                                      ) // solo día si sección no aplica
                                   : formatDateWithoutTimezoneShift(
                                       task.start_date,
-                                    ) // solo día si sección no aplica
-                                : formatDateWithoutTimezoneShift(
-                                    task.start_date,
-                                  ) // si no hay hora, solo día
-                            }
-                          </p>
+                                    ) // si no hay hora, solo día
+                              }
+                            </p>
 
-                          <p title="fecha final">
-                            <FontAwesomeIcon
-                              icon={faClock}
-                              style={{ marginRight: "5px" }}
-                              className={styles["date-toggle"]}
-                            />
-                            {
-                              task.end_time // solo si la tarea tiene hora
-                                ? [
-                                    "Tareas vencidas",
-                                    "Tareas de hoy",
-                                    "En progreso",
-                                    "Pendientes",
-                                    "Tareas futuras",
-                                  ].includes(section)
-                                  ? showEndDate
-                                    ? formatDateWithoutTimezoneShift(
+                            <p title="fecha final">
+                              <FontAwesomeIcon
+                                icon={faClock}
+                                style={{ marginRight: "5px" }}
+                                className={styles["date-toggle"]}
+                              />
+                              {
+                                task.end_time // solo si la tarea tiene hora
+                                  ? [
+                                      "Tareas vencidas",
+                                      "Tareas de hoy",
+                                      "En progreso",
+                                      "Pendientes",
+                                      "Tareas futuras",
+                                    ].includes(section)
+                                    ? showEndDate
+                                      ? formatDateWithoutTimezoneShift(
+                                          task.end_date,
+                                        )
+                                      : formatHour(task.end_time)
+                                    : formatDateWithoutTimezoneShift(
                                         task.end_date,
-                                      )
-                                    : formatHour(task.end_time)
+                                      ) // secciones donde solo mostramos el día
                                   : formatDateWithoutTimezoneShift(
                                       task.end_date,
-                                    ) // secciones donde solo mostramos el día
-                                : formatDateWithoutTimezoneShift(task.end_date) // si no hay hora, mostramos solo el día
-                            }
-                          </p>
+                                    ) // si no hay hora, mostramos solo el día
+                              }
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </React.Fragment>
-              );
-            })}
-      </motion.div>
+                  </React.Fragment>
+                );
+              })}
+        </motion.div>
+      </div>
     </div>
   );
 };
