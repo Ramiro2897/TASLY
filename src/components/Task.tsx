@@ -629,16 +629,20 @@ const Task = () => {
     timeZone: string,
   ): boolean => {
     if (status === "completed") return false;
+    console.log(endDate, endTime, status, timeZone, 'formatos de fechas y horas');
 
     // Hora actual del usuario
     const nowUser = getUserNow(timeZone);
+    console.log('Hora actual del usuario en servidor:', nowUser)
 
     if (!endTime) {
+      console.log('entro aca');
       // Solo fecha: convertir endDate a fecha en la zona del usuario
       const taskDate = getTaskDateInUserTZ(endDate, timeZone); // "YYYY-MM-DD"
       const [y, m, d] = taskDate.split("-").map(Number);
       const taskEndDate = new Date(y, m - 1, d, 23, 59, 59); // fin del día
-
+      console.log('Fecha final de la tarea con hora:', taskEndDate.toISOString());
+      console.log('¿Está vencida?', taskEndDate.getTime() < nowUser.getTime());
       return taskEndDate.getTime() < nowUser.getTime();
     }
 
@@ -646,6 +650,8 @@ const Task = () => {
     const [y, m, d] = endDate.split("T")[0].split("-").map(Number);
     const [hour, minute] = endTime.split(":").map(Number);
     const taskEndDateTime = new Date(y, m - 1, d, hour, minute, 0);
+    console.log(taskEndDateTime, 'valorrrr'); 
+    console.log(taskEndDateTime.getTime() < nowUser.getTime(), 'un valor boleano')
 
     return taskEndDateTime.getTime() < nowUser.getTime();
   };
