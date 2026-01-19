@@ -629,13 +629,13 @@ const Task = () => {
     timeZone: string,
   ): boolean => {
     if (status === "completed") return false;
-    console.log(
-      endDate,
-      endTime,
-      status,
-      timeZone,
-      "formatos de fechas y horas",
-    );
+    // console.log(
+    //   endDate,
+    //   endTime,
+    //   status,
+    //   timeZone,
+    //   "formatos de fechas y horas",
+    // );
 
     // Hora actual del usuario
     const nowUser = getUserNow(timeZone);
@@ -653,12 +653,8 @@ const Task = () => {
     const [y, m, d] = endDate.split("T")[0].split("-").map(Number);
     const [hour, minute] = endTime.split(":").map(Number);
     const taskEndDateTime = new Date(y, m - 1, d, hour, minute, 0);
-    console.log(taskEndDateTime, "valorrrr");
-    console.log(
-      taskEndDateTime.getTime() < nowUser.getTime(),
-      "un valor boleano",
-    );
-
+    console.log(taskEndDateTime, "valorrrr para horas");
+    console.log('es falso?', taskEndDateTime.getTime() < nowUser.getTime() )
     return taskEndDateTime.getTime() < nowUser.getTime();
   };
 

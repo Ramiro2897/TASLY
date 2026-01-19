@@ -671,14 +671,19 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                           icon={faClock}
                           style={{ marginRight: "5px" }}
                         />
-                        {new Intl.DateTimeFormat("es-ES", {
-                          timeZone: "America/Bogota",
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })
-                          .format(new Date(frases[0].created_at))
-                          .replace(/ de /g, " ")}
+                        {(() => {
+                          const [year, month, day] = frases[0].created_at
+                            .split("T")[0]
+                            .split("-");
+                          const date = new Date(+year, +month - 1, +day);
+                          return new Intl.DateTimeFormat("es-ES", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })
+                            .format(date)
+                            .replace(/ de /g, " ");
+                        })()}
                       </span>
                     </div>
                   </div>
@@ -718,15 +723,20 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                         style={{ marginRight: "5px" }}
                       />
                       Termina el:{" "}
-                      {metas[0].start_date
-                        ? new Intl.DateTimeFormat("es-ES", {
-                            timeZone: "America/Bogota",
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })
-                            .format(new Date(metas[0].end_date))
-                            .replace(/ de /g, " ")
+                      {metas[0].end_date
+                        ? (() => {
+                            const [year, month, day] = metas[0].end_date
+                              .split("T")[0]
+                              .split("-");
+                            const date = new Date(+year, +month - 1, +day);
+                            return new Intl.DateTimeFormat("es-ES", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            })
+                              .format(date)
+                              .replace(/ de /g, " ");
+                          })()
                         : "Fecha no disponible"}
                     </p>
                   </div>
