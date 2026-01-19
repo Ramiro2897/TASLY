@@ -577,8 +577,49 @@ const Task = () => {
 
   // 🔹 Función para obtener la fecha de hoy según la zona horaria del usuario
   const getUserNow = (timeZone: string) => {
-    return new Date(new Date().toLocaleString("en-US", { timeZone }));
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+
+    const parts = formatter.formatToParts(now).reduce(
+      (acc, part) => {
+        if (part.type !== "literal") acc[part.type] = part.value;
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
+
+    return new Date(
+      `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}:${parts.second}`,
+    );
   };
+
+  function getTaskDateInUserTZ(taskDateUTC: string, timeZone: string) {
+    const date = new Date(taskDateUTC);
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const parts = formatter.formatToParts(date).reduce(
+      (acc, part) => {
+        if (part.type !== "literal") acc[part.type] = part.value;
+        return acc;
+      },
+      {} as Record<string, string>,
+    );
+
+    return `${parts.year}-${parts.month}-${parts.day}`;
+  }
 
   // funcion para validar si la tarea esta vencida y sin completar
   const isTaskExpired = (
@@ -588,22 +629,58 @@ const Task = () => {
     timeZone: string,
   ): boolean => {
     if (status === "completed") return false;
-    // Convertimos las fechas al timezone de Colombia y las truncamos a medianoche
+
     const nowUser = getUserNow(timeZone);
+
     if (!endTime) {
-      // Solo comparamos la fecha, horas se ignoran
-      const [year, month, day] = endDate.split("T")[0].split("-").map(Number);
-      const taskEndDate = new Date(year, month - 1, day, 0, 0, 0, 0); // medianoche en zona local
-      return taskEndDate.getTime() < nowUser.getTime();
+      const taskEndUser = getTaskDateInUserTZ(endDate, timeZone);
+      const [year, month, day] = taskEndUser.split("-").map(Number);
+      const taskEndDateOnlyStr = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      return taskEndDateOnlyStr < todayStr;
     }
 
     const [year, month, day] = endDate.split("T")[0].split("-").map(Number);
     const [hour, minute] = endTime.split(":").map(Number);
-
-    const taskEndDateTime = new Date(year, month - 1, day, hour, minute, 0, 0);
-
+    const taskEndDateTime = new Date(year, month - 1, day, hour, minute, 0);
     return taskEndDateTime.getTime() < nowUser.getTime();
   };
+
+  // 🔹 Ordenar las tareas según estado y vencimiento
+  const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const nowUser = new Date(); // o usa tu getUserNow si quieres la hora exacta
+  const todayStr = getTaskDateInUserTZ(nowUser.toISOString(), userTimeZone);
+
+  const orderedTasks = [...tasks].sort((a, b) => {
+    const taskEndDateStrA = getTaskDateInUserTZ(a.end_date, userTimeZone);
+    const taskEndDateStrB = getTaskDateInUserTZ(b.end_date, userTimeZone);
+
+    const isExpiredA = isTaskExpired(
+      a.end_date,
+      a.end_time,
+      a.status,
+      userTimeZone,
+    );
+    const isExpiredB = isTaskExpired(
+      b.end_date,
+      b.end_time,
+      b.status,
+      userTimeZone,
+    );
+
+    const getOrder = (task: any, taskEndDateStr: string, expired: boolean) => {
+      if (expired) return 4; // Vencidas
+      if (taskEndDateStr > todayStr) return 3; // Futuras
+      if (task.status === "in_progress") return 0;
+      if (task.status === "pending") return 1;
+      if (task.status === "completed") return 5;
+      return 6;
+    };
+
+    return (
+      getOrder(a, taskEndDateStrA, isExpiredA) -
+      getOrder(b, taskEndDateStrB, isExpiredB)
+    );
+  });
 
   const formatDateWithoutTimezoneShift = (dateStr: string) => {
     const [year, month, day] = dateStr.split("T")[0].split("-");
@@ -654,35 +731,6 @@ const Task = () => {
       clearInterval(endInterval);
     };
   }, []);
-
-  // 🔹 Ordenar las tareas según estado y vencimiento
-  const orderedTasks = [...tasks].sort((a, b) => {
-    const getOrder = (task: any) => {
-      const taskDate = task.start_date.split("T")[0];
-
-      if (
-        new Date(taskDate) >
-        getUserNow(Intl.DateTimeFormat().resolvedOptions().timeZone)
-      )
-        return 3; // Futuras
-      if (
-        isTaskExpired(
-          task.end_date,
-          task.end_time,
-          task.status,
-          Intl.DateTimeFormat().resolvedOptions().timeZone,
-        )
-      )
-        return 4; // Vencidas
-      if (task.status === "in_progress") return 0; // En progreso
-      if (task.status === "pending") return 1; // Pendientes hoy
-      if (task.status === "completed") return 5; // Completadas
-
-      return 6;
-    };
-
-    return getOrder(a) - getOrder(b);
-  });
 
   let lastSection: string | null = null;
 
@@ -938,28 +986,48 @@ const Task = () => {
               </div>
             ))
           : orderedTasks.map((task) => {
-              let section = "";
-              const taskDate = task.start_date.split("T")[0];
+              const taskDateOnly = getTaskDateInUserTZ(
+                task.start_date,
+                userTimeZone,
+              );
 
+              console.log("DEBUG TASK", {
+                taskId: task.id,
+                taskDateUTC: task.start_date,
+                taskDateOnly,
+                endDateUTC: task.end_date,
+                endTime: task.end_time,
+                todayStr,
+                userTimeZone,
+                nowUser: nowUser.toISOString(),
+              });
+              let section = "";
+
+              // 1️⃣ Primero: vencidas
               if (
-                new Date(taskDate) >
-                getUserNow(Intl.DateTimeFormat().resolvedOptions().timeZone)
-              ) {
-                section = "Tareas futuras";
-              } else if (
                 isTaskExpired(
                   task.end_date,
                   task.end_time,
                   task.status,
-                  Intl.DateTimeFormat().resolvedOptions().timeZone,
+                  userTimeZone,
                 )
               ) {
                 section = "Tareas vencidas";
-              } else if (task.status === "in_progress") {
+              }
+              // 2️⃣ Tareas futuras
+              else if (taskDateOnly > todayStr) {
+                section = "Tareas futuras";
+              }
+              // 3️⃣ En progreso
+              else if (task.status === "in_progress") {
                 section = "En progreso";
-              } else if (task.status === "pending") {
+              }
+              // 4️⃣ Pendientes de hoy
+              else if (task.status === "pending") {
                 section = "Tareas de hoy";
-              } else if (task.status === "completed") {
+              }
+              // 5️⃣ Completadas
+              else if (task.status === "completed") {
                 section = "Completadas";
               }
 
