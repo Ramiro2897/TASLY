@@ -143,14 +143,6 @@ const Task = () => {
 
       setTasks((prevTasks) =>
         prevTasks.map((task) => {
-          console.log("Evaluando tarea:", {
-            id: task.id,
-            status: task.status,
-            start_date: task.start_date,
-            start_time: task.start_time,
-            end_time: task.end_time,
-            now: nowUser.toISOString(),
-          });
 
           // Solo tareas pendientes con rango horario
           if (task.status !== "pending" || !task.start_time || !task.end_time) {
@@ -186,6 +178,7 @@ const Task = () => {
 
           // SOLO si ahora está dentro del rango → auto iniciar (una sola vez)
           if (
+            task.status === "pending" &&
             nowUser.getTime() >= taskStart.getTime() &&
             nowUser.getTime() <= taskEnd.getTime()
           ) {
