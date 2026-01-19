@@ -630,18 +630,23 @@ const Task = () => {
   ): boolean => {
     if (status === "completed") return false;
 
+    // Hora actual del usuario
     const nowUser = getUserNow(timeZone);
 
     if (!endTime) {
-      const taskEndUser = getTaskDateInUserTZ(endDate, timeZone);
-      const [year, month, day] = taskEndUser.split("-").map(Number);
-      const taskEndDateOnlyStr = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-      return taskEndDateOnlyStr < todayStr;
+      // Solo fecha: convertir endDate a fecha en la zona del usuario
+      const taskDate = getTaskDateInUserTZ(endDate, timeZone); // "YYYY-MM-DD"
+      const [y, m, d] = taskDate.split("-").map(Number);
+      const taskEndDate = new Date(y, m - 1, d, 23, 59, 59); // fin del día
+
+      return taskEndDate.getTime() < nowUser.getTime();
     }
 
-    const [year, month, day] = endDate.split("T")[0].split("-").map(Number);
+    // Si hay hora, comparar fecha y hora completa
+    const [y, m, d] = endDate.split("T")[0].split("-").map(Number);
     const [hour, minute] = endTime.split(":").map(Number);
-    const taskEndDateTime = new Date(year, month - 1, day, hour, minute, 0);
+    const taskEndDateTime = new Date(y, m - 1, d, hour, minute, 0);
+
     return taskEndDateTime.getTime() < nowUser.getTime();
   };
 
