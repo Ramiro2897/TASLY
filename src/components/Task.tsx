@@ -629,20 +629,23 @@ const Task = () => {
     timeZone: string,
   ): boolean => {
     if (status === "completed") return false;
-    console.log(endDate, endTime, status, timeZone, 'formatos de fechas y horas');
+    console.log(
+      endDate,
+      endTime,
+      status,
+      timeZone,
+      "formatos de fechas y horas",
+    );
 
     // Hora actual del usuario
     const nowUser = getUserNow(timeZone);
-    console.log('Hora actual del usuario en servidor:', nowUser)
+    console.log("Hora actual del usuario en servidor:", nowUser);
 
     if (!endTime) {
-      console.log('entro aca');
-      // Solo fecha: convertir endDate a fecha en la zona del usuario
-      const taskDate = getTaskDateInUserTZ(endDate, timeZone); // "YYYY-MM-DD"
-      const [y, m, d] = taskDate.split("-").map(Number);
-      const taskEndDate = new Date(y, m - 1, d, 23, 59, 59); // fin del día
-      console.log('Fecha final de la tarea con hora:', taskEndDate.toISOString());
-      console.log('¿Está vencida?', taskEndDate.getTime() < nowUser.getTime());
+      const [y, m, d] = endDate.split("T")[0].split("-").map(Number);
+      const taskEndDate = new Date(y, m - 1, d, 23, 59, 59); // fin del día en TZ local
+      console.log(taskEndDate, " ", "fecha final tarea");
+      console.log(taskEndDate.getTime() < nowUser.getTime()), 'esta vencida? ';
       return taskEndDate.getTime() < nowUser.getTime();
     }
 
@@ -650,8 +653,11 @@ const Task = () => {
     const [y, m, d] = endDate.split("T")[0].split("-").map(Number);
     const [hour, minute] = endTime.split(":").map(Number);
     const taskEndDateTime = new Date(y, m - 1, d, hour, minute, 0);
-    console.log(taskEndDateTime, 'valorrrr'); 
-    console.log(taskEndDateTime.getTime() < nowUser.getTime(), 'un valor boleano')
+    console.log(taskEndDateTime, "valorrrr");
+    console.log(
+      taskEndDateTime.getTime() < nowUser.getTime(),
+      "un valor boleano",
+    );
 
     return taskEndDateTime.getTime() < nowUser.getTime();
   };
@@ -662,9 +668,6 @@ const Task = () => {
   const todayStr = getTaskDateInUserTZ(nowUser.toISOString(), userTimeZone);
 
   const orderedTasks = [...tasks].sort((a, b) => {
-    const taskEndDateStrA = getTaskDateInUserTZ(a.end_date, userTimeZone);
-    const taskEndDateStrB = getTaskDateInUserTZ(b.end_date, userTimeZone);
-
     const isExpiredA = isTaskExpired(
       a.end_date,
       a.end_time,
@@ -678,19 +681,15 @@ const Task = () => {
       userTimeZone,
     );
 
-    const getOrder = (task: any, taskEndDateStr: string, expired: boolean) => {
+    const getOrder = (task: any, expired: boolean) => {
       if (expired) return 4; // Vencidas
-      if (taskEndDateStr > todayStr) return 3; // Futuras
       if (task.status === "in_progress") return 0;
       if (task.status === "pending") return 1;
       if (task.status === "completed") return 5;
       return 6;
     };
 
-    return (
-      getOrder(a, taskEndDateStrA, isExpiredA) -
-      getOrder(b, taskEndDateStrB, isExpiredB)
-    );
+    return getOrder(a, isExpiredA) - getOrder(b, isExpiredB);
   });
 
   const formatDateWithoutTimezoneShift = (dateStr: string) => {
