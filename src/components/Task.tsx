@@ -635,7 +635,7 @@ const Task = () => {
     if (!endTime) {
       const taskEndUser = getTaskDateInUserTZ(endDate, timeZone);
       const [year, month, day] = taskEndUser.split("-").map(Number);
-      const taskEndDateOnlyStr = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const taskEndDateOnlyStr = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       return taskEndDateOnlyStr < todayStr;
     }
 
@@ -647,7 +647,7 @@ const Task = () => {
 
   // 🔹 Ordenar las tareas según estado y vencimiento
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const nowUser = new Date(); // o usa tu getUserNow si quieres la hora exacta
+  const nowUser = getUserNow(userTimeZone); // usa la función que respeta TZ
   const todayStr = getTaskDateInUserTZ(nowUser.toISOString(), userTimeZone);
 
   const orderedTasks = [...tasks].sort((a, b) => {
