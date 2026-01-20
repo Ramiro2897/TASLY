@@ -734,26 +734,6 @@ const Task = () => {
 
   let lastSection: string | null = null;
 
-  // Función para obtener timestamp del inicio del día en la zona del usuario
-function getUserDayStart(taskDateUTC: string, timeZone: string) {
-  const date = new Date(taskDateUTC);
-  const formatter = new Intl.DateTimeFormat("en-US", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
-  const parts = formatter.formatToParts(date).reduce(
-    (acc, part) => {
-      if (part.type !== "literal") acc[part.type] = part.value;
-      return acc;
-    },
-    {} as Record<string, string>
-  );
-  // Timestamp al inicio del día local
-  return new Date(`${parts.year}-${parts.month}-${parts.day}T00:00:00`).getTime();
-}
-
   return (
     <div className={styles["task-container-all"]}>
       <div className={styles["task-container"]}>
@@ -1009,16 +989,17 @@ function getUserDayStart(taskDateUTC: string, timeZone: string) {
                 </div>
               ))
             : orderedTasks.map((task) => {
-                // const taskDateOnlyStr = getTaskDateInUserTZ(
-                //   task.start_date,
-                //   userTimeZone,
-                // );
-
-                // Crear objetos Date para comparar correctamente
-                 const taskDateTimestamp = getUserDayStart(task.start_date, userTimeZone);
-                  const todayTimestamp = getUserDayStart(new Date().toISOString(), userTimeZone);
+                const taskDateOnly = getTaskDateInUserTZ(
+                  task.start_date,
+                  userTimeZone,
+                );
                 let section = "";
-                console.log('mirar esto: ', taskDateTimestamp, todayTimestamp )
+                console.log("task.start_date:", task.start_date);
+                console.log("task.end_date:", task.end_date);
+                console.log("taskDateOnly:", taskDateOnly);
+                console.log("todayStr:", todayStr);
+                console.log("userTimeZone:", userTimeZone);
+
 
                 // 1️⃣ Primero: vencidas
                 if (
@@ -1032,7 +1013,7 @@ function getUserDayStart(taskDateUTC: string, timeZone: string) {
                   section = "Tareas vencidas";
                 }
                 // 2️⃣ Tareas futuras
-                else if (taskDateTimestamp > todayTimestamp) {
+                else if (taskDateOnly > todayStr) {
                   section = "Tareas futuras";
                 }
                 // 3️⃣ En progreso
