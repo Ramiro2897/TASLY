@@ -141,7 +141,7 @@ const Task = () => {
 
     const interval = setInterval(() => {
       const nowUser = getUserNow(timeZone); // Hora actual del usuario, TZ correcta
-      console.log("⏰ Hora actual del usuario:", nowUser.toISOString());
+      // console.log("⏰ Hora actual del usuario:", nowUser.toISOString());
 
       setTasks((prevTasks) =>
         prevTasks.map((task) => {
@@ -170,12 +170,12 @@ const Task = () => {
           );
           const taskEnd = new Date(year, month - 1, day, endHour, endMinute, 0);
 
-          console.log("Rango calculado:", {
-            taskId: task.id,
-            taskStart: taskStart.toISOString(),
-            taskEnd: taskEnd.toISOString(),
-            now: nowUser.toISOString(),
-          });
+          // console.log("Rango calculado:", {
+          //   taskId: task.id,
+          //   taskStart: taskStart.toISOString(),
+          //   taskEnd: taskEnd.toISOString(),
+          //   now: nowUser.toISOString(),
+          // });
 
           // SOLO si ahora está dentro del rango → auto iniciar (una sola vez)
           if (
@@ -185,7 +185,7 @@ const Task = () => {
           ) {
             const API_URL = import.meta.env.VITE_API_URL;
             const token = localStorage.getItem("token");
-            console.log("⏰ Auto-start detectado para tarea:", task.id);
+            // console.log("⏰ Auto-start detectado para tarea:", task.id);
 
             axios
               .put(
@@ -417,6 +417,7 @@ const Task = () => {
 
     const updatedPriority = convertPriorityToEnglish(priority);
     const localDate = new Date(`${newDate}T00:00:00-05:00`).toISOString();
+    // console.log('fecha final', localDate);
 
     // 🔊 notificación de audio inmediata
     const playSound = () => {
@@ -994,12 +995,36 @@ const Task = () => {
                   userTimeZone,
                 );
                 let section = "";
-                console.log("task.start_date:", task.start_date);
-                console.log("task.end_date:", task.end_date);
-                console.log("taskDateOnly:", taskDateOnly);
-                console.log("todayStr:", todayStr);
-                console.log("userTimeZone:", userTimeZone);
+                // console.log("task.start_date:", task.start_date);
+                // console.log("task.end_date:", task.end_date);
+                // console.log("taskDateOnly:", taskDateOnly);
+                // console.log("todayStr:", todayStr);
+                // console.log("userTimeZone:", userTimeZone);
 
+                console.log(
+                  taskDateOnly,
+                  "fecha de la tarea",
+                  "y fecha de de hoy",
+                  todayStr,
+                );
+                const taskFullDate = new Date(task.start_date).toLocaleString(
+                  "en-US",
+                  { timeZone: userTimeZone },
+                );
+                const todayFullDate = new Date().toLocaleString("en-US", {
+                  timeZone: userTimeZone,
+                });
+
+                console.log(
+                  "taskDateOnly:",
+                  taskDateOnly,
+                  "→ full:",
+                  taskFullDate,
+                  "| todayStr:",
+                  todayStr,
+                  "→ full:",
+                  todayFullDate,
+                );
 
                 // 1️⃣ Primero: vencidas
                 if (
