@@ -49,18 +49,17 @@ export function generateGoalMessages(goals: Goal[], now: Date): GoalMessage[] {
   /* ===============================
      1️⃣ PROGRESO HOY (NO COMPLETADAS)
   =============================== */
-  const progressedToday = goals
+  const progressedToday = activeGoals
     .filter((g) => {
       const updated = new Date(g.updated_at);
-      const value = Number(g.current_value);
       const updatedToday =
         Math.floor((now.getTime() - updated.getTime()) / DAY) === 0;
 
-      return updatedToday && value > 0;
+      return updatedToday && g.current_value > 0 && g.current_value < 100;
     })
     .sort(
       (a, b) =>
-        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
     );
 
   if (progressedToday.length > 0) {
@@ -275,7 +274,7 @@ export function generateGoalMessages(goals: Goal[], now: Date): GoalMessage[] {
 
   Object.entries(typeMessages).forEach(([unit, config]) => {
     const hasThatType = activeGoals.some(
-      (g) => g.unit === unit && g.current_value >= config.min
+      (g) => g.unit === unit && g.current_value >= config.min,
     );
 
     if (hasThatType) {
@@ -290,6 +289,6 @@ export function generateGoalMessages(goals: Goal[], now: Date): GoalMessage[] {
   =============================== */
 
   return shuffle(
-    Array.from(new Map(messages.map((m) => [m.text, m])).values())
+    Array.from(new Map(messages.map((m) => [m.text, m])).values()),
   );
 }

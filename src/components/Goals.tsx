@@ -22,16 +22,16 @@ import { motion } from "framer-motion";
 
 const phrases = [
   "Las metas marcan el destino, pero los sistemas determinan el camino. Enfócate en cómo avanzas cada día, construye hábitos que te acerquen a tu objetivo y disfruta el proceso.",
-  "Haga que un hábito sea insatisfactorio mirando las consecuencias de no cumplirlo.",
-  "El mensaje que debes llevarte es que es importante desarrollar hábitos que funcionen para tu personalidad.",
-  "Elige metas que realmente se alineen con quien eres, no con lo que los demás esperan de ti.",
-  "Lo que repites cada día es en lo que te conviertes. Tus hábitos definen tu destino.",
-  "Si una meta es grande, divídela en pequeños pasos que puedas lograr cada día.",
-  "No dependas de la fuerza de voluntad, crea sistemas que te ayuden a mantenerte en el camino.",
-  "Un hábito exitoso empieza con un compromiso pequeño: 'Hoy leeré una página', en lugar de 'Quiero leer más libros'.",
-  "La motivación te ayuda a empezar, pero es el sistema lo que te mantiene avanzando.",
-  "Celebra cada pequeño progreso. El éxito es el resultado de muchas pequeñas victorias acumuladas.",
-  "Cambia tu enfoque de 'quiero lograr esto' a 'quiero convertirme en la persona que hace esto'.",
+  // "Haga que un hábito sea insatisfactorio mirando las consecuencias de no cumplirlo.",
+  // "El mensaje que debes llevarte es que es importante desarrollar hábitos que funcionen para tu personalidad.",
+  // "Elige metas que realmente se alineen con quien eres, no con lo que los demás esperan de ti.",
+  // "Lo que repites cada día es en lo que te conviertes. Tus hábitos definen tu destino.",
+  // "Si una meta es grande, divídela en pequeños pasos que puedas lograr cada día.",
+  // "No dependas de la fuerza de voluntad, crea sistemas que te ayuden a mantenerte en el camino.",
+  // "Un hábito exitoso empieza con un compromiso pequeño: 'Hoy leeré una página', en lugar de 'Quiero leer más libros'.",
+  // "La motivación te ayuda a empezar, pero es el sistema lo que te mantiene avanzando.",
+  // "Celebra cada pequeño progreso. El éxito es el resultado de muchas pequeñas victorias acumuladas.",
+  // "Cambia tu enfoque de 'quiero lograr esto' a 'quiero convertirme en la persona que hace esto'.",
 ];
 
 const Goals = () => {
@@ -81,6 +81,7 @@ const Goals = () => {
   const [shownMilestones, setShownMilestones] = useState<
     Record<number, number[]>
   >({});
+  const [goalEventVersion, setGoalEventVersion] = useState(0);
   const lastMessageRef = useRef<GoalMessage | null>(null);
 
   // datos globales del usuario para realizar cualquier accion
@@ -113,6 +114,12 @@ const Goals = () => {
       goals,
       new Date(),
     );
+    const latestDynamic = dynamicMessages[0];
+
+    if (latestDynamic) {
+      lastMessageRef.current = null; // 🔥 resetea bloqueo
+      setCurrentPhrase(latestDynamic);
+    }
 
     // unir todo
     const allMessages: GoalMessage[] = [...staticMessages, ...dynamicMessages];
@@ -151,10 +158,10 @@ const Goals = () => {
           newElement.classList.add(styles.fadeIn);
         }
       }, 500);
-    }, 10000); // ⏱️ tiempo entre mensajes (8s)
+    }, 8000); // ⏱️ tiempo entre mensajes (8s)
 
     return () => clearInterval(interval);
-  }, [goals, phrases]);
+  }, [goals, phrases, goalEventVersion]);
 
   // obtener las metas del usuario
   useEffect(() => {
@@ -184,7 +191,7 @@ const Goals = () => {
     loadGoals();
   }, []);
 
-  // funcion para hacer la busqueda de frases
+  // funcion para hacer la busqueda de metas
   const handleSearch = async () => {
     try {
       setErrors({});
@@ -283,7 +290,7 @@ const Goals = () => {
         },
       );
 
-      // Actualizar tareas en el estado principal
+      // Actualizar metas en el estado principal
       const updatedGoals = goals.map((goal) =>
         goal.id === selectedGoal.id
           ? { ...goal, description: editedDescription }
@@ -347,24 +354,27 @@ const Goals = () => {
         },
       );
 
+      const nowISO = new Date().toISOString();
       // Actualizar tareas en el estado principal
       const updatedGoals = goals.map((goal) =>
         goal.id === selectedGoalPreview.id
-          ? { ...goal, current_value: newValue }
+          ? { ...goal, current_value: newValue, updated_at: nowISO }
           : goal,
       );
 
       // Actualizar las tareas en los resultados de búsqueda
       const updatedSearchResults = searchResults.map((goal) =>
         goal.id === selectedGoalPreview.id
-          ? { ...goal, current_value: newValue }
+          ? { ...goal, current_value: newValue, updated_at: nowISO }
           : goal,
       );
+
+      setGoalEventVersion((v) => v + 1);
       // Actualizamos ambos estados
       setSearchResults(updatedSearchResults);
       setGoals(updatedGoals);
       setSelectedGoalPreview((prev) =>
-        prev ? { ...prev, current_value: newValue } : prev,
+        prev ? { ...prev, current_value: newValue, updated_at: nowISO } : prev,
       );
 
       // Solo mostrar mensajes cuando se alcanza un hito
