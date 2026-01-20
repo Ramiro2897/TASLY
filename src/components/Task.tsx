@@ -596,24 +596,24 @@ const Task = () => {
     );
   };
 
-  function getTaskDateInUserTZ(taskDateUTC: string, timeZone: string) {
-    const date = new Date(taskDateUTC);
-    const formatter = new Intl.DateTimeFormat("en-US", {
-      timeZone,
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-    const parts = formatter.formatToParts(date).reduce(
-      (acc, part) => {
-        if (part.type !== "literal") acc[part.type] = part.value;
-        return acc;
-      },
-      {} as Record<string, string>,
-    );
+  // function getTaskDateInUserTZ(taskDateUTC: string, timeZone: string) {
+  //   const date = new Date(taskDateUTC);
+  //   const formatter = new Intl.DateTimeFormat("en-US", {
+  //     timeZone,
+  //     year: "numeric",
+  //     month: "2-digit",
+  //     day: "2-digit",
+  //   });
+  //   const parts = formatter.formatToParts(date).reduce(
+  //     (acc, part) => {
+  //       if (part.type !== "literal") acc[part.type] = part.value;
+  //       return acc;
+  //     },
+  //     {} as Record<string, string>,
+  //   );
 
-    return `${parts.year}-${parts.month}-${parts.day}`;
-  }
+  //   return `${parts.year}-${parts.month}-${parts.day}`;
+  // }
 
   // funcion para validar si la tarea esta vencida y sin completar
   const isTaskExpired = (
@@ -656,32 +656,47 @@ const Task = () => {
   // 🔹 Ordenar las tareas según estado y vencimiento
   const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const nowUser = getUserNow(userTimeZone); // usa la función que respeta TZ
-  const todayStr = getTaskDateInUserTZ(nowUser.toISOString(), userTimeZone);
+  // const todayStr = getTaskDateInUserTZ(nowUser.toISOString(), userTimeZone);
 
-  const orderedTasks = [...tasks].sort((a, b) => {
-    const isExpiredA = isTaskExpired(
-      a.end_date,
-      a.end_time,
-      a.status,
-      userTimeZone,
-    );
-    const isExpiredB = isTaskExpired(
-      b.end_date,
-      b.end_time,
-      b.status,
-      userTimeZone,
-    );
+ const orderedTasks = [...tasks].sort((a, b) => {
+  const isExpiredA = isTaskExpired(
+    a.end_date,
+    a.end_time,
+    a.status,
+    userTimeZone,
+  );
+  const isExpiredB = isTaskExpired(
+    b.end_date,
+    b.end_time,
+    b.status,
+    userTimeZone,
+  );
 
-    const getOrder = (task: any, expired: boolean) => {
-      if (expired) return 4; // Vencidas
-      if (task.status === "in_progress") return 0;
-      if (task.status === "pending") return 1;
-      if (task.status === "completed") return 5;
-      return 6;
-    };
+  const dateA = new Date(a.start_date).getTime();
+  const dateB = new Date(b.start_date).getTime();
+  const todayTime = new Date(nowUser).getTime();
 
-    return getOrder(a, isExpiredA) - getOrder(b, isExpiredB);
-  });
+  // 🔹 1. Orden por sección
+  const getSectionOrder = (task: any, expired: boolean, date: number) => {
+    if (expired) return 0;                 // Tareas vencidas
+    if (date > todayTime) return 3;        // Tareas futuras
+    if (task.status === "in_progress") return 1; // En progreso
+    if (task.status === "pending") return 2;     // Tareas de hoy
+    if (task.status === "completed") return 4;   // Completadas
+    return 5;
+  };
+
+  const sectionOrderA = getSectionOrder(a, isExpiredA, dateA);
+  const sectionOrderB = getSectionOrder(b, isExpiredB, dateB);
+
+  if (sectionOrderA !== sectionOrderB) {
+    return sectionOrderA - sectionOrderB;
+  }
+
+  // 🔹 2. Si están en la misma sección, ordenar por fecha
+  return dateA - dateB;
+});
+
 
   const formatDateWithoutTimezoneShift = (dateStr: string) => {
     const [year, month, day] = dateStr.split("T")[0].split("-");
@@ -991,17 +1006,21 @@ const Task = () => {
               ))
             : orderedTasks.map((task) => {
                 const taskDateOnly = new Date(task.start_date);
-                const todayDate = new Date(nowUser); 
+                const todayDate = new Date(nowUser);
                 let section = "";
-                console.log("task.start_date:", task.start_date);
-                console.log(
-                  taskDateOnly,
-                  "fecha de la tarea",
-                  "y fecha de de hoy",
-                  todayStr,
-                );
+                // console.log("task.start_date:", task.start_date);
+                // console.log(
+                //   taskDateOnly,
+                //   "fecha de la tarea",
+                //   "y fecha de de hoy",
+                //   todayStr,
+                // );
 
-                console.log('despues de convertir', taskDateOnly.getTime(), todayDate.getTime())
+                // console.log(
+                //   "despues de convertir",
+                //   taskDateOnly.getTime(),
+                //   todayDate.getTime(),
+                // );
 
                 // 1️⃣ Primero: vencidas
                 if (
@@ -1016,18 +1035,25 @@ const Task = () => {
                 }
                 // 2️⃣ Tareas futuras
                 else if (taskDateOnly.getTime() > todayDate.getTime()) {
+                  console.log("hay futuras");
                   section = "Tareas futuras";
                 }
                 // 3️⃣ En progreso
                 else if (task.status === "in_progress") {
+                  console.log("hay en progreso");
                   section = "En progreso";
                 }
                 // 4️⃣ Pendientes de hoy
-                else if (task.status === "pending") {
+                else if (
+                  task.status === "pending" &&
+                  taskDateOnly.getTime() <= todayDate.getTime()
+                ) {
+                  console.log("hay tareas de hoy");
                   section = "Tareas de hoy";
                 }
                 // 5️⃣ Completadas
                 else if (task.status === "completed") {
+                  console.log("hay en completas");
                   section = "Completadas";
                 }
 

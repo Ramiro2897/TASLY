@@ -78,30 +78,15 @@ const Phrases = () => {
     favorite: boolean;
     author: string;
   } | null>(null);
-  const [newDate, setNewDate] = useState("");
+  // const [newDate, setNewDate] = useState("");
   const [editedName, setEditedName] = useState(selectedPhrase?.name || "");
 
   // permite asignarle el valor a selectedPhrase cuando se abre el modal de editar
   useEffect(() => {
     if (selectedPhrase) {
       if (selectedPhrase.date) {
-        const date = new Date(selectedPhrase.date);
-
-        // Convertimos la fecha a la zona horaria de Bogotá y luego al formato YYYY-MM-DD
-        const offsetDate = new Date(
-          date.toLocaleString("en-US", { timeZone: "America/Bogota" }),
-        );
-        const year = offsetDate.getFullYear();
-        const month = String(offsetDate.getMonth() + 1).padStart(2, "0");
-        const day = String(offsetDate.getDate()).padStart(2, "0");
-        const formattedDate = `${year}-${month}-${day}`;
-
-        setNewDate(formattedDate);
-      } else {
-        setNewDate("");
+        setEditedName(selectedPhrase.name || "");
       }
-
-      setEditedName(selectedPhrase.name || "");
     }
   }, [selectedPhrase]);
 
@@ -224,14 +209,12 @@ const Phrases = () => {
   // funcion para actualizar frase
   const handleUpdatePhrase = async () => {
     if (!selectedPhrase) return;
-    const localDate = new Date(`${newDate}T00:00:00-05:00`).toISOString();
 
     try {
-      await axios.put(
+      const response = await axios.put(
         `${API_URL}/api/auth/phraseUpdate`,
         {
           phraseId: selectedPhrase.id,
-          updatedDate: localDate,
           editedName,
         },
         {
@@ -241,18 +224,16 @@ const Phrases = () => {
         },
       );
 
+      const updatedPhrase = response.data.updatedPhrase;
+
       // Actualizar tareas en el estado principal
       const updatedPhrases = phrases.map((phrase) =>
-        phrase.id === selectedPhrase.id
-          ? { ...phrase, created_at: localDate, phrase: editedName }
-          : phrase,
+        phrase.id === updatedPhrase.id ? updatedPhrase : phrase,
       );
 
-      // Actualizar las tareas en los resultados de búsqueda
+      // Actualizar resultados de búsqueda
       const updatedSearchResults = searchResults.map((phrase) =>
-        phrase.id === selectedPhrase.id
-          ? { ...phrase, created_at: localDate, phrase: editedName }
-          : phrase,
+        phrase.id === updatedPhrase.id ? updatedPhrase : phrase,
       );
       // Actualizamos ambos estados
       setSearchResults(updatedSearchResults);
@@ -472,16 +453,6 @@ const Phrases = () => {
                 value={editedName}
                 onChange={(e) => setEditedName(e.target.value)}
                 className={styles["textarea-name"]}
-              />
-              <label className={styles["label-question"]}>
-                ¿Modificar la fecha de actualización?
-              </label>
-              <input
-                type="date"
-                value={newDate}
-                onChange={(e) => {
-                  setNewDate(e.target.value);
-                }}
               />
               <div className={styles["btn-options"]}>
                 <button onClick={handleUpdatePhrase}>
