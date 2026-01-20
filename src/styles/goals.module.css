@@ -531,6 +531,11 @@
   font-size: 0.77rem;
   font-weight: 100;
   color: var(--descriptionP);
+  flex: 1; 
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+  white-space: pre-wrap;
 }
 
 /* Contenedor de la barra de progreso */

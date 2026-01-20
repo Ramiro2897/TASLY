@@ -678,10 +678,10 @@ const Task = () => {
 
   // 🔹 1. Orden por sección
   const getSectionOrder = (task: any, expired: boolean, date: number) => {
-    if (expired) return 0;                 // Tareas vencidas
-    if (date > todayTime) return 3;        // Tareas futuras
+    if (expired) return 3;                 // Tareas vencidas
+    if (date > todayTime) return 2;        // Tareas futuras
     if (task.status === "in_progress") return 1; // En progreso
-    if (task.status === "pending") return 2;     // Tareas de hoy
+    if (task.status === "pending") return 0;     // Tareas de hoy
     if (task.status === "completed") return 4;   // Completadas
     return 5;
   };

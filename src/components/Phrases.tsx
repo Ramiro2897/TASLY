@@ -594,7 +594,7 @@ const Phrases = () => {
                     onTouchCancel={handleMouseUp}
                   >
                     <div className={styles["phrase-name"]}>
-                      <p>{phrase.phrase}</p>
+                      <p style={{ whiteSpace: "pre-wrap" }}>{phrase.phrase}</p>
                     </div>
                     <div className={styles["author"]}>
                       <p>{phrase.author}</p>

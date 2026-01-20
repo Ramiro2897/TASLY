@@ -899,7 +899,7 @@ const Goals = () => {
                     onTouchCancel={handleMouseUp}
                   >
                     <div className={styles["goal-name"]}>
-                      <p>{goal.goal}</p>
+                      <p style={{ whiteSpace: "pre-wrap" }}>{goal.goal}</p>
                     </div>
                     <div className={styles["description"]}>
                       <p>{goal.description}</p>
@@ -995,7 +995,7 @@ const Goals = () => {
                     onTouchCancel={handleMouseUp}
                   >
                     <div className={styles["goal-name"]}>
-                      <p>{goal.goal}</p>
+                      <p style={{ whiteSpace: "pre-wrap" }}>{goal.goal}</p>
                     </div>
                     <div className={styles["description"]}>
                       <p>{goal.description}</p>
