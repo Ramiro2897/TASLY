@@ -989,11 +989,22 @@ const Task = () => {
                 </div>
               ))
             : orderedTasks.map((task) => {
-                const taskDateOnly = getTaskDateInUserTZ(
+                const taskDateOnlyStr = getTaskDateInUserTZ(
                   task.start_date,
                   userTimeZone,
                 );
+
+                // Crear objetos Date para comparar correctamente
+                const taskDateObj = new Date(`${taskDateOnlyStr}T00:00:00`);
+                const todayObj = new Date(`${todayStr}T00:00:00`);
+
                 let section = "";
+                console.log("task.start_date:", task.start_date);
+                console.log("task.end_date:", task.end_date);
+                // console.log("taskDateOnly:", taskDateOnly);
+                console.log("todayStr:", todayStr);
+                console.log("userTimeZone:", userTimeZone);
+                console.log('mirar esto:', taskDateObj.getTime() > todayObj.getTime())
 
                 // 1️⃣ Primero: vencidas
                 if (
@@ -1007,7 +1018,7 @@ const Task = () => {
                   section = "Tareas vencidas";
                 }
                 // 2️⃣ Tareas futuras
-                else if (taskDateOnly > todayStr) {
+                else if (taskDateObj.getTime() > todayObj.getTime()) {
                   section = "Tareas futuras";
                 }
                 // 3️⃣ En progreso
