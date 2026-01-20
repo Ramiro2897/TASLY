@@ -1004,7 +1004,7 @@ const Task = () => {
                 // console.log("taskDateOnly:", taskDateOnly);
                 console.log("todayStr:", todayStr);
                 console.log("userTimeZone:", userTimeZone);
-                console.log('mirar esto:', taskDateObj.getTime() > todayObj.getTime())
+                console.log('mirar esto:', taskDateObj.getTime(), todayObj.getTime())
 
                 // 1️⃣ Primero: vencidas
                 if (
