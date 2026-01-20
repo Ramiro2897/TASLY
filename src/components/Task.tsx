@@ -990,41 +990,18 @@ const Task = () => {
                 </div>
               ))
             : orderedTasks.map((task) => {
-                const taskDateOnly = getTaskDateInUserTZ(
-                  task.start_date,
-                  userTimeZone,
-                );
+                const taskDateOnly = new Date(task.start_date);
+                const todayDate = new Date(nowUser); 
                 let section = "";
-                // console.log("task.start_date:", task.start_date);
-                // console.log("task.end_date:", task.end_date);
-                // console.log("taskDateOnly:", taskDateOnly);
-                // console.log("todayStr:", todayStr);
-                // console.log("userTimeZone:", userTimeZone);
-
+                console.log("task.start_date:", task.start_date);
                 console.log(
                   taskDateOnly,
                   "fecha de la tarea",
                   "y fecha de de hoy",
                   todayStr,
                 );
-                const taskFullDate = new Date(task.start_date).toLocaleString(
-                  "en-US",
-                  { timeZone: userTimeZone },
-                );
-                const todayFullDate = new Date().toLocaleString("en-US", {
-                  timeZone: userTimeZone,
-                });
 
-                console.log(
-                  "taskDateOnly:",
-                  taskDateOnly,
-                  "→ full:",
-                  taskFullDate,
-                  "| todayStr:",
-                  todayStr,
-                  "→ full:",
-                  todayFullDate,
-                );
+                console.log('despues de convertir', taskDateOnly.getTime(), todayDate.getTime())
 
                 // 1️⃣ Primero: vencidas
                 if (
@@ -1038,7 +1015,7 @@ const Task = () => {
                   section = "Tareas vencidas";
                 }
                 // 2️⃣ Tareas futuras
-                else if (taskDateOnly > todayStr) {
+                else if (taskDateOnly.getTime() > todayDate.getTime()) {
                   section = "Tareas futuras";
                 }
                 // 3️⃣ En progreso
