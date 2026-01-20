@@ -64,7 +64,6 @@ const ModalPhrases: React.FC<ModalPhrasesProps> = ({
       setErrors({});
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       timeoutRef.current = window.setTimeout(() => {
-        alert("entraaa");
         setSuccessMessage(null);
         onClose();
         timeoutRef.current = null; // limpiar la referencia

@@ -72,6 +72,7 @@
   background: transparent;
   border-radius: 8px;
   border: var(--border-default);
+  
 }
 
 .contact h3, .details h3 {
@@ -109,5 +110,22 @@ em a {
 
 em a:hover {
   text-decoration: underline;
+}
+
+/* * Estilos para los iconos de redes sociales */ 
+.social-icons {
+  display: flex;
+  gap: 10px;
+  padding: 5px 6px;
+}
+
+.social-icons a {
+  font-size: 1.4rem;
+  color: var(--color-icon);
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: var(--gb-item-globalHover);
 }
 

@@ -89,11 +89,13 @@ const Task = () => {
         setNewDate(selectedTask.date.split("T")[0]); // Establece la fecha si está disponible
       }
 
-      if (selectedTask.start_time) {
+      if (selectedTask.start_time && selectedTask.end_time) {
         setNewStartTime(selectedTask.start_time);
-      }
-      if (selectedTask.end_time) {
         setNewEndTime(selectedTask.end_time);
+      } else {
+        // 🔥 limpiar si la tarea no tiene horas
+        setNewStartTime("");
+        setNewEndTime("");
       }
 
       if (selectedTask.priority) {
@@ -433,8 +435,8 @@ const Task = () => {
         {
           taskId: selectedTask.id,
           updatedDate: localDate,
-          updatedStartTime: newStartTime,
-          updatedEndTime: newEndTime,
+          updatedStartTime: newStartTime || null,
+          updatedEndTime: newEndTime || null,
           updatedPriority,
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
@@ -547,6 +549,8 @@ const Task = () => {
   };
   // funcion para cerrar el modal de actualizar
   const handleCloseEditModal = () => {
+    setNewStartTime("");
+    setNewEndTime("");
     const modal = document.querySelector(`.${styles.modalContent}`);
     if (!modal) return;
 

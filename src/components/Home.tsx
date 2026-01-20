@@ -312,7 +312,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
         },
       );
       // Eliminar los datos del localStorage al cerrar sesión
-      localStorage.clear();
+      localStorage.removeItem("token");
       // Redirigir al login
       navigate("/");
     } catch (error) {

@@ -1,5 +1,11 @@
 import { motion } from "framer-motion";
 import styles from "../styles/info.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faInstagram,
+  faWhatsapp,
+  faGithub,
+} from "@fortawesome/free-brands-svg-icons";
 
 const Information = () => {
   return (
@@ -58,6 +64,15 @@ const Information = () => {
             facilitando una vista clara y ordenada. En la pantalla principal, el
             usuario puede ver mensajes dinámicos que reflejan su progreso diario
             y reconocer cuando ha completado todo.
+            <br />
+            <br />
+            Ahora las tareas pueden incluir horas de inicio y final de forma
+            opcional. Si una tarea fue creada con horario, el sistema valida
+            automáticamente que las horas sean coherentes con la fecha actual y
+            evita inconsistencias. Las tareas sin horas mantienen una
+            experiencia más flexible, sin validaciones de tiempo innecesarias.
+            El comportamiento de las horas se adapta de forma inteligente según
+            el estado de la tarea: pendiente, en progreso o completada.
             <br />
             <br />
             La sección de metas fue la que más evolucionó. Se rediseñó
@@ -154,6 +169,29 @@ const Information = () => {
             <h3>Contacto</h3>
             <p>Email: ramirodjaltor2016@gmail.com</p>
             <p>Teléfono: +57 300 235 3297</p>
+            <div className={styles["social-icons"]}>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FontAwesomeIcon icon={faInstagram} />
+              </a>
+              <a
+                href="https://wa.me/573002353297"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FontAwesomeIcon icon={faWhatsapp} />
+              </a>
+              <a
+                href="https://github.com/Ramiro2897"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FontAwesomeIcon icon={faGithub} />
+              </a>
+            </div>
           </motion.div>
         </div>
       </div>
