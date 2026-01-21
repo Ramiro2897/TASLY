@@ -673,7 +673,6 @@ const Task = () => {
 
   // Función para obtener la fecha "solo día" en la zona del usuario
   const getTaskDayInUserTZ = (taskDate: string, timeZone: string): Date => {
-    // Convierte la fecha de la BD a la zona horaria del usuario
     const localStr = new Date(taskDate).toLocaleString("en-US", { timeZone });
     const localDate = new Date(localStr);
     // Pone la hora a 0:00 para comparar solo el día
@@ -685,6 +684,7 @@ const Task = () => {
       localDate.toISOString(),
       "| Hora local:", localDate.getHours(), localDate.getMinutes()
     );
+    console.log('lo que retorna', localDate);
     return localDate;
   };
 
@@ -917,7 +917,7 @@ const Task = () => {
                       task.end_date,
                       task.end_time,
                       task.status,
-                      Intl.DateTimeFormat().resolvedOptions().timeZone,
+                      userTimeZone,
                     )
                       ? styles["expired-task"]
                       : ""
@@ -1003,6 +1003,8 @@ const Task = () => {
                   new Date().toISOString(),
                   userTimeZone,
                 );
+
+                console.log(taskDay, todayDay, 'valores de los datos');
 
                 let section = "";
                 // 1️⃣ Primero: vencidas
