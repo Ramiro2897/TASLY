@@ -685,7 +685,6 @@ const Task = () => {
       localDate.toISOString(),
       "| Hora local:", localDate.getHours(), localDate.getMinutes()
     );
-    localDate.setHours(0, 0, 0, 0);
     return localDate;
   };
 
@@ -1005,9 +1004,6 @@ const Task = () => {
                   userTimeZone,
                 );
 
-                console.log(taskDay, todayDay, 'valores a ver')
-                console.log(taskDay.getTime(), todayDay.getTime(), 'ver esto')
-
                 let section = "";
                 // 1️⃣ Primero: vencidas
                 if (
@@ -1033,7 +1029,7 @@ const Task = () => {
                 // 4️⃣ Pendientes de hoy
                 else if (
                   task.status === "pending" &&
-                  taskDay.getTime() === todayDay.getTime()
+                  taskDay.getTime() <= todayDay.getTime()
                 ) {
                   console.log("hay tareas de hoy");
                   section = "Tareas de hoy";
