@@ -596,25 +596,6 @@ const Task = () => {
     );
   };
 
-  // function getTaskDateInUserTZ(taskDateUTC: string, timeZone: string) {
-  //   const date = new Date(taskDateUTC);
-  //   const formatter = new Intl.DateTimeFormat("en-US", {
-  //     timeZone,
-  //     year: "numeric",
-  //     month: "2-digit",
-  //     day: "2-digit",
-  //   });
-  //   const parts = formatter.formatToParts(date).reduce(
-  //     (acc, part) => {
-  //       if (part.type !== "literal") acc[part.type] = part.value;
-  //       return acc;
-  //     },
-  //     {} as Record<string, string>,
-  //   );
-
-  //   return `${parts.year}-${parts.month}-${parts.day}`;
-  // }
-
   // funcion para validar si la tarea esta vencida y sin completar
   const isTaskExpired = (
     endDate: string,
@@ -623,13 +604,6 @@ const Task = () => {
     timeZone: string,
   ): boolean => {
     if (status === "completed") return false;
-    // console.log(
-    //   endDate,
-    //   endTime,
-    //   status,
-    //   timeZone,
-    //   "formatos de fechas y horas",
-    // );
 
     // Hora actual del usuario
     const nowUser = getUserNow(timeZone);
@@ -696,6 +670,24 @@ const Task = () => {
     // 🔹 2. Si están en la misma sección, ordenar por fecha
     return dateA - dateB;
   });
+
+  // Función para obtener la fecha "solo día" en la zona del usuario
+  const getTaskDayInUserTZ = (taskDate: string, timeZone: string): Date => {
+    // Convierte la fecha de la BD a la zona horaria del usuario
+    const localStr = new Date(taskDate).toLocaleString("en-US", { timeZone });
+    const localDate = new Date(localStr);
+    // Pone la hora a 0:00 para comparar solo el día
+    localDate.setHours(0, 0, 0, 0);
+    console.log(
+      "Original:",
+      taskDate,
+      "En zona usuario:",
+      localDate.toISOString(),
+      "| Hora local:", localDate.getHours(), localDate.getMinutes()
+    );
+    localDate.setHours(0, 0, 0, 0);
+    return localDate;
+  };
 
   const formatDateWithoutTimezoneShift = (dateStr: string) => {
     const [year, month, day] = dateStr.split("T")[0].split("-");
@@ -1004,34 +996,19 @@ const Task = () => {
                 </div>
               ))
             : orderedTasks.map((task) => {
-                const taskDateOnly = new Date(task.start_date);
-                const todayDate = new Date(nowUser);
-
-                const taskDayStr = taskDateOnly.toISOString().slice(0, 10); // "YYYY-MM-DD"
-                const todayDayStr = todayDate.toISOString().slice(0, 10);
-                console.log("Task day:", taskDayStr, "Today day:", todayDayStr);
-                console.log(taskDateOnly, todayDate, "ver esto");
-                console.log(
-                  taskDateOnly.getTime(),
-                  todayDate.getTime(),
-                  " y ver esto",
+                const taskDay = getTaskDayInUserTZ(
+                  task.start_date,
+                  userTimeZone,
+                );
+                const todayDay = getTaskDayInUserTZ(
+                  new Date().toISOString(),
+                  userTimeZone,
                 );
 
+                console.log(taskDay, todayDay, 'valores a ver')
+                console.log(taskDay.getTime(), todayDay.getTime(), 'ver esto')
+
                 let section = "";
-                console.log("task.start_date:", task.start_date);
-                // console.log(
-                //   taskDateOnly,
-                //   "fecha de la tarea",
-                //   "y fecha de de hoy",
-                //   todayStr,
-                // );
-
-                // console.log(
-                //   "despues de convertir",
-                //   taskDateOnly.getTime(),
-                //   todayDate.getTime(),
-                // );
-
                 // 1️⃣ Primero: vencidas
                 if (
                   isTaskExpired(
@@ -1044,7 +1021,7 @@ const Task = () => {
                   section = "Tareas vencidas";
                 }
                 // 2️⃣ Tareas futuras
-                else if (taskDayStr > todayDayStr) {
+                else if (taskDay.getTime() > todayDay.getTime()) {
                   console.log("hay futuras");
                   section = "Tareas futuras";
                 }
@@ -1056,7 +1033,7 @@ const Task = () => {
                 // 4️⃣ Pendientes de hoy
                 else if (
                   task.status === "pending" &&
-                  taskDayStr <= todayDayStr
+                  taskDay.getTime() === todayDay.getTime()
                 ) {
                   console.log("hay tareas de hoy");
                   section = "Tareas de hoy";

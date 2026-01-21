@@ -22,16 +22,16 @@ import { motion } from "framer-motion";
 
 const phrases = [
   "Las metas marcan el destino, pero los sistemas determinan el camino. Enfócate en cómo avanzas cada día, construye hábitos que te acerquen a tu objetivo y disfruta el proceso.",
-  // "Haga que un hábito sea insatisfactorio mirando las consecuencias de no cumplirlo.",
-  // "El mensaje que debes llevarte es que es importante desarrollar hábitos que funcionen para tu personalidad.",
-  // "Elige metas que realmente se alineen con quien eres, no con lo que los demás esperan de ti.",
-  // "Lo que repites cada día es en lo que te conviertes. Tus hábitos definen tu destino.",
-  // "Si una meta es grande, divídela en pequeños pasos que puedas lograr cada día.",
-  // "No dependas de la fuerza de voluntad, crea sistemas que te ayuden a mantenerte en el camino.",
-  // "Un hábito exitoso empieza con un compromiso pequeño: 'Hoy leeré una página', en lugar de 'Quiero leer más libros'.",
-  // "La motivación te ayuda a empezar, pero es el sistema lo que te mantiene avanzando.",
-  // "Celebra cada pequeño progreso. El éxito es el resultado de muchas pequeñas victorias acumuladas.",
-  // "Cambia tu enfoque de 'quiero lograr esto' a 'quiero convertirme en la persona que hace esto'.",
+  "Haga que un hábito sea insatisfactorio mirando las consecuencias de no cumplirlo.",
+  "El mensaje que debes llevarte es que es importante desarrollar hábitos que funcionen para tu personalidad.",
+  "Elige metas que realmente se alineen con quien eres, no con lo que los demás esperan de ti.",
+  "Lo que repites cada día es en lo que te conviertes. Tus hábitos definen tu destino.",
+  "Si una meta es grande, divídela en pequeños pasos que puedas lograr cada día.",
+  "No dependas de la fuerza de voluntad, crea sistemas que te ayuden a mantenerte en el camino.",
+  "Un hábito exitoso empieza con un compromiso pequeño: 'Hoy leeré una página', en lugar de 'Quiero leer más libros'.",
+  "La motivación te ayuda a empezar, pero es el sistema lo que te mantiene avanzando.",
+  "Celebra cada pequeño progreso. El éxito es el resultado de muchas pequeñas victorias acumuladas.",
+  "Cambia tu enfoque de 'quiero lograr esto' a 'quiero convertirme en la persona que hace esto'.",
 ];
 
 const Goals = () => {
