@@ -1005,6 +1005,7 @@ const Task = () => {
                 );
 
                 console.log(taskDay, todayDay, 'valores de los datos');
+                console.log(taskDay.getTime(), 'la fecha de la tareaaaaa')
 
                 let section = "";
                 // 1️⃣ Primero: vencidas
