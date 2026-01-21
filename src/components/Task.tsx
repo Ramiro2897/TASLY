@@ -672,21 +672,23 @@ const Task = () => {
   });
 
   // Función para obtener la fecha "solo día" en la zona del usuario
-  const getTaskDayInUserTZ = (taskDate: string, timeZone: string): Date => {
-    const localStr = new Date(taskDate).toLocaleString("en-US", { timeZone });
-    const localDate = new Date(localStr);
-    // Pone la hora a 0:00 para comparar solo el día
-    localDate.setHours(0, 0, 0, 0);
-    console.log(
-      "Original:",
-      taskDate,
-      "En zona usuario:",
-      localDate.toISOString(),
-      "| Hora local:", localDate.getHours(), localDate.getMinutes()
-    );
-    console.log('lo que retorna', localDate);
-    return localDate;
-  };
+  // const getTaskDayInUserTZ = (taskDate: string, timeZone: string): Date => {
+  //   const localStr = new Date(taskDate).toLocaleString("en-US", { timeZone });
+  //   const localDate = new Date(localStr);
+  //   // Pone la hora a 0:00 para comparar solo el día
+  //   localDate.setHours(0, 0, 0, 0);
+  //   console.log(
+  //     "Original:",
+  //     taskDate,
+  //     "En zona usuario:",
+  //     localDate.toISOString(),
+  //     "| Hora local:",
+  //     localDate.getHours(),
+  //     localDate.getMinutes(),
+  //   );
+  //   console.log("lo que retorna", localDate);
+  //   return localDate;
+  // };
 
   const formatDateWithoutTimezoneShift = (dateStr: string) => {
     const [year, month, day] = dateStr.split("T")[0].split("-");
@@ -995,17 +997,10 @@ const Task = () => {
                 </div>
               ))
             : orderedTasks.map((task) => {
-                const taskDay = getTaskDayInUserTZ(
-                  task.start_date,
-                  userTimeZone,
-                );
-                const todayDay = getTaskDayInUserTZ(
-                  new Date().toISOString(),
-                  userTimeZone,
-                );
-
-                console.log(taskDay, todayDay, 'valores de los datos');
-                console.log(taskDay.getTime(), 'la fecha de la tareaaaaa')
+                const nowUserStr = new Date().toLocaleString("en-US", { timeZone: userTimeZone });
+                const nowUserTime = new Date(nowUserStr).toISOString();
+                console.log('esto si es original', task.start_date)
+                console.log('y esto si es la hora del usuario: ', nowUserTime)
 
                 let section = "";
                 // 1️⃣ Primero: vencidas
@@ -1020,7 +1015,7 @@ const Task = () => {
                   section = "Tareas vencidas";
                 }
                 // 2️⃣ Tareas futuras
-                else if (taskDay.getTime() > todayDay.getTime()) {
+                else if (task.start_date > nowUserTime) {
                   console.log("hay futuras");
                   section = "Tareas futuras";
                 }
@@ -1031,8 +1026,7 @@ const Task = () => {
                 }
                 // 4️⃣ Pendientes de hoy
                 else if (
-                  task.status === "pending" &&
-                  taskDay.getTime() <= todayDay.getTime()
+                  task.status === "pending" && task.start_date  <= nowUserTime
                 ) {
                   console.log("hay tareas de hoy");
                   section = "Tareas de hoy";
