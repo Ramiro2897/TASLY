@@ -1007,6 +1007,9 @@ const Task = () => {
             : orderedTasks.map((task) => {
                 const taskDateOnly = new Date(task.start_date);
                 const todayDate = new Date(nowUser);
+                console.log(taskDateOnly, todayDate, 'ver esto')
+                console.log(taskDateOnly.getTime(), todayDate.getTime(), ' y ver esto')
+
                 let section = "";
                 // console.log("task.start_date:", task.start_date);
                 // console.log(
