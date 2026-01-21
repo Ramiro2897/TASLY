@@ -51,6 +51,7 @@ const Phrases = () => {
       favorite: boolean;
     }[]
   >([]);
+  console.log(phrases, 'todas las frases')
   const [searchResults, setSearchResults] = useState<
     {
       id: number;
@@ -210,12 +211,17 @@ const Phrases = () => {
   const handleUpdatePhrase = async () => {
     if (!selectedPhrase) return;
 
+    const userDate = new Date(); // hora LOCAL del usuario
+    const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
     try {
       const response = await axios.put(
         `${API_URL}/api/auth/phraseUpdate`,
         {
           phraseId: selectedPhrase.id,
           editedName,
+          createdAt: userDate.toISOString(), 
+          timezone: userTimeZone,
         },
         {
           headers: {
@@ -395,22 +401,10 @@ const Phrases = () => {
   };
 
   const formatDateWithoutTimezoneShift = (dateStr: string) => {
-    const [year, month, day] = dateStr.split("T")[0].split("-");
-    const meses = [
-      "ene",
-      "feb",
-      "mar",
-      "abr",
-      "may",
-      "jun",
-      "jul",
-      "ago",
-      "sep",
-      "oct",
-      "nov",
-      "dic",
-    ];
-    return `${parseInt(day)} ${meses[parseInt(month) - 1]} ${year}`;
+    // dateStr viene tipo "2026-01-21T01:51:57.179Z"
+    const date = new Date(dateStr); // JS convierte a hora local automáticamente
+    const meses = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+    return `${date.getDate()} ${meses[date.getMonth()]} ${date.getFullYear()}`;
   };
 
   const randomMessage =

@@ -346,6 +346,26 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     navigate("/goals");
   };
 
+  // pasar la fecha en frases
+  const formatDateWithoutTimezoneShift = (dateStr: string) => {
+    const date = new Date(dateStr); // convierte ISO a hora local del usuario
+    const meses = [
+      "enero",
+      "febrero",
+      "marzo",
+      "abril",
+      "mayo",
+      "junio",
+      "julio",
+      "agosto",
+      "septiembre",
+      "octubre",
+      "noviembre",
+      "diciembre",
+    ];
+    return `${date.getDate()} ${meses[date.getMonth()]} ${date.getFullYear()}`;
+  };
+
   // horas para notificar: buenos dias, tardes o noche
   const getDayMoment = () => {
     const hour = new Date().getHours();
@@ -674,19 +694,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                             icon={faClock}
                             style={{ marginRight: "5px" }}
                           />
-                          {(() => {
-                            const [year, month, day] = frases[0].created_at
-                              .split("T")[0]
-                              .split("-");
-                            const date = new Date(+year, +month - 1, +day);
-                            return new Intl.DateTimeFormat("es-ES", {
-                              year: "numeric",
-                              month: "long",
-                              day: "numeric",
-                            })
-                              .format(date)
-                              .replace(/ de /g, " ");
-                          })()}
+                          {formatDateWithoutTimezoneShift(frases[0].created_at)}
                         </span>
                       </div>
                     </div>
