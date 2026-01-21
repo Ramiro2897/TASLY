@@ -1007,6 +1007,9 @@ const Task = () => {
             : orderedTasks.map((task) => {
                 const taskDateOnly = new Date(task.start_date);
                 const todayDate = new Date(nowUser);
+
+                taskDateOnly.setHours(0, 0, 0, 0);
+                todayDate.setHours(0, 0, 0, 0);
                 console.log(taskDateOnly, todayDate, 'ver esto')
                 console.log(taskDateOnly.getTime(), todayDate.getTime(), ' y ver esto')
 
@@ -1049,7 +1052,7 @@ const Task = () => {
                 // 4️⃣ Pendientes de hoy
                 else if (
                   task.status === "pending" &&
-                  taskDateOnly.getTime() <= todayDate.getTime()
+                  taskDateOnly.getTime() === todayDate.getTime()
                 ) {
                   console.log("hay tareas de hoy");
                   section = "Tareas de hoy";
