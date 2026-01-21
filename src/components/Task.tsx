@@ -658,45 +658,44 @@ const Task = () => {
   const nowUser = getUserNow(userTimeZone); // usa la función que respeta TZ
   // const todayStr = getTaskDateInUserTZ(nowUser.toISOString(), userTimeZone);
 
- const orderedTasks = [...tasks].sort((a, b) => {
-  const isExpiredA = isTaskExpired(
-    a.end_date,
-    a.end_time,
-    a.status,
-    userTimeZone,
-  );
-  const isExpiredB = isTaskExpired(
-    b.end_date,
-    b.end_time,
-    b.status,
-    userTimeZone,
-  );
+  const orderedTasks = [...tasks].sort((a, b) => {
+    const isExpiredA = isTaskExpired(
+      a.end_date,
+      a.end_time,
+      a.status,
+      userTimeZone,
+    );
+    const isExpiredB = isTaskExpired(
+      b.end_date,
+      b.end_time,
+      b.status,
+      userTimeZone,
+    );
 
-  const dateA = new Date(a.start_date).getTime();
-  const dateB = new Date(b.start_date).getTime();
-  const todayTime = new Date(nowUser).getTime();
+    const dateA = new Date(a.start_date).getTime();
+    const dateB = new Date(b.start_date).getTime();
+    const todayTime = new Date(nowUser).getTime();
 
-  // 🔹 1. Orden por sección
-  const getSectionOrder = (task: any, expired: boolean, date: number) => {
-    if (expired) return 3;                 // Tareas vencidas
-    if (date > todayTime) return 2;        // Tareas futuras
-    if (task.status === "in_progress") return 1; // En progreso
-    if (task.status === "pending") return 0;     // Tareas de hoy
-    if (task.status === "completed") return 4;   // Completadas
-    return 5;
-  };
+    // 🔹 1. Orden por sección
+    const getSectionOrder = (task: any, expired: boolean, date: number) => {
+      if (expired) return 3; // Tareas vencidas
+      if (date > todayTime) return 2; // Tareas futuras
+      if (task.status === "in_progress") return 1; // En progreso
+      if (task.status === "pending") return 0; // Tareas de hoy
+      if (task.status === "completed") return 4; // Completadas
+      return 5;
+    };
 
-  const sectionOrderA = getSectionOrder(a, isExpiredA, dateA);
-  const sectionOrderB = getSectionOrder(b, isExpiredB, dateB);
+    const sectionOrderA = getSectionOrder(a, isExpiredA, dateA);
+    const sectionOrderB = getSectionOrder(b, isExpiredB, dateB);
 
-  if (sectionOrderA !== sectionOrderB) {
-    return sectionOrderA - sectionOrderB;
-  }
+    if (sectionOrderA !== sectionOrderB) {
+      return sectionOrderA - sectionOrderB;
+    }
 
-  // 🔹 2. Si están en la misma sección, ordenar por fecha
-  return dateA - dateB;
-});
-
+    // 🔹 2. Si están en la misma sección, ordenar por fecha
+    return dateA - dateB;
+  });
 
   const formatDateWithoutTimezoneShift = (dateStr: string) => {
     const [year, month, day] = dateStr.split("T")[0].split("-");
@@ -1008,13 +1007,18 @@ const Task = () => {
                 const taskDateOnly = new Date(task.start_date);
                 const todayDate = new Date(nowUser);
 
-                taskDateOnly.setHours(0, 0, 0, 0);
-                todayDate.setHours(0, 0, 0, 0);
-                console.log(taskDateOnly, todayDate, 'ver esto')
-                console.log(taskDateOnly.getTime(), todayDate.getTime(), ' y ver esto')
+                const taskDayStr = taskDateOnly.toISOString().slice(0, 10); // "YYYY-MM-DD"
+                const todayDayStr = todayDate.toISOString().slice(0, 10);
+                console.log("Task day:", taskDayStr, "Today day:", todayDayStr);
+                console.log(taskDateOnly, todayDate, "ver esto");
+                console.log(
+                  taskDateOnly.getTime(),
+                  todayDate.getTime(),
+                  " y ver esto",
+                );
 
                 let section = "";
-                // console.log("task.start_date:", task.start_date);
+                console.log("task.start_date:", task.start_date);
                 // console.log(
                 //   taskDateOnly,
                 //   "fecha de la tarea",
@@ -1040,7 +1044,7 @@ const Task = () => {
                   section = "Tareas vencidas";
                 }
                 // 2️⃣ Tareas futuras
-                else if (taskDateOnly.getTime() > todayDate.getTime()) {
+                else if (taskDayStr > todayDayStr) {
                   console.log("hay futuras");
                   section = "Tareas futuras";
                 }
@@ -1052,7 +1056,7 @@ const Task = () => {
                 // 4️⃣ Pendientes de hoy
                 else if (
                   task.status === "pending" &&
-                  taskDateOnly.getTime() === todayDate.getTime()
+                  taskDayStr <= todayDayStr
                 ) {
                   console.log("hay tareas de hoy");
                   section = "Tareas de hoy";
