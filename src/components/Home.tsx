@@ -606,7 +606,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     if (!timeTasks.length) return null;
 
     const now = new Date();
-    // console.log(now, "fecha de hoyyyyyyy");
+    console.log(now, "fecha de hoyyyyyyy del usuario");
 
     // 🔥 ordenar por la que empieza más pronto
     const sortedTasks = [...timeTasks].sort(
@@ -618,9 +618,21 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     for (const task of sortedTasks) {
       const start = new Date(task.startDateTime);
       const end = new Date(task.endDateTime);
+      console.log("start", start, "end", end);
 
       const diffMinutes = Math.floor((start.getTime() - now.getTime()) / 60000);
+      console.log("diferencia de minutos", diffMinutes);
 
+      console.log({
+        now: now.toString(),
+        nowISO: now.toISOString(),
+        startRaw: task.startDateTime,
+        start: start.toString(),
+        startISO: start.toISOString(),
+        endRaw: task.endDateTime,
+        end: end.toString(),
+        endISO: end.toISOString(),
+      });
       // ⚠️ vencida (máxima prioridad)
       if (now > end && task.status !== "completed") {
         return (
