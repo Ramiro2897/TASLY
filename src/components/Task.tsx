@@ -78,8 +78,6 @@ const Task = () => {
   const [showStartDate, setShowStartDate] = useState(true);
   const [showEndDate, setShowEndDate] = useState(true);
 
-  // console.log(tasks, "tareas con horas");
-
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -141,7 +139,6 @@ const Task = () => {
 
     const interval = setInterval(() => {
       const nowUser = getUserNow(timeZone); // Hora actual del usuario, TZ correcta
-      // console.log("⏰ Hora actual del usuario:", nowUser.toISOString());
 
       setTasks((prevTasks) =>
         prevTasks.map((task) => {
@@ -170,13 +167,6 @@ const Task = () => {
           );
           const taskEnd = new Date(year, month - 1, day, endHour, endMinute, 0);
 
-          // console.log("Rango calculado:", {
-          //   taskId: task.id,
-          //   taskStart: taskStart.toISOString(),
-          //   taskEnd: taskEnd.toISOString(),
-          //   now: nowUser.toISOString(),
-          // });
-
           // SOLO si ahora está dentro del rango → auto iniciar (una sola vez)
           if (
             task.status === "pending" &&
@@ -185,7 +175,6 @@ const Task = () => {
           ) {
             const API_URL = import.meta.env.VITE_API_URL;
             const token = localStorage.getItem("token");
-            // console.log("⏰ Auto-start detectado para tarea:", task.id);
 
             axios
               .put(
@@ -417,7 +406,6 @@ const Task = () => {
 
     const updatedPriority = convertPriorityToEnglish(priority);
     const localDate = new Date(`${newDate}T00:00:00-05:00`).toISOString();
-    // console.log('fecha final', localDate);
 
     // 🔊 notificación de audio inmediata
     const playSound = () => {
@@ -607,14 +595,10 @@ const Task = () => {
 
     // Hora actual del usuario
     const nowUser = getUserNow(timeZone);
-    // console.log("Hora actual del usuario en servidor:", nowUser);
 
     if (!endTime) {
       const [y, m, d] = endDate.split("T")[0].split("-").map(Number);
       const taskEndDate = new Date(y, m - 1, d, 23, 59, 59); // fin del día en TZ local
-      // console.log(taskEndDate, " ", "fecha final tarea");
-      // (console.log(taskEndDate.getTime() < nowUser.getTime()),
-      //   "esta vencida? ");
       return taskEndDate.getTime() < nowUser.getTime();
     }
 
@@ -622,8 +606,6 @@ const Task = () => {
     const [y, m, d] = endDate.split("T")[0].split("-").map(Number);
     const [hour, minute] = endTime.split(":").map(Number);
     const taskEndDateTime = new Date(y, m - 1, d, hour, minute, 0);
-    // console.log(taskEndDateTime, "valorrrr para horas");
-    // console.log("es falso?", taskEndDateTime.getTime() < nowUser.getTime());
     return taskEndDateTime.getTime() < nowUser.getTime();
   };
 
@@ -670,25 +652,6 @@ const Task = () => {
     // 🔹 2. Si están en la misma sección, ordenar por fecha
     return dateA - dateB;
   });
-
-  // Función para obtener la fecha "solo día" en la zona del usuario
-  // const getTaskDayInUserTZ = (taskDate: string, timeZone: string): Date => {
-  //   const localStr = new Date(taskDate).toLocaleString("en-US", { timeZone });
-  //   const localDate = new Date(localStr);
-  //   // Pone la hora a 0:00 para comparar solo el día
-  //   localDate.setHours(0, 0, 0, 0);
-  //   console.log(
-  //     "Original:",
-  //     taskDate,
-  //     "En zona usuario:",
-  //     localDate.toISOString(),
-  //     "| Hora local:",
-  //     localDate.getHours(),
-  //     localDate.getMinutes(),
-  //   );
-  //   console.log("lo que retorna", localDate);
-  //   return localDate;
-  // };
 
   const formatDateWithoutTimezoneShift = (dateStr: string) => {
     const [year, month, day] = dateStr.split("T")[0].split("-");
@@ -999,8 +962,6 @@ const Task = () => {
             : orderedTasks.map((task) => {
                 const nowUserStr = new Date().toLocaleString("en-US", { timeZone: userTimeZone });
                 const nowUserTime = new Date(nowUserStr).toISOString();
-                console.log('esto si es original', task.start_date)
-                console.log('y esto si es la hora del usuario: ', nowUserTime)
 
                 let section = "";
                 // 1️⃣ Primero: vencidas
@@ -1016,24 +977,20 @@ const Task = () => {
                 }
                 // 2️⃣ Tareas futuras
                 else if (task.start_date > nowUserTime) {
-                  console.log("hay futuras");
                   section = "Tareas futuras";
                 }
                 // 3️⃣ En progreso
                 else if (task.status === "in_progress") {
-                  console.log("hay en progreso");
                   section = "En progreso";
                 }
                 // 4️⃣ Pendientes de hoy
                 else if (
                   task.status === "pending" && task.start_date  <= nowUserTime
                 ) {
-                  console.log("hay tareas de hoy");
                   section = "Tareas de hoy";
                 }
                 // 5️⃣ Completadas
                 else if (task.status === "completed") {
-                  console.log("hay en completas");
                   section = "Completadas";
                 }
 

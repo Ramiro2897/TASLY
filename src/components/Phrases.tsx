@@ -51,7 +51,6 @@ const Phrases = () => {
       favorite: boolean;
     }[]
   >([]);
-  console.log(phrases, 'todas las frases')
   const [searchResults, setSearchResults] = useState<
     {
       id: number;

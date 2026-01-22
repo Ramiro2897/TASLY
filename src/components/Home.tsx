@@ -204,7 +204,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
             }),
             axios.post(
               `${API_URL}/api/auth/tasklistAll`,
-              { date: todayLocal }, // <-- enviamos la fecha de hoy local del usuario
+              { date: todayLocal }, // hora local del usuario para evitar UTC
               { headers: { Authorization: `Bearer ${token}` } },
             ),
             axios.get(`${API_URL}/api/auth/phraseslist`, {

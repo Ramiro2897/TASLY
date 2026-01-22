@@ -21,7 +21,6 @@ import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 const phrases = [
-  "Las metas marcan el destino, pero los sistemas determinan el camino. Enfócate en cómo avanzas cada día, construye hábitos que te acerquen a tu objetivo y disfruta el proceso.",
   "Haga que un hábito sea insatisfactorio mirando las consecuencias de no cumplirlo.",
   "El mensaje que debes llevarte es que es importante desarrollar hábitos que funcionen para tu personalidad.",
   "Elige metas que realmente se alineen con quien eres, no con lo que los demás esperan de ti.",
@@ -158,7 +157,7 @@ const Goals = () => {
           newElement.classList.add(styles.fadeIn);
         }
       }, 500);
-    }, 8000); // ⏱️ tiempo entre mensajes (8s)
+    }, 10000); 
 
     return () => clearInterval(interval);
   }, [goals, phrases, goalEventVersion]);

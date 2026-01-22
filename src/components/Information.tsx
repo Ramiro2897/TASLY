@@ -32,70 +32,48 @@ const Information = () => {
             ¿Qué es Tasly?
           </motion.h2>
 
-          {/* Animación del párrafo largo */}
+          {/* Animación del párrafo principal ligeramente resumido */}
           <motion.p
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            Tasly es una aplicación web creada para ayudarte a organizar tus
-            tareas, metas y hábitos de forma simple, clara y visualmente cómoda.
-            Nació de la necesidad personal de tener un control real de mis
-            actividades diarias sin depender de aplicaciones de terceros, y con
-            el tiempo fue evolucionando para adaptarse mejor a la forma en la
-            que realmente trabajamos y progresamos.
+            Tasly es una aplicación web para organizar tareas, metas y hábitos
+            de forma simple, clara y visualmente cómoda. Nació de la necesidad
+            personal de controlar mis actividades diarias sin depender de apps
+            externas, y con el tiempo ha evolucionado para adaptarse mejor a la
+            forma en la que trabajamos y progresamos.
             <br />
             <br />
-            En la versión 1.1.0, Tasly recibió múltiples mejoras enfocadas en
-            estabilidad, diseño y experiencia de usuario. Se corrigieron errores
-            como cierres inesperados de modales, problemas de fechas entre
-            cliente y servidor, y desbordes de diseño en pantallas pequeñas.
-            Ahora la interfaz es 100 % responsiva, más fluida y visualmente
-            equilibrada, con nuevas tipografías y una paleta de colores pensada
-            para cuidar la vista, sin excesos.
+            En la versión 1.1.0, Tasly recibió mejoras en estabilidad, diseño y
+            experiencia de usuario. Se corrigieron cierres inesperados de
+            modales, problemas de fechas entre cliente y servidor y desbordes de
+            diseño en pantallas pequeñas. La interfaz es 100% responsiva, más
+            fluida y visualmente equilibrada, con nuevas tipografías y paleta de
+            colores cómoda para la vista.
             <br />
             <br />
-            La sección de tareas fue rediseñada y optimizada tanto a nivel
-            visual como lógico. Ahora las tareas cuentan con tres estados:
-            pendiente, en progreso y completada, lo que permite un seguimiento
-            más realista del avance. Las tareas se agrupan por filtros como
-            pendientes, tareas de hoy, vencidas, futuras y completadas,
-            facilitando una vista clara y ordenada. En la pantalla principal, el
-            usuario puede ver mensajes dinámicos que reflejan su progreso diario
-            y reconocer cuando ha completado todo.
+            La sección de tareas fue rediseñada y optimizada: ahora tienen tres
+            estados (pendiente, en progreso, completada) y filtros como
+            pendientes, de hoy, vencidas, futuras y completadas. Los usuarios
+            reciben mensajes dinámicos que reflejan su progreso diario.
             <br />
             <br />
-            Ahora las tareas pueden incluir horas de inicio y final de forma
-            opcional. Si una tarea fue creada con horario, el sistema valida
-            automáticamente que las horas sean coherentes con la fecha actual y
-            evita inconsistencias. Las tareas sin horas mantienen una
-            experiencia más flexible, sin validaciones de tiempo innecesarias.
-            El comportamiento de las horas se adapta de forma inteligente según
-            el estado de la tarea: pendiente, en progreso o completada.
+            Las tareas pueden incluir horarios de inicio y fin opcionales,
+            validados automáticamente. Las tareas sin horas mantienen una
+            experiencia flexible, y el sistema adapta el comportamiento según el
+            estado: pendiente, en progreso o completada.
             <br />
             <br />
-            La sección de metas fue la que más evolucionó. Se rediseñó
-            completamente su apariencia y funcionamiento. Las metas avanzan de 1
-            a 100, mostrando mensajes según el progreso, rachas activas y
-            estados actuales. Al completar una meta, se reproduce un audio como
-            refuerzo positivo. Además, el sistema ahora ofrece mensajes más
-            inteligentes relacionados con hábitos y metas en curso.
+            La sección de metas también evolucionó: muestran progreso de 1 a
+            100, mensajes según progreso y rachas activas, y reproducen audio al
+            completarlas. Se mejoraron modales, validaciones y animaciones,
+            además de pantallas de carga tipo skeleton. La arquitectura general
+            fue optimizada para rapidez y escalabilidad, con seguridad
+            reforzada.
             <br />
             <br />
-            También se mejoraron los modales, validaciones y animaciones de
-            entrada y salida, haciendo la experiencia más suave y agradable. Se
-            añadieron pantallas de carga tipo skeleton, necesarias debido al uso
-            de servicios gratuitos que requieren tiempo de activación inicial.
-            <br />
-            <br />
-            Por último, la arquitectura de la aplicación fue optimizada: la
-            interfaz, el backend y la base de datos están desplegados en
-            servicios independientes, lo que permite respuestas más rápidas y
-            una mejor escalabilidad. La seguridad general del sistema también
-            fue reforzada. Tasly sigue creciendo versión tras versión. Cada
-            mejora busca que la aplicación sea más útil, cómoda y cercana para
-            quien la usa. Tus sugerencias siempre son bienvenidas 💡
             <strong>
               <span
                 style={{
@@ -106,48 +84,34 @@ const Information = () => {
               >
                 ¿Cómo funciona?
               </span>
-            </strong>{" "}
+            </strong>
             <br />
-            El acceso es simple y seguro. No se requieren correos ni datos
-            personales. Crea tu usuario y empieza a gestionar tus tareas y
-            metas.
-            <br />
-            <br />
-            Las validaciones se gestionan desde el servidor para mayor
-            seguridad. Organiza tus tareas y metas a tu manera.
+            El acceso es simple y seguro: no se requieren correos ni datos
+            personales. Crea tu usuario y gestiona tareas y metas. Las tareas
+            con más de 30 días se archivan automáticamente, pero siempre puedes
+            encontrarlas con la búsqueda. Las validaciones se gestionan desde el
+            servidor para mayor seguridad.
             <br />
             <br />
-            Las tareas con más de 30 días se archivan automáticamente, pero
-            siempre podrás encontrarlas con la búsqueda.
-            <br />
-            <br />
-            Tus sugerencias son bienvenidas. Si encuentras un bug o tienes
-            alguna idea de mejora, házmelo saber. Tasly sigue en constante
-            evolución 💡
+            Tus sugerencias son bienvenidas 💡
             <br />
             <br />
             <em>
-              Nota: Algunas frases e ideas presentes en la aplicación están
-              inspiradas en el libro
-              <strong> Hábitos Atómicos </strong> de{" "}
-              <strong> James Clear</strong>. Es una lectura altamente
-              recomendada para quienes buscan{" "}
-              <strong> mejorar sus hábitos </strong> y
-              <strong> optimizar su vida diaria</strong>. Puedes obtener más
-              información o adquirir el libro aquí:{" "}
+              Algunas frases están inspiradas en el libro{" "}
+              <strong>Hábitos Atómicos</strong> de <strong>James Clear</strong>.
+              Es una lectura recomendada para quienes buscan{" "}
+              <strong>mejorar hábitos</strong> y{" "}
+              <strong>optimizar su vida diaria</strong>. Más info:{" "}
               <a href="https://jamesclear.com/atomic-habits" target="_blank">
                 [Enlace al libro]
               </a>
-              <strong>
-                {" "}
-                “No subestimes el poder de los pequeños cambios.{" "}
-              </strong>
-              Un <strong> 1% de mejora cada día </strong> puede llevarte a{" "}
-              <strong> resultados extraordinarios.”</strong> – James Clear.
+              . “No subestimes el poder de los pequeños cambios. Un{" "}
+              <strong>1% de mejora cada día</strong> puede llevar a{" "}
+              <strong>resultados extraordinarios.”</strong> – James Clear
             </em>
           </motion.p>
 
-          {/* Animación de la cita */}
+          {/* Cita */}
           <motion.em
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -158,7 +122,7 @@ const Information = () => {
             persona más fácil de engañar.” – Richard Feynman
           </motion.em>
 
-          {/* Animación de la sección de contacto */}
+          {/* Sección de contacto */}
           <motion.div
             className={styles["contact"]}
             initial={{ opacity: 0, y: 50 }}
