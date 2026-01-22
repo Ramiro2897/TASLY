@@ -79,6 +79,7 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+
 }
 
 .header h1 {
@@ -96,18 +97,20 @@
 .messageContainer {
   width: 100%;
   height: auto;
+  min-height: 70px;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   gap: 20px;
   background: var(--message-container);
-  box-shadow: var(--box-shadow);
+  /* box-shadow: var(--box-shadow); */
   padding: 10px 10px;
   opacity: 1;
   transform: translateY(0);
   transition: opacity 0.3s ease, transform 0.3s ease;
-  border-radius: 5px;
+  border-bottom-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 
 .closing {
@@ -129,17 +132,21 @@
   color: var(--text-container-p);
   width: fit-content;
   max-width: 100%;
+  border-bottom-left-radius: 50px;
+  border-top-right-radius: 50px;
 }
+/* 
 .header .welcomeTextContainer p::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-
   background: var(--shine-gradient);
   animation: welcomeGlow 6s ease-in-out infinite;
   opacity: 0.9;
-}
+    border-bottom-left-radius: 20px;
+  border-top-right-radius: 20px;
+} */
 
 @keyframes welcomeGlow {
   0% {
@@ -164,6 +171,13 @@
   background: var(--count);
   border-radius: 50%;             
   font-size: 0.8rem;              
+}
+
+.taskName{
+  padding: 4px;
+  color: var(--color-text-global);
+  background: var(--count);
+  border-radius: 5px;
 }
 
 .username {

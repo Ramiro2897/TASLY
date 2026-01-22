@@ -87,6 +87,12 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
       unit: string;
     }[]
   >([]);
+    // texto para el boton agregar metas
+  const getAddGoalButtonTitle = () => {
+    if (metas.length === 0) return "Crea una"; // primera meta
+    return "Agregar meta"; // por defecto
+  };
+
   const [frases, setFrases] = useState<
     {
       id: number;
@@ -96,6 +102,11 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
       favorite: boolean;
     }[]
   >([]);
+  // texto para el boton de frases
+  const getAddPhraseButtonTitle = () => {
+    if (frases.length === 0) return "Crea una";
+    return "Agregar frase"; // por defecto
+  };
   // estado para skeleton
   const [isLoading, setIsLoading] = useState(true);
   const [showSkeleton, setShowSkeleton] = useState(false);
@@ -117,6 +128,28 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     inProgress: 0,
     completed: 0,
   });
+  // texto para boton de tareas
+  const getAddTaskButtonTitle = () => {
+    const { total, completed } = taskSummary;
+
+    if (total === 0) return "Empieza una"; // claro: “Empieza una [tarea]”
+    if (completed === total && total > 0) return "¡Añadir más!";
+    return "Agregar tarea";
+  };
+
+  type TimeTask = {
+    id: number;
+    taskName: string;
+    status: "pending" | "in_progress" | "completed";
+    startDateTime: string; // viene como ISO string
+    endDateTime: string;
+  };
+  // tareas con horas
+  const [timeTasks, setTimeTasks] = useState<TimeTask[]>([]);
+  const [showTimeMessage, setShowTimeMessage] = useState(false);
+
+  console.log("tareas con horasssss", timeTasks);
+
   console.log(tareas, "las tareas ey");
   // console.log(taskSummary, "todo lo total, pendiente etc");
 
@@ -176,6 +209,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
           inProgress: tareasLengthRes.data?.inProgress ?? 0,
           completed: tareasLengthRes.data?.completed ?? 0,
         });
+        setTimeTasks(tareasLengthRes.data?.timeTasks ?? []);
         setFrases(frasesRes.data);
         setMetas(metasRes.data);
 
@@ -237,8 +271,12 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
 
   // actualiza el numero de tareas pendientes de usuario
   const handleTasksLengthUpdated = (newTask: {
-    status: string;
+    id: number;
+    task_name: string;
+    status: "pending" | "in_progress" | "completed";
     start_date?: string;
+    start_time?: string;
+    end_time?: string;
   }) => {
     if (!newTask?.start_date) return;
 
@@ -247,9 +285,10 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
 
     if (taskDate !== today) return;
 
+    // 🔹 actualizar contadores (LO QUE YA TENÍAS)
     setTaskSummary((prev) => ({
       total: prev.total + 1,
-      pending: newTask.status === "completed" ? prev.pending : prev.pending + 1,
+      pending: newTask.status === "pending" ? prev.pending + 1 : prev.pending,
       inProgress:
         newTask.status === "in_progress"
           ? prev.inProgress + 1
@@ -257,6 +296,23 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
       completed:
         newTask.status === "completed" ? prev.completed + 1 : prev.completed,
     }));
+
+    // 🔹 actualizar tareas con horas
+    if (newTask.start_time && newTask.end_time) {
+      const startDateTime = `${newTask.start_date}T${newTask.start_time}`;
+      const endDateTime = `${newTask.start_date}T${newTask.end_time}`;
+
+      setTimeTasks((prev) => [
+        ...prev,
+        {
+          id: newTask.id,
+          taskName: newTask.task_name,
+          status: newTask.status,
+          startDateTime,
+          endDateTime,
+        },
+      ]);
+    }
   };
 
   // funcion para actualizar la frase en tiempo real
@@ -532,6 +588,76 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     return "Excelente trabajo hoy. Tómate un momento para reconocerlo 🌙";
   };
 
+  // mensajes por hora
+  const getTimeBasedMessage = () => {
+    if (!timeTasks.length) return null;
+
+    const now = new Date();
+
+    // 🔥 ordenar por la que empieza más pronto
+    const sortedTasks = [...timeTasks].sort(
+      (a, b) =>
+        new Date(a.startDateTime).getTime() -
+        new Date(b.startDateTime).getTime(),
+    );
+
+    for (const task of sortedTasks) {
+      const start = new Date(task.startDateTime);
+      const end = new Date(task.endDateTime);
+
+      const diffMinutes = Math.floor((start.getTime() - now.getTime()) / 60000);
+
+      // ⚠️ vencida (máxima prioridad)
+      if (now > end && task.status !== "completed") {
+        return (
+          <>
+            La tarea <span className={styles.taskName}>{task.taskName}</span> ya
+            se pasó de hora ⏳
+          </>
+        );
+      }
+
+      // 🔥 ya debería estar en progreso
+      if (now >= start && now <= end && task.status === "pending") {
+        return (
+          <>
+            Ya es hora de empezar{" "}
+            <span className={styles.taskName}>{task.taskName}</span> 💪
+          </>
+        );
+      }
+
+      // ⏰ empieza en menos de 10 minutos
+      if (diffMinutes > 0 && diffMinutes <= 10) {
+        return (
+          <>
+            En <span className={styles.taskCount}>{diffMinutes}</span> min
+            empieza la tarea{" "}
+            <span className={styles.taskName}>{task.taskName}</span> ⏰
+          </>
+        );
+      }
+    }
+
+    return null;
+  };
+
+  const timeMessage = getTimeBasedMessage();
+  const normalMessage = getContextMessage();
+
+  useEffect(() => {
+    if (!timeMessage) {
+      setShowTimeMessage(false);
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setShowTimeMessage((prev) => !prev);
+    }, 40000); // 40 segundos
+
+    return () => clearInterval(interval);
+  }, [timeMessage]);
+
   return (
     <div className={styles["container-home-all"]}>
       <div className={styles["home-container"]}>
@@ -577,7 +703,9 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                 <div className={`${styles.messageContainer}`}>
                   {!isLoading && (
                     <p className={styles.contextMessage}>
-                      {getContextMessage()}
+                      {timeMessage && showTimeMessage
+                        ? timeMessage
+                        : normalMessage}
                     </p>
                   )}
                 </div>
@@ -654,7 +782,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                   onClick={() => openModal()}
                   disabled={isLoading}
                 >
-                  <FontAwesomeIcon icon={faPlus} /> Agregar Tarea
+                  <FontAwesomeIcon icon={faPlus} /> {getAddTaskButtonTitle()}
                 </button>
               </div>
 
@@ -708,7 +836,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                   onClick={openPhraseModal}
                   disabled={isLoading}
                 >
-                  <FontAwesomeIcon icon={faPlus} /> Agregar Frase
+                  <FontAwesomeIcon icon={faPlus} /> {getAddPhraseButtonTitle()}
                 </button>
               </div>
 
@@ -764,7 +892,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                   onClick={openGoalsModal}
                   disabled={isLoading}
                 >
-                  <FontAwesomeIcon icon={faPlus} /> Agregar Meta
+                  <FontAwesomeIcon icon={faPlus} /> {getAddGoalButtonTitle()}
                 </button>
               </div>
             </div>

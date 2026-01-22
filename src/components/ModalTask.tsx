@@ -14,8 +14,12 @@ interface ModalTaskProps {
   }) => void;
   onTaskAdded: (taskData: any) => void;
   onTasksLengthUpdated: (newTask: {
-    status: string;
-    start_date: string;
+    id: number;
+    task_name: string;
+    status: "pending" | "in_progress" | "completed";
+    start_date?: string;
+    start_time?: string;
+    end_time?: string;
   }) => void;
 }
 
@@ -60,7 +64,7 @@ const ModalTask: React.FC<ModalTaskProps> = ({
       endTime,
       category,
       priority,
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     };
 
     const token = localStorage.getItem("token");
@@ -241,7 +245,7 @@ const ModalTask: React.FC<ModalTaskProps> = ({
             <option value="" disabled>
               Elige una categoría
             </option>
-            
+
             <option value="personal">Personal</option>
             <option value="trabajo">Trabajo</option>
             <option value="estudios">Estudios</option>
