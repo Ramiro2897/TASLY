@@ -687,7 +687,6 @@ const Task = () => {
     return `${hour12}:${minute.toString().padStart(2, "0")} ${ampm}`;
   };
 
-  // 🔄 Toggle cada 10s
   useEffect(() => {
     const startInterval = setInterval(
       () => setShowStartDate((prev) => !prev),
