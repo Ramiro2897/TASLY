@@ -151,7 +151,8 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
   console.log("tareas con horasssss", timeTasks);
 
   console.log(tareas, "las tareas ey");
-  // console.log(taskSummary, "todo lo total, pendiente etc");
+  console.log(taskSummary, "todo lo total, pendiente etc");
+  console.log(timeTasks, 'tareas con horas')
 
   // Manejamos la notificación en otro useEffect independiente
   useEffect(() => {
