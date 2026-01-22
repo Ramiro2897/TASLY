@@ -87,7 +87,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
       unit: string;
     }[]
   >([]);
-    // texto para el boton agregar metas
+  // texto para el boton agregar metas
   const getAddGoalButtonTitle = () => {
     if (metas.length === 0) return "Crea una"; // primera meta
     return "Agregar meta"; // por defecto
@@ -148,11 +148,11 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
   const [timeTasks, setTimeTasks] = useState<TimeTask[]>([]);
   const [showTimeMessage, setShowTimeMessage] = useState(false);
 
-  console.log("tareas con horasssss", timeTasks);
+  // console.log("tareas con horasssss", timeTasks);
 
-  console.log(tareas, "las tareas ey");
+  // console.log(tareas, "las tareas ey");
   console.log(taskSummary, "todo lo total, pendiente etc");
-  console.log(timeTasks, 'tareas con horas')
+  console.log(timeTasks, "tareas con horas");
 
   // Manejamos la notificación en otro useEffect independiente
   useEffect(() => {
@@ -186,6 +186,15 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
       skeletonTimer = setTimeout(() => {
         setShowSkeleton(true);
       }, 250);
+      const now = new Date();
+      const todayLocal =
+        now.getFullYear() +
+        "-" +
+        String(now.getMonth() + 1).padStart(2, "0") +
+        "-" +
+        String(now.getDate()).padStart(2, "0");
+
+      console.log(todayLocal, "fecha de hoy local real");
 
       try {
         const [tareasRes, tareasLengthRes, frasesRes, metasRes] =
@@ -193,9 +202,11 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
             axios.get(`${API_URL}/api/auth/tasklist`, {
               headers: { Authorization: `Bearer ${token}` },
             }),
-            axios.get(`${API_URL}/api/auth/tasklistAll`, {
-              headers: { Authorization: `Bearer ${token}` },
-            }),
+            axios.post(
+              `${API_URL}/api/auth/tasklistAll`,
+              { date: todayLocal }, // <-- enviamos la fecha de hoy local del usuario
+              { headers: { Authorization: `Bearer ${token}` } },
+            ),
             axios.get(`${API_URL}/api/auth/phraseslist`, {
               headers: { Authorization: `Bearer ${token}` },
             }),
@@ -203,6 +214,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
               headers: { Authorization: `Bearer ${token}` },
             }),
           ]);
+
         setTareas(tareasRes.data);
         setTaskSummary({
           total: tareasLengthRes.data?.total ?? 0,
@@ -594,6 +606,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     if (!timeTasks.length) return null;
 
     const now = new Date();
+    // console.log(now, "fecha de hoyyyyyyy");
 
     // 🔥 ordenar por la que empieza más pronto
     const sortedTasks = [...timeTasks].sort(
