@@ -146,13 +146,8 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
   };
   // tareas con horas
   const [timeTasks, setTimeTasks] = useState<TimeTask[]>([]);
-  const [showTimeMessage, setShowTimeMessage] = useState(false);
-
-  // console.log("tareas con horasssss", timeTasks);
-
-  // console.log(tareas, "las tareas ey");
-  console.log(taskSummary, "todo lo total, pendiente etc");
-  console.log(timeTasks, "tareas con horas");
+  console.log("ver horas", timeTasks);
+  // const [showTimeMessage, setShowTimeMessage] = useState(false);
 
   // Manejamos la notificación en otro useEffect independiente
   useEffect(() => {
@@ -193,8 +188,6 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
         String(now.getMonth() + 1).padStart(2, "0") +
         "-" +
         String(now.getDate()).padStart(2, "0");
-
-      console.log(todayLocal, "fecha de hoy local real");
 
       try {
         const [tareasRes, tareasLengthRes, frasesRes, metasRes] =
@@ -367,7 +360,6 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        console.error("No tienes token para iniciar sesion");
         return;
       }
       const API_URL = import.meta.env.VITE_API_URL;
@@ -601,88 +593,65 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     return "Excelente trabajo hoy. Tómate un momento para reconocerlo 🌙";
   };
 
-  // mensajes por hora
-  const getTimeBasedMessage = () => {
-    if (!timeTasks.length) return null;
-
-    const now = new Date();
-    console.log(now, "fecha de hoyyyyyyy del usuario");
-
-    // 🔥 ordenar por la que empieza más pronto
-    const sortedTasks = [...timeTasks].sort(
-      (a, b) =>
-        new Date(a.startDateTime).getTime() -
-        new Date(b.startDateTime).getTime(),
-    );
-
-    for (const task of sortedTasks) {
-      const start = new Date(task.startDateTime);
-      const end = new Date(task.endDateTime);
-      console.log("start", start, "end", end);
-
-      const diffMinutes = Math.floor((start.getTime() - now.getTime()) / 60000);
-      console.log("diferencia de minutos", diffMinutes);
-
-      console.log({
-        now: now.toString(),
-        nowISO: now.toISOString(),
-        startRaw: task.startDateTime,
-        start: start.toString(),
-        startISO: start.toISOString(),
-        endRaw: task.endDateTime,
-        end: end.toString(),
-        endISO: end.toISOString(),
-      });
-      // ⚠️ vencida (máxima prioridad)
-      if (now > end && task.status !== "completed") {
-        return (
-          <>
-            La tarea <span className={styles.taskName}>{task.taskName}</span> ya
-            se pasó de hora ⏳
-          </>
-        );
-      }
-
-      // 🔥 ya debería estar en progreso
-      if (now >= start && now <= end && task.status === "pending") {
-        return (
-          <>
-            Ya es hora de empezar{" "}
-            <span className={styles.taskName}>{task.taskName}</span> 💪
-          </>
-        );
-      }
-
-      // ⏰ empieza en menos de 10 minutos
-      if (diffMinutes > 0 && diffMinutes <= 10) {
-        return (
-          <>
-            En <span className={styles.taskCount}>{diffMinutes}</span> min
-            empieza la tarea{" "}
-            <span className={styles.taskName}>{task.taskName}</span> ⏰
-          </>
-        );
-      }
-    }
-
-    return null;
+  // Convierte "HH:MM:SS" a minutos del día
+  const timeToMinutes = (time: string) => {
+    const [h, m] = time.split(":").map(Number);
+    return h * 60 + m;
   };
 
-  const timeMessage = getTimeBasedMessage();
-  const normalMessage = getContextMessage();
+  const getUpcomingTask = (
+    tasks: TimeTask[],
+    lookaheadMinutes = 10,
+  ): TimeTask | undefined => {
+    if (!tasks.length) return undefined;
+
+    const now = new Date();
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+    console.log("hora del usuario", nowMinutes);
+
+    //Filtramos solo tareas pendientes
+    const pendingTasks = tasks.filter((t) => t.status === "pending");
+    console.log(pendingTasks, "tareas pendientes");
+
+    if (!pendingTasks.length) return undefined; // 💡 protección extra
+
+    //Calculamos la diferencia con la hora de inicio
+    const tasksWithDiff = pendingTasks.map((t) => {
+      const start = timeToMinutes(t.startDateTime);
+      return { task: t, diff: start - nowMinutes };
+    });
+
+    console.log(tasksWithDiff, "diferencia de horas en minutos");
+
+    //Solo tomamos las que empiezan ahora o dentro del lookahead (ej. 10 min)
+    const upcoming = tasksWithDiff
+      .filter((t) => t.diff >= 0 && t.diff >= -lookaheadMinutes)
+      .sort((a, b) => a.diff - b.diff); // la más próxima primero
+
+    //Retornamos la tarea más cercana a iniciar, o undefined si no hay ninguna
+    if (!upcoming.length) return undefined;
+
+    console.log("Próxima tarea a iniciar:", upcoming[0].task.taskName);
+    return upcoming[0].task;
+  };
+
+  const [nextTask, setNextTask] = useState<TimeTask | undefined>(undefined);
+  const [showNextTask, setShowNextTask] = useState(true); // alterna mensajes
 
   useEffect(() => {
-    if (!timeMessage) {
-      setShowTimeMessage(false);
-      return;
-    }
-
     const interval = setInterval(() => {
-      setShowTimeMessage((prev) => !prev);
-    }, 40000); // 40 segundos
+      //actualizar la tarea próxima
+      const upcoming = getUpcomingTask(timeTasks);
+      setNextTask(upcoming);
+
+      //alternar qué mensaje mostrar
+      setShowNextTask((prev) => !prev);
+    }, 20_000);
 
     return () => clearInterval(interval);
-  }, [timeMessage]);
+  }, [timeTasks]);
+
+  const normalMessage = getContextMessage();
 
   return (
     <div className={styles["container-home-all"]}>
@@ -729,9 +698,23 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                 <div className={`${styles.messageContainer}`}>
                   {!isLoading && (
                     <p className={styles.contextMessage}>
-                      {timeMessage && showTimeMessage
-                        ? timeMessage
-                        : normalMessage}
+                      {showNextTask && nextTask ? (
+                        <>
+                          En{" "}
+                          <span className={styles.taskCount}>
+                            {timeToMinutes(nextTask.startDateTime) -
+                              (new Date().getHours() * 60 +
+                                new Date().getMinutes())}
+                          </span>{" "}
+                          min empieza la tarea{" "}
+                          <span className={styles.taskName}>
+                            {nextTask.taskName}
+                          </span>{" "}
+                          ⏰
+                        </>
+                      ) : (
+                        normalMessage
+                      )}
                     </p>
                   )}
                 </div>

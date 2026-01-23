@@ -212,7 +212,7 @@ const Task = () => {
           return task;
         }),
       );
-    }, 50_000); // Intervalo de prueba: 50 seg
+    }, 10_000); 
 
     return () => clearInterval(interval);
   }, []);
