@@ -961,27 +961,11 @@ const Task = () => {
               ))
             : orderedTasks.map((task) => {
                 // Zona horaria del usuario (detectada automáticamente)
-                const userTimeZone =
-                  Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-                // Hora y fecha actual del usuario en su zona horaria
+                const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
                 const nowUser = DateTime.now().setZone(userTimeZone);
-
-                // Logs para verificar
-                console.log(
-                  "Hora del usuario (legible, zona local):",
-                  nowUser.toString(),
-                );
-                console.log("Hora del usuario (ISO local):", nowUser.toISO());
-
-                // Si quieres comparar solo fecha del usuario con la fecha de la tarea
                 const nowUserDateStr = nowUser.toFormat("yyyy-MM-dd");
-                const taskDateStr = DateTime.fromISO(task.start_date).toFormat(
-                  "yyyy-MM-dd",
-                );
-
-                console.log("Fecha del usuario:", nowUserDateStr);
-                console.log("Fecha de la tarea (DB):", taskDateStr);
+                 console.log('fecha de la tarea', task.start_date)
+                 console.log('fecha de hoy usuario:', nowUserDateStr)
 
                 let section = "";
                 // 1️⃣ Primero: vencidas
@@ -996,7 +980,7 @@ const Task = () => {
                   section = "Tareas vencidas";
                 }
                 // 2️⃣ Tareas futuras
-                else if (taskDateStr > nowUserDateStr) {
+                else if (task.start_date > nowUserDateStr) {
                   section = "Tareas futuras";
                 }
                 // 3️⃣ En progreso
@@ -1006,7 +990,7 @@ const Task = () => {
                 // 4️⃣ Pendientes de hoy
                 else if (
                   task.status === "pending" &&
-                  taskDateStr <= nowUserDateStr
+                  task.start_date <= nowUserDateStr
                 ) {
                   section = "Tareas de hoy";
                 }
