@@ -964,7 +964,8 @@ const Task = () => {
                 const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
                 const nowUser = DateTime.now().setZone(userTimeZone);
                 const nowUserDateStr = nowUser.toFormat("yyyy-MM-dd");
-                 console.log('fecha de la tarea', task.start_date)
+                const taskDateStr = task.start_date.slice(0, 10);
+                 console.log('fecha de la tarea', taskDateStr)
                  console.log('fecha de hoy usuario:', nowUserDateStr)
 
                 let section = "";
@@ -980,7 +981,7 @@ const Task = () => {
                   section = "Tareas vencidas";
                 }
                 // 2️⃣ Tareas futuras
-                else if (task.start_date > nowUserDateStr) {
+                else if (taskDateStr > nowUserDateStr) {
                   section = "Tareas futuras";
                 }
                 // 3️⃣ En progreso
@@ -990,7 +991,7 @@ const Task = () => {
                 // 4️⃣ Pendientes de hoy
                 else if (
                   task.status === "pending" &&
-                  task.start_date <= nowUserDateStr
+                  taskDateStr <= nowUserDateStr
                 ) {
                   section = "Tareas de hoy";
                 }
