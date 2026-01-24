@@ -992,6 +992,13 @@
   }
 }
 
+.modalContentPreview span{
+  padding: 5px 12px;
+  border-radius: 5px;
+  border: var(--border-default);
+  box-shadow: var(--box-shadow);
+}
+
 /* Clase que aplicaremos al modal al cerrar */
 .modalContentPreviewClosing {
   animation: fadeOutPower 0.5s ease-in-out forwards;

@@ -16,6 +16,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import { motion } from "framer-motion";
+import { DateTime } from "luxon"; // ✅ export nombrado
 
 const Task = () => {
   const [tasks, setTasks] = useState<
@@ -212,7 +213,7 @@ const Task = () => {
           return task;
         }),
       );
-    }, 10_000); 
+    }, 10_000);
 
     return () => clearInterval(interval);
   }, []);
@@ -959,8 +960,28 @@ const Task = () => {
                 </div>
               ))
             : orderedTasks.map((task) => {
-                const nowUserStr = new Date().toLocaleString("en-US", { timeZone: userTimeZone });
-                const nowUserTime = new Date(nowUserStr).toISOString();
+                // Zona horaria del usuario (detectada automáticamente)
+                const userTimeZone =
+                  Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+                // Hora y fecha actual del usuario en su zona horaria
+                const nowUser = DateTime.now().setZone(userTimeZone);
+
+                // Logs para verificar
+                console.log(
+                  "Hora del usuario (legible, zona local):",
+                  nowUser.toString(),
+                );
+                console.log("Hora del usuario (ISO local):", nowUser.toISO());
+
+                // Si quieres comparar solo fecha del usuario con la fecha de la tarea
+                const nowUserDateStr = nowUser.toFormat("yyyy-MM-dd");
+                const taskDateStr = DateTime.fromISO(task.start_date).toFormat(
+                  "yyyy-MM-dd",
+                );
+
+                console.log("Fecha del usuario:", nowUserDateStr);
+                console.log("Fecha de la tarea (DB):", taskDateStr);
 
                 let section = "";
                 // 1️⃣ Primero: vencidas
@@ -975,7 +996,7 @@ const Task = () => {
                   section = "Tareas vencidas";
                 }
                 // 2️⃣ Tareas futuras
-                else if (task.start_date > nowUserTime) {
+                else if (taskDateStr > nowUserDateStr) {
                   section = "Tareas futuras";
                 }
                 // 3️⃣ En progreso
@@ -984,7 +1005,8 @@ const Task = () => {
                 }
                 // 4️⃣ Pendientes de hoy
                 else if (
-                  task.status === "pending" && task.start_date  <= nowUserTime
+                  task.status === "pending" &&
+                  taskDateStr <= nowUserDateStr
                 ) {
                   section = "Tareas de hoy";
                 }

@@ -157,7 +157,7 @@ const Goals = () => {
           newElement.classList.add(styles.fadeIn);
         }
       }, 500);
-    }, 10000); 
+    }, 10000);
 
     return () => clearInterval(interval);
   }, [goals, phrases, goalEventVersion]);
@@ -706,7 +706,11 @@ const Goals = () => {
             }`}
           >
             <div className={styles["modalContentPreview"]}>
-              <span>¿Qué tanto avanzaste?</span>
+              <span>
+                {Number(selectedGoalPreview?.current_value) === 100
+                  ? "¡Lo lograste!"
+                  : "¿Qué tanto avanzaste?"}
+              </span>
               <p className={styles["goalName"]}>{selectedGoalPreview.name}</p>
               <input
                 className={styles["inputAdvance"]}
