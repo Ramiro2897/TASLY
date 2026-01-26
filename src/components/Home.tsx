@@ -1,71 +1,34 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import axios from "axios";
 import { useEffect } from "react";
 import styles from "../styles/home.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSignOutAlt,
-  faPlus,
-  faHeartCircleBolt,
-  faClock,
-  faQuestion,
-  faPalette,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSignOutAlt, faPlus, faHeartCircleBolt, faClock, faQuestion, faPalette } from "@fortawesome/free-solid-svg-icons";
+import { useHomeData } from "../hooks/useHomeData";
 import ModalTask from "../components/ModalTask";
 import Modalphrases from "../components/Modalphrases";
 import ModalGoals from "../components/ModalGoals";
 import TaskSkeleton from "../components/TaskSkeleton";
+import { useModal } from "../hooks/useBodyModal";
+import { useHomeContextMessages } from "../hooks/useHomeMessages";
+import { getGreeting, getGreetingIcon } from "../utils/greetings";
+import { useMotivation } from "../hooks/useMotivation";
+import { useLogout } from "../hooks/useLogout";
 
-type HomeProps = {
-  theme: string;
-  onToggleTheme: () => void;
-};
+type HomeProps = { theme: string; onToggleTheme: () => void; };
 
 const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
   const username = localStorage.getItem("username");
+  const token = localStorage.getItem("token");
   const navigate = useNavigate(); // Hook para redirigir al usuario
 
   // manejar errores del servidor
-  const [errors, setErrors] = useState<{ userId?: string; general?: string }>(
-    {},
-  );
+  const [errors, setErrors] = useState<{ userId?: string; general?: string }>({});
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isPhraseModalOpen, setIsPhraseModalOpen] = useState(false);
-  const [isModalGoalsOpen, setIsModalGoalsOpen] = useState(false);
-
-  // abrir y cerrar modales
-  const openModal = () => {
-    document.body.style.overflow = "hidden";
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    document.body.style.overflow = "";
-    setIsModalOpen(false);
-  };
-
-  const openPhraseModal = () => {
-    document.body.style.overflow = "hidden";
-    setIsPhraseModalOpen(true);
-  };
-
-  const closePhraseModal = () => {
-    document.body.style.overflow = "";
-    setIsPhraseModalOpen(false);
-  };
-
-  const openGoalsModal = () => {
-    document.body.style.overflow = "hidden";
-    setIsModalGoalsOpen(true);
-  };
-
-  const closeGoalsModal = () => {
-    document.body.style.overflow = "";
-    setIsModalGoalsOpen(false);
-  };
-  // -------------.......-----------
+  // formulario modales
+  const taskModal = useModal();
+  const phraseModal = useModal();
+  const goalsModal = useModal();
 
   // Estados para almacenar datos
   const [tareas, setTareas] = useState<
@@ -87,11 +50,6 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
       unit: string;
     }[]
   >([]);
-  // texto para el boton agregar metas
-  const getAddGoalButtonTitle = () => {
-    if (metas.length === 0) return "Crea una"; // primera meta
-    return "Agregar meta"; // por defecto
-  };
 
   const [frases, setFrases] = useState<
     {
@@ -102,20 +60,9 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
       favorite: boolean;
     }[]
   >([]);
-  // texto para el boton de frases
-  const getAddPhraseButtonTitle = () => {
-    if (frases.length === 0) return "Crea una";
-    return "Agregar frase"; // por defecto
-  };
   // estado para skeleton
   const [isLoading, setIsLoading] = useState(true);
   const [showSkeleton, setShowSkeleton] = useState(false);
-
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    return;
-  }
 
   // obtenemos el momento del dia para saber en que momento cambiar el esta de: taskNotified para que pueda notificar
   const [showAlert, setShowAlert] = useState(false);
@@ -128,7 +75,37 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     inProgress: 0,
     completed: 0,
   });
-  // texto para boton de tareas
+  const [timeTasks, setTimeTasks] = useState<TimeTask[]>([]);
+
+  useHomeData({
+    token,
+    setIsLoading,
+    setShowSkeleton,
+    setTareas,
+    setTaskSummary,
+    setTimeTasks,
+    setFrases,
+    setMetas,
+    setShowAlert,
+    setClosing,
+    setErrors,
+  });
+
+  // cerrar la sesión del usuario
+  const { logout } = useLogout(token);
+  if (!token) {
+    return;
+  }
+
+  // Textos para los botones de agregar tareas, metas y frases
+  const getAddButtonTitle = (count: number, emptyText: string, defaultText: string) => {
+    return count === 0 ? emptyText : defaultText;
+  };
+  const getAddGoalButtonTitle = () => getAddButtonTitle(metas.length, "Crea una", "Agregar meta");
+
+  const getAddPhraseButtonTitle = () =>
+    getAddButtonTitle(frases.length, "Crea una", "Agregar frase");
+
   const getAddTaskButtonTitle = () => {
     const { total, completed } = taskSummary;
 
@@ -144,10 +121,6 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     startDateTime: string; // viene como ISO string
     endDateTime: string;
   };
-  // tareas con horas
-  const [timeTasks, setTimeTasks] = useState<TimeTask[]>([]);
-  console.log("ver horas", timeTasks);
-  // const [showTimeMessage, setShowTimeMessage] = useState(false);
 
   // Manejamos la notificación en otro useEffect independiente
   useEffect(() => {
@@ -170,92 +143,6 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
       localStorage.setItem("lastNotifiedPeriod", currentPeriod);
     }
   }, []);
-
-  useEffect(() => {
-    const API_URL = import.meta.env.VITE_API_URL;
-    let skeletonTimer: ReturnType<typeof setTimeout>;
-
-    const fetchData = async () => {
-      setIsLoading(true); // 👈 empezamos cargando
-
-      skeletonTimer = setTimeout(() => {
-        setShowSkeleton(true);
-      }, 250);
-      const now = new Date();
-      const todayLocal =
-        now.getFullYear() +
-        "-" +
-        String(now.getMonth() + 1).padStart(2, "0") +
-        "-" +
-        String(now.getDate()).padStart(2, "0");
-
-      try {
-        const [tareasRes, tareasLengthRes, frasesRes, metasRes] =
-          await Promise.all([
-            axios.get(`${API_URL}/api/auth/tasklist`, {
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-            axios.post(
-              `${API_URL}/api/auth/tasklistAll`,
-              { date: todayLocal }, // hora local del usuario para evitar UTC
-              { headers: { Authorization: `Bearer ${token}` } },
-            ),
-            axios.get(`${API_URL}/api/auth/phraseslist`, {
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-            axios.get(`${API_URL}/api/auth/goallist`, {
-              headers: { Authorization: `Bearer ${token}` },
-            }),
-          ]);
-
-        setTareas(tareasRes.data);
-        setTaskSummary({
-          total: tareasLengthRes.data?.total ?? 0,
-          pending: tareasLengthRes.data?.pending ?? 0,
-          inProgress: tareasLengthRes.data?.inProgress ?? 0,
-          completed: tareasLengthRes.data?.completed ?? 0,
-        });
-        setTimeTasks(tareasLengthRes.data?.timeTasks ?? []);
-        setFrases(frasesRes.data);
-        setMetas(metasRes.data);
-
-        // Manejo de notificación si tiene tareas pendientes
-        const taskNotified = localStorage.getItem("taskNotified") === "true";
-
-        if (
-          (tareasLengthRes.data?.pending > 0 ||
-            tareasLengthRes.data?.inProgress > 0) &&
-          taskNotified
-        ) {
-          setShowAlert(true);
-          localStorage.setItem("taskNotified", "false");
-
-          setTimeout(() => {
-            setClosing(true); // activa animación de salida
-
-            setTimeout(() => {
-              setShowAlert(false); // desmonta después de la animación
-              setClosing(false);
-            }, 500); // duración de la animación
-          }, 30000);
-        } else {
-          setShowAlert(false); // Aseguramos que la alerta se oculte si no se cumple la condición
-        }
-      } catch (error: any) {
-        setErrors(
-          error.response?.data.errors || {
-            general: "Error inesperado. Comunícalo al programador.",
-          },
-        );
-      } finally {
-        clearTimeout(skeletonTimer);
-        setShowSkeleton(false);
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [token]);
 
   // Función para actualizar la tarea en tiempo real
   const handleTaskAdded = (newTask: {
@@ -295,12 +182,8 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     setTaskSummary((prev) => ({
       total: prev.total + 1,
       pending: newTask.status === "pending" ? prev.pending + 1 : prev.pending,
-      inProgress:
-        newTask.status === "in_progress"
-          ? prev.inProgress + 1
-          : prev.inProgress,
-      completed:
-        newTask.status === "completed" ? prev.completed + 1 : prev.completed,
+      inProgress: newTask.status === "in_progress" ? prev.inProgress + 1 : prev.inProgress,
+      completed: newTask.status === "completed" ? prev.completed + 1 : prev.completed,
     }));
 
     // 🔹 actualizar tareas con horas
@@ -355,56 +238,12 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     setMetas([goal]); // Actualizamos el estado con solo la nueva meta
   };
 
-  // validacion del Home, si no tiene token lo mandamos al login
-  const handleLogout = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        return;
-      }
-      const API_URL = import.meta.env.VITE_API_URL;
-      await axios.post(
-        `${API_URL}/api/auth/logout`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      // Eliminar los datos del localStorage al cerrar sesión
-      localStorage.removeItem("token");
-      // Redirigir al login
-      navigate("/");
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-    }
-  };
-
   const currentYear = new Date().getFullYear();
 
-  // funcion para llevar al componente task
-  const handleNavigate = () => {
+  // ir entre componentes al navegar
+  const handleNavigate = (path: string) => {
     if (isLoading) return;
-    navigate("/tasks"); // Redirige a "/tasks"
-  };
-
-  // funcion que lleva a el modulo de información
-  const handleGoInformation = () => {
-    if (isLoading) return;
-    navigate("/information"); // Navega a la página Home
-  };
-
-  // funcion para llevar a frases
-  const handleGoPhrases = () => {
-    if (isLoading) return;
-    navigate("/phrases");
-  };
-
-  // funcion para llevar a las metas
-  const handleGoGoals = () => {
-    if (isLoading) return;
-    navigate("/goals");
+    navigate(path);
   };
 
   // pasar la fecha en frases
@@ -426,172 +265,16 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     ];
     return `${date.getDate()} ${meses[date.getMonth()]} ${date.getFullYear()}`;
   };
-
   // horas para notificar: buenos dias, tardes o noche
-  const getDayMoment = () => {
-    const hour = new Date().getHours();
-
-    if (hour >= 0 && hour < 6) return "sleep";
-
-    if (hour >= 6 && hour < 12) return "morning";
-    if (hour >= 12 && hour < 18) return "afternoon";
-    return "night";
-  };
-
-  const getGreeting = () => {
-    const moment = getDayMoment();
-
-    if (moment === "morning") return "Buenos días";
-    if (moment === "afternoon") return "Buenas tardes";
-    return "Buenas noches";
-  };
-
+  const greeting = getGreeting();
   // icono por si es de dia, tarde o noche
-  const getGreetingIcon = () => {
-    const moment = getDayMoment();
+  const greetingIcon = getGreetingIcon();
 
-    if (moment === "morning") return "☀️";
-    if (moment === "afternoon") return "🌤️";
-    return "🌚";
-  };
+  //frases motivadoras para mostrarlas en tareas pendientes
+  const { motivation } = useMotivation();
 
-  // llamados de una api para traer frases motivadoras y mostrarlas en tareas pendientes
-  const [motivation, setMotivation] = useState("");
-  const pendingTaskMessages = [
-    "Empieza por la tarea más fácil 💡",
-    "Haz solo una. El resto vendrá solo ⚡",
-    "Una tarea ahora vale más que motivación después 🔥",
-    "No rompas la cadena hoy 💪",
-    "Pequeños pasos, grandes resultados 🌱",
-    "Completar una cambia el resto del día 🚀",
-    "Hazla aunque no tengas ganas",
-  ];
-
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * pendingTaskMessages.length);
-
-    setMotivation(pendingTaskMessages[randomIndex]);
-  }, []);
-
-  const getContextMessage = () => {
-    const { total, pending, inProgress, completed } = taskSummary;
-    const moment = getDayMoment();
-
-    // 🌙 Sleep time
-    if (moment === "sleep") {
-      return "Ya es tarde. Descansa un poco 🌙";
-    }
-
-    // 🌅 MAÑANA
-    if (moment === "morning") {
-      if (total === 0) {
-        return <>Empieza el día creando una tarea o una meta.</>;
-      }
-
-      // Caso: hay pendientes y en progreso
-      if (pending > 0 && inProgress > 0) {
-        return (
-          <>
-            Tienes <span className={styles.taskCount}>{pending}</span> tarea(s)
-            pendiente(s) y{" "}
-            <span className={styles.taskCount}>{inProgress}</span> en progreso.
-            ¡Puedes empezar la pendiente o continuar lo que has iniciado! 💪
-          </>
-        );
-      }
-
-      // Caso: solo pendientes
-      if (pending > 0) {
-        return pending === 1 ? (
-          <>
-            Tienes <span className={styles.taskCount}>{pending}</span> tarea
-            pendiente. ¡Vamos a empezarla! 💪
-          </>
-        ) : (
-          <>
-            Tienes <span className={styles.taskCount}>{pending}</span> tareas
-            pendientes. ¡Escoge una y arranca con fuerza! 🚀
-          </>
-        );
-      }
-
-      // Caso: solo en progreso
-      if (inProgress > 0) {
-        return inProgress === 1 ? (
-          <>Continúa con la tarea que ya empezaste. 💪</>
-        ) : (
-          <>
-            Continúa con las{" "}
-            <span className={styles.taskCount}>{inProgress}</span> tareas que ya
-            empezaste. 💪
-          </>
-        );
-      }
-
-      // Caso: todas completadas
-      if (completed === total) {
-        return <>Buen inicio de día, ya completaste todo 🙌</>;
-      }
-
-      // Caso por defecto
-      return <>Elige una tarea importante y empieza con calma.</>;
-    }
-
-    // 🌇 TARDE
-    if (moment === "afternoon") {
-      if (total === 0) {
-        return "Aún no has creado tareas hoy. Si quieres, puedes empezar ahora.";
-      }
-
-      // Primero revisamos si hay tareas pendientes (no iniciadas)
-      if (pending > 0) {
-        return pending === 1 ? (
-          <>
-            Tienes <span className={styles.taskCount}>{pending}</span> tarea
-            pendiente. ¡Vamos a empezarla! 💪
-          </>
-        ) : (
-          <>
-            Tienes <span className={styles.taskCount}>{pending}</span> tareas
-            pendientes. ¡Escoge una y arranca con fuerza! 🚀
-          </>
-        );
-      }
-
-      // Si no hay pendientes, vemos si hay tareas en progreso
-      if (inProgress > 0) {
-        return (
-          <>
-            Tienes <span className={styles.taskCount}>{inProgress}</span>{" "}
-            tarea(s) en proceso. Sigue así 💪
-          </>
-        );
-      }
-
-      // Si no hay pendientes ni en progreso, todas están completas
-      return "Buen trabajo hoy, ya completaste todas tus tareas 👏";
-    }
-
-    // 🌙 NOCHE
-    if (total === 0) {
-      return "Hoy fue un día tranquilo. Mañana puedes empezar de nuevo.";
-    }
-
-    if (pending > 0 || inProgress > 0) {
-      return completed > 0 ? (
-        <>
-          Completaste <span className={styles.taskCount}>{completed}</span> de{" "}
-          <span className={styles.taskCount}>{total}</span> tareas 💪
-        </>
-      ) : inProgress > 0 ? (
-        <>Tienes tareas en progreso. ¡Sigue trabajando! 🔄</>
-      ) : (
-        <>Hoy no se dio, y está bien. Mañana continúas 🌘</>
-      );
-    }
-
-    return "Excelente trabajo hoy. Tómate un momento para reconocerlo 🌙";
-  };
+  const { getContextMessage } = useHomeContextMessages(taskSummary, styles);
+  const normalMessage = getContextMessage();
 
   // Convierte "HH:MM:SS" a minutos del día
   const timeToMinutes = (time: string) => {
@@ -599,29 +282,22 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     return h * 60 + m;
   };
 
-  const getUpcomingTask = (
-    tasks: TimeTask[],
-    lookaheadMinutes = 10,
-  ): TimeTask | undefined => {
+  const getUpcomingTask = (tasks: TimeTask[], lookaheadMinutes = 10): TimeTask | undefined => {
     if (!tasks.length) return undefined;
 
     const now = new Date();
     const nowMinutes = now.getHours() * 60 + now.getMinutes();
-    console.log("hora del usuario", nowMinutes);
 
     //Filtramos solo tareas pendientes
     const pendingTasks = tasks.filter((t) => t.status === "pending");
-    console.log(pendingTasks, "tareas pendientes");
 
-    if (!pendingTasks.length) return undefined; // 💡 protección extra
+    if (!pendingTasks.length) return undefined; 
 
     //Calculamos la diferencia con la hora de inicio
     const tasksWithDiff = pendingTasks.map((t) => {
       const start = timeToMinutes(t.startDateTime);
       return { task: t, diff: start - nowMinutes };
     });
-
-    console.log(tasksWithDiff, "diferencia de horas en minutos");
 
     //Solo tomamos las que empiezan ahora o dentro del lookahead (ej. 10 min)
     const upcoming = tasksWithDiff
@@ -631,27 +307,22 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
     //Retornamos la tarea más cercana a iniciar, o undefined si no hay ninguna
     if (!upcoming.length) return undefined;
 
-    console.log("Próxima tarea a iniciar:", upcoming[0].task.taskName);
     return upcoming[0].task;
   };
 
   const [nextTask, setNextTask] = useState<TimeTask | undefined>(undefined);
-  const [showNextTask, setShowNextTask] = useState(true); // alterna mensajes
+  const [showNextTask, setShowNextTask] = useState(true); 
 
   useEffect(() => {
     const interval = setInterval(() => {
-      //actualizar la tarea próxima
       const upcoming = getUpcomingTask(timeTasks);
       setNextTask(upcoming);
 
-      //alternar qué mensaje mostrar
       setShowNextTask((prev) => !prev);
     }, 20_000);
 
     return () => clearInterval(interval);
   }, [timeTasks]);
-
-  const normalMessage = getContextMessage();
 
   return (
     <div className={styles["container-home-all"]}>
@@ -681,19 +352,14 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
           <>
             <div className={styles["theme"]}>
               <div title="Cambiar tema" onClick={onToggleTheme}>
-                <FontAwesomeIcon
-                  icon={faPalette}
-                  color="var(--color-btn)"
-                  size="lg"
-                />
+                <FontAwesomeIcon icon={faPalette} color="var(--color-btn)" size="lg" />
               </div>
             </div>
             <div className={styles.header}>
               <div className={styles.welcomeTextContainer}>
                 <h1 className={styles["welcome-text"]}>
-                  {getGreeting()},{" "}
-                  <span className={styles.username}>{username}</span>{" "}
-                  <span className={styles.wave}>{getGreetingIcon()}</span>
+                  {greeting}, <span className={styles.username}>{username}</span>{" "}
+                  <span className={styles.wave}>{greetingIcon}</span>
                 </h1>
                 <div className={`${styles.messageContainer}`}>
                   {!isLoading && (
@@ -703,14 +369,10 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                           En{" "}
                           <span className={styles.taskCount}>
                             {timeToMinutes(nextTask.startDateTime) -
-                              (new Date().getHours() * 60 +
-                                new Date().getMinutes())}
+                              (new Date().getHours() * 60 + new Date().getMinutes())}
                           </span>{" "}
                           min empieza la tarea{" "}
-                          <span className={styles.taskName}>
-                            {nextTask.taskName}
-                          </span>{" "}
-                          ⏰
+                          <span className={styles.taskName}>{nextTask.taskName}</span> ⏰
                         </>
                       ) : (
                         normalMessage
@@ -726,10 +388,8 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
               <div className={styles.card}>
                 <h3>Tareas Diarias</h3>
                 <div
-                  className={`${styles["list-container"]} ${
-                    showAlert ? styles["alert-red"] : ""
-                  }`}
-                  onClick={handleNavigate}
+                  className={`${styles["list-container"]} ${showAlert ? styles["alert-red"] : ""}`}
+                  onClick={() => handleNavigate("/tasks")}
                 >
                   {showSkeleton ? (
                     <TaskSkeleton />
@@ -745,31 +405,20 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                       {/* Mostrar si la tarea está completa o en progreso */}
                       <div className={styles["task-status"]}>
                         {tareas[0].status === "completed" ? (
-                          <span className={styles["complete-status"]}>
-                            Completada
-                          </span>
+                          <span className={styles["complete-status"]}>Completada</span>
                         ) : tareas[0].status === "in_progress" ? (
-                          <span className={styles["in-progress-status"]}>
-                            En progreso
-                          </span>
+                          <span className={styles["in-progress-status"]}>En progreso</span>
                         ) : (
-                          <span className={styles["incomplete-status"]}>
-                            Pendiente
-                          </span>
+                          <span className={styles["incomplete-status"]}>Pendiente</span>
                         )}
                       </div>
 
                       {/* Mostrar la fecha incial de la tarea */}
                       <div className={styles["task-date"]}>
-                        <FontAwesomeIcon
-                          icon={faClock}
-                          style={{ marginRight: "5px" }}
-                        />
+                        <FontAwesomeIcon icon={faClock} style={{ marginRight: "5px" }} />
                         {(() => {
                           // Dividir YYYY-MM-DD
-                          const [year, month, day] = tareas[0].start_date
-                            .split("T")[0]
-                            .split("-");
+                          const [year, month, day] = tareas[0].start_date.split("T")[0].split("-");
                           const date = new Date(+year, +month - 1, +day); // JS interpreta como local
                           return new Intl.DateTimeFormat("es-ES", {
                             year: "numeric",
@@ -788,7 +437,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
 
                 <button
                   className={styles["add-button"]}
-                  onClick={() => openModal()}
+                  onClick={taskModal.open}
                   disabled={isLoading}
                 >
                   <FontAwesomeIcon icon={faPlus} /> {getAddTaskButtonTitle()}
@@ -800,7 +449,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                 <h3>Frases o Notas</h3>
                 <div
                   className={styles["list-container"]}
-                  onClick={handleGoPhrases}
+                  onClick={() => handleNavigate("/phrases")}
                 >
                   {showSkeleton ? (
                     <TaskSkeleton />
@@ -813,24 +462,17 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                       </div>
                       <div className={styles["author-info"]}>
                         <div className={styles["content-author"]}>
-                          <span className={styles.author}>
-                            {frases[0].author}
-                          </span>
+                          <span className={styles.author}>{frases[0].author}</span>
                           <span
                             className={`${styles["favorite-icon"]} ${
-                              frases[0].favorite
-                                ? styles.favorite
-                                : styles["not-favorite"]
+                              frases[0].favorite ? styles.favorite : styles["not-favorite"]
                             }`}
                           >
                             <FontAwesomeIcon icon={faHeartCircleBolt} />
                           </span>
                         </div>
                         <span className={styles["task-date"]}>
-                          <FontAwesomeIcon
-                            icon={faClock}
-                            style={{ marginRight: "5px" }}
-                          />
+                          <FontAwesomeIcon icon={faClock} style={{ marginRight: "5px" }} />
                           {formatDateWithoutTimezoneShift(frases[0].created_at)}
                         </span>
                       </div>
@@ -842,7 +484,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
 
                 <button
                   className={styles["add-button"]}
-                  onClick={openPhraseModal}
+                  onClick={phraseModal.open}
                   disabled={isLoading}
                 >
                   <FontAwesomeIcon icon={faPlus} /> {getAddPhraseButtonTitle()}
@@ -852,10 +494,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
               {/* ✨ SECCIÓN DE METAS */}
               <div className={styles.card}>
                 <h3>Metas</h3>
-                <div
-                  className={styles["list-container"]}
-                  onClick={handleGoGoals}
-                >
+                <div className={styles["list-container"]} onClick={() => handleNavigate("/goals")}>
                   {showSkeleton ? (
                     <TaskSkeleton />
                   ) : metas.length > 0 ? (
@@ -869,16 +508,11 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                       </div>
                       <p className={styles["goals-unit"]}> {metas[0].unit}</p>
                       <p className={styles["task-date"]}>
-                        <FontAwesomeIcon
-                          icon={faClock}
-                          style={{ marginRight: "5px" }}
-                        />
+                        <FontAwesomeIcon icon={faClock} style={{ marginRight: "5px" }} />
                         Termina el:{" "}
                         {metas[0].end_date
                           ? (() => {
-                              const [year, month, day] = metas[0].end_date
-                                .split("T")[0]
-                                .split("-");
+                              const [year, month, day] = metas[0].end_date.split("T")[0].split("-");
                               const date = new Date(+year, +month - 1, +day);
                               return new Intl.DateTimeFormat("es-ES", {
                                 year: "numeric",
@@ -898,7 +532,7 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
 
                 <button
                   className={styles["add-button"]}
-                  onClick={openGoalsModal}
+                  onClick={goalsModal.open}
                   disabled={isLoading}
                 >
                   <FontAwesomeIcon icon={faPlus} /> {getAddGoalButtonTitle()}
@@ -913,14 +547,14 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
                 <span
                   className={styles["span"]}
                   title="información"
-                  onClick={handleGoInformation}
+                  onClick={() => handleNavigate("/information")}
                 >
                   <FontAwesomeIcon icon={faQuestion} />
                 </span>
               </p>
               <div className={styles["btn-buttons"]}>
                 <button
-                  onClick={handleLogout}
+                  onClick={logout}
                   disabled={isLoading}
                   className={styles["logout-button"]}
                   title="Cerrar sesión"
@@ -936,23 +570,23 @@ const Home: React.FC<HomeProps> = ({ onToggleTheme }) => {
 
         {/* modales donde se maneja el actualizar tarea, el cerrar modal, desde ModalTask a Home */}
         <ModalTask
-          isOpen={isModalOpen}
-          onClose={closeModal}
+          isOpen={taskModal.isOpen}
+          onClose={taskModal.close}
           onSubmit={() => {}}
           onTaskAdded={handleTaskAdded}
           onTasksLengthUpdated={handleTasksLengthUpdated}
         />
 
         <Modalphrases
-          isOpen={isPhraseModalOpen}
-          onClose={closePhraseModal}
+          isOpen={phraseModal.isOpen}
+          onClose={phraseModal.close}
           onSubmit={() => {}}
           onPhrasesAdded={handlePhrasesAdded}
         />
 
         <ModalGoals
-          isOpen={isModalGoalsOpen}
-          onClose={closeGoalsModal}
+          isOpen={goalsModal.isOpen}
+          onClose={goalsModal.close}
           onSubmit={() => {}}
           onGoalsAdded={handleGoalsAdded}
         />
